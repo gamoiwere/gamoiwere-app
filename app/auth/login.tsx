@@ -36,6 +36,11 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.decorativeShape1} />
+      <View style={styles.decorativeShape2} />
+      <View style={styles.decorativeShape3} />
+      <View style={styles.decorativeShape4} />
+
       <SuccessNotification
         visible={showSuccess}
         message="წარმატებით შეხვედით სისტემაში!"
@@ -143,7 +148,44 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#8b5cf6',
+    position: 'relative',
+  },
+  decorativeShape1: {
+    position: 'absolute',
+    width: 400,
+    height: 400,
+    borderRadius: 200,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    top: -150,
+    right: -100,
+  },
+  decorativeShape2: {
+    position: 'absolute',
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    bottom: -100,
+    left: -80,
+  },
+  decorativeShape3: {
+    position: 'absolute',
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    top: '45%',
+    right: -50,
+  },
+  decorativeShape4: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    top: '20%',
+    left: 30,
   },
   keyboardView: {
     flex: 1,
