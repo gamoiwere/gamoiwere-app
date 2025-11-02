@@ -30,30 +30,53 @@ export default function HomeScreen() {
       const response = await fetch('https://service.devmonkeys.ge/api/searchRatingListItemsPopular');
       const data = await response.json();
 
-      if (data && data.Items) {
-        const formattedProducts: Product[] = data.Items.map((item: any) => ({
-          id: item.Id,
-          name: item.OriginalTitle || item.Title,
-          name_ka: item.Title,
-          description: item.Description || '',
-          description_ka: item.Description || '',
-          price: parseFloat(item.ConvertedPrice || '0'),
-          original_price: parseFloat(item.OriginalPrice || '0'),
-          image_url: item.MainPictureUrl || (item.Pictures && item.Pictures.length > 0 ? item.Pictures[0].Url : ''),
-          category: item.CategoryName || '',
-          category_ka: item.CategoryName || '',
-          brand: item.BrandName || '',
-          vendor: item.VendorName || '',
-          rating: item.FeaturedValues?.Rating || 0,
-          review_count: item.FeaturedValues?.ReviewCount || 0,
-          is_recommended: true,
-          is_popular: true,
-          in_stock: item.MasterQuantity > 0,
-          created_at: new Date().toISOString(),
-        }));
+      console.log('API Response:', data);
 
+      if (data && data.Items && Array.isArray(data.Items)) {
+        const formattedProducts: Product[] = data.Items.map((item: any) => {
+          const getRatingFromFeatured = () => {
+            if (item.FeaturedValues && Array.isArray(item.FeaturedValues)) {
+              const ratingObj = item.FeaturedValues.find((fv: any) => fv.Name === 'rating');
+              return ratingObj ? parseFloat(ratingObj.Value) : 0;
+            }
+            return 0;
+          };
+
+          const getReviewCountFromFeatured = () => {
+            if (item.FeaturedValues && Array.isArray(item.FeaturedValues)) {
+              const reviewObj = item.FeaturedValues.find((fv: any) => fv.Name === 'reviews');
+              return reviewObj ? parseInt(reviewObj.Value) : 0;
+            }
+            return 0;
+          };
+
+          return {
+            id: item.Id,
+            name: item.OriginalTitle || item.Title,
+            name_ka: item.Title,
+            description: item.Description || '',
+            description_ka: item.Description || '',
+            price: parseFloat(item.Price?.ConvertedPriceWithoutSign || item.Price?.ConvertedPriceList?.Internal?.Price || '0'),
+            original_price: parseFloat(item.Price?.OriginalPrice || '0'),
+            image_url: item.MainPictureUrl || (item.Pictures && item.Pictures.length > 0 ? item.Pictures[0].Url : ''),
+            category: item.CategoryName || '',
+            category_ka: item.CategoryName || '',
+            brand: item.BrandName || '',
+            vendor: item.VendorName || '',
+            rating: getRatingFromFeatured(),
+            review_count: getReviewCountFromFeatured(),
+            is_recommended: true,
+            is_popular: true,
+            in_stock: item.MasterQuantity > 0,
+            created_at: new Date().toISOString(),
+          };
+        });
+
+        console.log('Formatted Products:', formattedProducts.length);
         setRecommendedProducts(formattedProducts.slice(0, 10));
         setPopularProducts(formattedProducts.slice(10, 20));
+      } else {
+        console.log('No items in response or invalid data structure');
       }
     } catch (error) {
       console.error('Error loading products:', error);
