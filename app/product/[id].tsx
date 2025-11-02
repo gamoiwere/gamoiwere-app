@@ -4,17 +4,30 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { ArrowLeft, ShoppingCart, Heart, Share2, Star, Package, Zap, TrendingUp, Shield, Truck, Award, ThumbsUp, MessageCircle, User } from 'lucide-react-native';
-import { Product } from '@/types';
-import { supabase } from '@/services/supabase';
 
 const { width } = Dimensions.get('window');
 
+interface ProductDetail {
+  id: string;
+  title: string;
+  originalTitle: string;
+  description: string;
+  brandName: string;
+  vendorName: string;
+  price: number;
+  inStock: boolean;
+  mainImage: string;
+  images: string[];
+  variations?: any[];
+}
+
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -24,13 +37,27 @@ export default function ProductDetailScreen() {
 
   const loadProduct = async () => {
     try {
-      const { data } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
+      const response = await fetch(`https://service.devmonkeys.ge/api/batchGetItemFullInfo?itemId=${id}`);
+      const data = await response.json();
 
-      setProduct(data);
+      if (data.ErrorCode === 'Ok' && data.Result?.Item) {
+        const item = data.Result.Item;
+        const images = item.Pictures?.map((p: any) => p.Url) || [];
+
+        setProduct({
+          id: item.Id,
+          title: item.Title,
+          originalTitle: item.OriginalTitle,
+          description: item.Description,
+          brandName: item.BrandName,
+          vendorName: item.VendorName,
+          price: item.Price?.ConvertedPriceList?.Internal?.Price || 0,
+          inStock: item.MasterQuantity > 0,
+          mainImage: item.MainPictureUrl,
+          images: images,
+          variations: item.Variations,
+        });
+      }
     } catch (error) {
       console.error('Error loading product:', error);
     } finally {
@@ -122,7 +149,7 @@ export default function ProductDetailScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: product.image_url }}
+            source={{ uri: product.images[selectedImageIndex] || product.mainImage }}
             style={styles.image}
             resizeMode="cover"
           />
@@ -130,7 +157,7 @@ export default function ProductDetailScreen() {
             colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.3)']}
             style={styles.imageGradient}
           />
-          {!product.in_stock && (
+          {!product.inStock && (
             <View style={styles.outOfStockBadge}>
               {Platform.OS === 'ios' ? (
                 <BlurView intensity={80} tint="dark" style={styles.badgeBlur}>
@@ -143,28 +170,46 @@ export default function ProductDetailScreen() {
               )}
             </View>
           )}
-
-          <View style={styles.ratingBadge}>
-            <Star size={14} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
-            <Text style={styles.ratingText}>4.8</Text>
-            <Text style={styles.ratingCount}>(256)</Text>
-          </View>
         </View>
+
+        {product.images.length > 1 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.thumbnailContainer}
+            contentContainerStyle={styles.thumbnailContent}
+          >
+            {product.images.map((img, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setSelectedImageIndex(index)}
+                style={[
+                  styles.thumbnail,
+                  selectedImageIndex === index && styles.thumbnailActive,
+                ]}
+              >
+                <Image source={{ uri: img }} style={styles.thumbnailImage} resizeMode="cover" />
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
 
         <View style={styles.content}>
           <View style={styles.topSection}>
             <View style={styles.categoryBadge}>
               <Package size={14} color="#6e39ea" strokeWidth={2.5} />
-              <Text style={styles.category}>{product.category_ka}</Text>
+              <Text style={styles.category}>{product.brandName}</Text>
             </View>
 
-            <View style={styles.trendingBadge}>
-              <TrendingUp size={12} color="#10b981" strokeWidth={2.5} />
-              <Text style={styles.trendingText}>ტრენდული</Text>
-            </View>
+            {product.inStock && (
+              <View style={styles.trendingBadge}>
+                <TrendingUp size={12} color="#10b981" strokeWidth={2.5} />
+                <Text style={styles.trendingText}>მარაგშია</Text>
+              </View>
+            )}
           </View>
 
-          <Text style={styles.name}>{product.name_ka}</Text>
+          <Text style={styles.name}>{product.title}</Text>
 
           <View style={styles.priceSection}>
             <View>
@@ -217,121 +262,35 @@ export default function ProductDetailScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>აღწერა</Text>
             <Text style={styles.description}>
-              {product.description_ka || 'აღწერა არ არის ხელმისაწვდომი'}
+              {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
             </Text>
           </View>
 
+          {product.vendorName && (
+            <View style={styles.vendorSection}>
+              <Text style={styles.vendorLabel}>გამყიდველი:</Text>
+              <Text style={styles.vendorName}>{product.vendorName}</Text>
+            </View>
+          )}
+
           <View style={styles.divider} />
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>რა გამოარჩევს?</Text>
+            <Text style={styles.sectionTitle}>დამატებითი ინფორმაცია</Text>
             <View style={styles.highlightsContainer}>
               <View style={styles.highlightItem}>
-                <Award size={18} color="#3b82f6" strokeWidth={2.5} />
-                <Text style={styles.highlightText}>ორიგინალური პროდუქტი</Text>
+                <Package size={18} color="#3b82f6" strokeWidth={2.5} />
+                <Text style={styles.highlightText}>ბრენდი: {product.brandName}</Text>
               </View>
               <View style={styles.highlightItem}>
-                <ThumbsUp size={18} color="#22c55e" strokeWidth={2.5} />
-                <Text style={styles.highlightText}>98% კმაყოფილება</Text>
+                <Truck size={18} color="#22c55e" strokeWidth={2.5} />
+                <Text style={styles.highlightText}>უფასო მიწოდება</Text>
               </View>
               <View style={styles.highlightItem}>
                 <Shield size={18} color="#f59e0b" strokeWidth={2.5} />
-                <Text style={styles.highlightText}>უსაფრთხო გადახდა</Text>
+                <Text style={styles.highlightText}>დაცული გადახდა</Text>
               </View>
             </View>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.section}>
-            <View style={styles.reviewsHeader}>
-              <Text style={styles.sectionTitle}>მიმოხილვები</Text>
-              <View style={styles.reviewsBadge}>
-                <Star size={14} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
-                <Text style={styles.reviewsRating}>4.8</Text>
-                <Text style={styles.reviewsCount}>(256)</Text>
-              </View>
-            </View>
-
-            <View style={styles.reviewsList}>
-              <View style={styles.reviewCard}>
-                <View style={styles.reviewHeader}>
-                  <View style={styles.reviewerAvatar}>
-                    <User size={16} color="#fff" strokeWidth={2.5} />
-                  </View>
-                  <View style={styles.reviewerInfo}>
-                    <Text style={styles.reviewerName}>გიორგი მ.</Text>
-                    <View style={styles.reviewStars}>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={12}
-                          color="#fbbf24"
-                          strokeWidth={2.5}
-                          fill="#fbbf24"
-                        />
-                      ))}
-                    </View>
-                  </View>
-                  <Text style={styles.reviewDate}>2 დღის წინ</Text>
-                </View>
-                <Text style={styles.reviewText}>
-                  შესანიშნავი პროდუქტი, ხარისხი შესაფერისია ფასთან. ძალიან კმაყოფილი ვარ შეძენით!
-                </Text>
-                <View style={styles.reviewFooter}>
-                  <View style={styles.reviewAction}>
-                    <ThumbsUp size={14} color="#666" strokeWidth={2} />
-                    <Text style={styles.reviewActionText}>24</Text>
-                  </View>
-                  <View style={styles.reviewAction}>
-                    <MessageCircle size={14} color="#666" strokeWidth={2} />
-                    <Text style={styles.reviewActionText}>5</Text>
-                  </View>
-                </View>
-              </View>
-
-              <View style={styles.reviewCard}>
-                <View style={styles.reviewHeader}>
-                  <View style={styles.reviewerAvatar}>
-                    <User size={16} color="#fff" strokeWidth={2.5} />
-                  </View>
-                  <View style={styles.reviewerInfo}>
-                    <Text style={styles.reviewerName}>ნინო კ.</Text>
-                    <View style={styles.reviewStars}>
-                      {[1, 2, 3, 4].map((star) => (
-                        <Star
-                          key={star}
-                          size={12}
-                          color="#fbbf24"
-                          strokeWidth={2.5}
-                          fill="#fbbf24"
-                        />
-                      ))}
-                      <Star size={12} color="#e5e5e5" strokeWidth={2.5} fill="#e5e5e5" />
-                    </View>
-                  </View>
-                  <Text style={styles.reviewDate}>1 კვირის წინ</Text>
-                </View>
-                <Text style={styles.reviewText}>
-                  კარგი ხარისხის პროდუქტი, მაგრამ მიწოდება ცოტა დაგვიანდა.
-                </Text>
-                <View style={styles.reviewFooter}>
-                  <View style={styles.reviewAction}>
-                    <ThumbsUp size={14} color="#666" strokeWidth={2} />
-                    <Text style={styles.reviewActionText}>12</Text>
-                  </View>
-                  <View style={styles.reviewAction}>
-                    <MessageCircle size={14} color="#666" strokeWidth={2} />
-                    <Text style={styles.reviewActionText}>2</Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            <TouchableOpacity style={styles.viewAllReviews}>
-              <Text style={styles.viewAllReviewsText}>ყველა მიმოხილვის ნახვა</Text>
-              <Star size={16} color="#3b82f6" strokeWidth={2.5} />
-            </TouchableOpacity>
           </View>
 
           <View style={styles.divider} />
@@ -388,22 +347,22 @@ export default function ProductDetailScreen() {
 
             <TouchableOpacity
               style={styles.addToCartButton}
-              disabled={!product.in_stock}
+              disabled={!product.inStock}
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={product.in_stock ? ['#6e39ea', '#9333ea'] : ['#ccc', '#999']}
+                colors={product.inStock ? ['#6e39ea', '#9333ea'] : ['#ccc', '#999']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.addToCartGradient}
               >
-                {product.in_stock ? (
+                {product.inStock ? (
                   <Zap size={20} color="#fff" strokeWidth={2.5} fill="#fff" />
                 ) : (
                   <ShoppingCart size={20} color="#fff" strokeWidth={2.5} />
                 )}
                 <Text style={styles.addToCartButtonText}>
-                  {product.in_stock ? 'დამატება კალათაში' : 'არ არის მარაგში'}
+                  {product.inStock ? 'დამატება კალათაში' : 'არ არის მარაგში'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>
@@ -741,6 +700,48 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#1a1a1a',
+  },
+  thumbnailContainer: {
+    marginTop: -16,
+    marginBottom: 16,
+  },
+  thumbnailContent: {
+    paddingHorizontal: 20,
+    gap: 12,
+  },
+  thumbnail: {
+    width: 70,
+    height: 70,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  thumbnailActive: {
+    borderColor: '#6e39ea',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  vendorSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#fff',
+    padding: 14,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  vendorLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#999',
+  },
+  vendorName: {
+    fontSize: 15,
+    fontWeight: '800',
+    color: '#6e39ea',
   },
   reviewsHeader: {
     flexDirection: 'row',
