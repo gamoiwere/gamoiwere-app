@@ -6,6 +6,30 @@ import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, C
 
 const { width } = Dimensions.get('window');
 
+const getColorCode = (colorName: string): string | null => {
+  const colorMap: Record<string, string> = {
+    'siyah': '#000000',
+    'beyaz': '#FFFFFF',
+    'kırmızı': '#DC2626',
+    'mavi': '#3B82F6',
+    'yeşil': '#10B981',
+    'sarı': '#FCD34D',
+    'turuncu': '#F97316',
+    'pembe': '#EC4899',
+    'mor': '#A855F7',
+    'gri': '#6B7280',
+    'kahverengi': '#92400E',
+    'lacivert': '#1E3A8A',
+    'bej': '#D4B896',
+    'krem': '#F5F5DC',
+    'taş rengi': '#A8A8A8',
+    'haki': '#8B7E66',
+  };
+
+  const normalized = colorName.toLowerCase().trim();
+  return colorMap[normalized] || null;
+};
+
 interface Attribute {
   Pid: string;
   Vid: string;
@@ -234,6 +258,7 @@ export default function ProductDetailScreen() {
                   );
 
                   const currentValue = selectedOptions[pid];
+                  const isColorProperty = pid.toLowerCase() === 'color';
 
                   return (
                     <View key={pid} style={styles.configuratorGroup}>
@@ -241,6 +266,7 @@ export default function ProductDetailScreen() {
                       <View style={styles.configuratorOptions}>
                         {uniqueValues.map((item, vIndex) => {
                           const isSelected = item.vid === currentValue;
+                          const colorCode = isColorProperty ? getColorCode(item.value) : null;
 
                           return (
                             <TouchableOpacity
@@ -248,6 +274,7 @@ export default function ProductDetailScreen() {
                               style={[
                                 styles.configuratorOption,
                                 isSelected && styles.configuratorOptionSelected,
+                                colorCode && styles.configuratorOptionWithColor,
                               ]}
                               onPress={() => {
                                 const newOptions = { ...selectedOptions, [pid]: item.vid };
@@ -266,14 +293,34 @@ export default function ProductDetailScreen() {
                                 }
                               }}
                             >
-                              <Text
-                                style={[
-                                  styles.configuratorOptionText,
-                                  isSelected && styles.configuratorOptionTextSelected,
-                                ]}
-                              >
-                                {item.value}
-                              </Text>
+                              {colorCode ? (
+                                <View style={styles.colorOptionContent}>
+                                  <View
+                                    style={[
+                                      styles.colorSwatch,
+                                      { backgroundColor: colorCode },
+                                      colorCode === '#FFFFFF' && styles.colorSwatchWhite,
+                                    ]}
+                                  />
+                                  <Text
+                                    style={[
+                                      styles.configuratorOptionText,
+                                      isSelected && styles.configuratorOptionTextSelected,
+                                    ]}
+                                  >
+                                    {item.value}
+                                  </Text>
+                                </View>
+                              ) : (
+                                <Text
+                                  style={[
+                                    styles.configuratorOptionText,
+                                    isSelected && styles.configuratorOptionTextSelected,
+                                  ]}
+                                >
+                                  {item.value}
+                                </Text>
+                              )}
                             </TouchableOpacity>
                           );
                         })}
@@ -590,6 +637,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#e5e5e5',
   },
+  configuratorOptionWithColor: {
+    paddingHorizontal: 12,
+  },
   configuratorOptionSelected: {
     backgroundColor: '#f5f3ff',
     borderColor: '#6e39ea',
@@ -601,6 +651,21 @@ const styles = StyleSheet.create({
   },
   configuratorOptionTextSelected: {
     color: '#6e39ea',
+  },
+  colorOptionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  colorSwatch: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+  },
+  colorSwatchWhite: {
+    borderColor: '#ccc',
   },
   quickInfoSection: {
     flexDirection: 'row',
