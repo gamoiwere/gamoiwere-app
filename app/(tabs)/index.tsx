@@ -83,14 +83,14 @@ export default function HomeScreen() {
         };
       };
 
-      if (popularItems.length > 0) {
-        const formattedRecommended = popularItems.map(formatProduct).slice(0, 10);
+      if (bestItems.length > 0) {
+        const formattedRecommended = bestItems.map(formatProduct).slice(0, 10);
         setRecommendedProducts(formattedRecommended);
       }
 
-      if (bestItems.length > 0) {
-        const formattedBest = bestItems.map(formatProduct).slice(0, 10);
-        setPopularProducts(formattedBest);
+      if (popularItems.length > 0) {
+        const formattedPopular = popularItems.map(formatProduct).slice(0, 10);
+        setPopularProducts(formattedPopular);
       }
     } catch (error) {
       console.error('Error loading products:', error);
