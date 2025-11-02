@@ -6,30 +6,6 @@ import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, C
 
 const { width } = Dimensions.get('window');
 
-const getColorCode = (colorName: string): string | null => {
-  const colorMap: Record<string, string> = {
-    'siyah': '#000000',
-    'beyaz': '#FFFFFF',
-    'kırmızı': '#DC2626',
-    'mavi': '#3B82F6',
-    'yeşil': '#10B981',
-    'sarı': '#FCD34D',
-    'turuncu': '#F97316',
-    'pembe': '#EC4899',
-    'mor': '#A855F7',
-    'gri': '#6B7280',
-    'kahverengi': '#92400E',
-    'lacivert': '#1E3A8A',
-    'bej': '#D4B896',
-    'krem': '#F5F5DC',
-    'taş rengi': '#A8A8A8',
-    'haki': '#8B7E66',
-  };
-
-  const normalized = colorName.toLowerCase().trim();
-  return colorMap[normalized] || null;
-};
-
 interface Attribute {
   Pid: string;
   Vid: string;
@@ -38,6 +14,8 @@ interface Attribute {
   OriginalPropertyName: string;
   OriginalValue: string;
   IsConfigurator: boolean;
+  ImageUrl?: string;
+  MiniImageUrl?: string;
 }
 
 interface ConfiguredItem {
@@ -78,6 +56,7 @@ export default function ProductDetailScreen() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariation, setSelectedVariation] = useState<ConfiguredItem | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [currentMainImage, setCurrentMainImage] = useState<string>('');
 
   useEffect(() => {
     if (id) {
@@ -115,6 +94,7 @@ export default function ProductDetailScreen() {
         };
 
         setProduct(productData);
+        setCurrentMainImage(item.MainPictureUrl);
 
         if (configuredItems.length > 0) {
           setSelectedVariation(configuredItems[0]);
@@ -186,7 +166,7 @@ export default function ProductDetailScreen() {
         <View style={styles.imageSection}>
           <View style={styles.mainImageContainer}>
             <Image
-              source={{ uri: product.images[selectedImageIndex] || product.mainImage }}
+              source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
               style={styles.mainImage}
               resizeMode="contain"
             />
@@ -253,20 +233,20 @@ export default function ProductDetailScreen() {
 
                 return Object.entries(groupedByPid).map(([pid, configs]) => {
                   const propertyName = configs[0].OriginalPropertyName;
-                  const uniqueValues = Array.from(
-                    new Set(configs.map((c) => ({ vid: c.Vid, value: c.OriginalValue })))
+                  const uniqueConfigs = configs.filter(
+                    (config, index, self) =>
+                      index === self.findIndex((c) => c.Vid === config.Vid)
                   );
 
                   const currentValue = selectedOptions[pid];
-                  const isColorProperty = pid.toLowerCase() === 'color';
 
                   return (
                     <View key={pid} style={styles.configuratorGroup}>
                       <Text style={styles.configuratorLabel}>{propertyName}</Text>
                       <View style={styles.configuratorOptions}>
-                        {uniqueValues.map((item, vIndex) => {
-                          const isSelected = item.vid === currentValue;
-                          const colorCode = isColorProperty ? getColorCode(item.value) : null;
+                        {uniqueConfigs.map((config, vIndex) => {
+                          const isSelected = config.Vid === currentValue;
+                          const hasThumbnail = !!config.MiniImageUrl;
 
                           return (
                             <TouchableOpacity
@@ -274,10 +254,10 @@ export default function ProductDetailScreen() {
                               style={[
                                 styles.configuratorOption,
                                 isSelected && styles.configuratorOptionSelected,
-                                colorCode && styles.configuratorOptionWithColor,
+                                hasThumbnail && styles.configuratorOptionWithImage,
                               ]}
                               onPress={() => {
-                                const newOptions = { ...selectedOptions, [pid]: item.vid };
+                                const newOptions = { ...selectedOptions, [pid]: config.Vid };
                                 setSelectedOptions(newOptions);
 
                                 const matchingItem = product.configuredItems.find((configItem) => {
@@ -291,16 +271,18 @@ export default function ProductDetailScreen() {
                                 if (matchingItem) {
                                   setSelectedVariation(matchingItem);
                                 }
+
+                                if (config.ImageUrl) {
+                                  setCurrentMainImage(config.ImageUrl);
+                                }
                               }}
                             >
-                              {colorCode ? (
-                                <View style={styles.colorOptionContent}>
-                                  <View
-                                    style={[
-                                      styles.colorSwatch,
-                                      { backgroundColor: colorCode },
-                                      colorCode === '#FFFFFF' && styles.colorSwatchWhite,
-                                    ]}
+                              {hasThumbnail ? (
+                                <View style={styles.imageOptionContent}>
+                                  <Image
+                                    source={{ uri: config.MiniImageUrl }}
+                                    style={styles.variationThumbnail}
+                                    resizeMode="cover"
                                   />
                                   <Text
                                     style={[
@@ -308,7 +290,7 @@ export default function ProductDetailScreen() {
                                       isSelected && styles.configuratorOptionTextSelected,
                                     ]}
                                   >
-                                    {item.value}
+                                    {config.OriginalValue}
                                   </Text>
                                 </View>
                               ) : (
@@ -318,7 +300,7 @@ export default function ProductDetailScreen() {
                                     isSelected && styles.configuratorOptionTextSelected,
                                   ]}
                                 >
-                                  {item.value}
+                                  {config.OriginalValue}
                                 </Text>
                               )}
                             </TouchableOpacity>
@@ -637,8 +619,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#e5e5e5',
   },
-  configuratorOptionWithColor: {
-    paddingHorizontal: 12,
+  configuratorOptionWithImage: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
   },
   configuratorOptionSelected: {
     backgroundColor: '#f5f3ff',
@@ -652,20 +635,16 @@ const styles = StyleSheet.create({
   configuratorOptionTextSelected: {
     color: '#6e39ea',
   },
-  colorOptionContent: {
+  imageOptionContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
-  colorSwatch: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
-  },
-  colorSwatchWhite: {
-    borderColor: '#ccc',
+  variationThumbnail: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: '#f5f5f5',
   },
   quickInfoSection: {
     flexDirection: 'row',
