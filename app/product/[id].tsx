@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight } from 'lucide-react-native';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 
@@ -57,6 +59,46 @@ export default function ProductDetailScreen() {
   const [selectedVariation, setSelectedVariation] = useState<ConfiguredItem | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [currentMainImage, setCurrentMainImage] = useState<string>('');
+
+  const translateX = useSharedValue(0);
+  const startX = useSharedValue(0);
+
+  const goToNextImage = () => {
+    if (product && selectedImageIndex < product.images.length - 1) {
+      setSelectedImageIndex(selectedImageIndex + 1);
+      setCurrentMainImage('');
+    }
+  };
+
+  const goToPreviousImage = () => {
+    if (selectedImageIndex > 0) {
+      setSelectedImageIndex(selectedImageIndex - 1);
+      setCurrentMainImage('');
+    }
+  };
+
+  const panGesture = Gesture.Pan()
+    .onStart(() => {
+      startX.value = translateX.value;
+    })
+    .onUpdate((event) => {
+      translateX.value = startX.value + event.translationX;
+    })
+    .onEnd((event) => {
+      const swipeThreshold = width * 0.2;
+
+      if (event.translationX < -swipeThreshold) {
+        runOnJS(goToNextImage)();
+      } else if (event.translationX > swipeThreshold) {
+        runOnJS(goToPreviousImage)();
+      }
+
+      translateX.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
 
   useEffect(() => {
     if (id) {
@@ -164,34 +206,53 @@ export default function ProductDetailScreen() {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageSection}>
-          <View style={styles.mainImageContainer}>
-            <Image
-              source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
-              style={styles.mainImage}
-              resizeMode="contain"
-            />
-          </View>
+          <GestureDetector gesture={panGesture}>
+            <Animated.View style={[styles.mainImageContainer, animatedStyle]}>
+              <Image
+                source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
+                style={styles.mainImage}
+                resizeMode="contain"
+              />
+            </Animated.View>
+          </GestureDetector>
 
           {product.images.length > 1 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.thumbnailScroll}
-              contentContainerStyle={styles.thumbnailContent}
-            >
-              {product.images.map((img, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setSelectedImageIndex(index)}
-                  style={[
-                    styles.thumbnail,
-                    selectedImageIndex === index && styles.thumbnailSelected,
-                  ]}
-                >
-                  <Image source={{ uri: img }} style={styles.thumbnailImage} resizeMode="cover" />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <>
+              <View style={styles.paginationDots}>
+                {product.images.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      selectedImageIndex === index && styles.dotActive,
+                    ]}
+                  />
+                ))}
+              </View>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.thumbnailScroll}
+                contentContainerStyle={styles.thumbnailContent}
+              >
+                {product.images.map((img, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      setSelectedImageIndex(index);
+                      setCurrentMainImage('');
+                    }}
+                    style={[
+                      styles.thumbnail,
+                      selectedImageIndex === index && styles.thumbnailSelected,
+                    ]}
+                  >
+                    <Image source={{ uri: img }} style={styles.thumbnailImage} resizeMode="cover" />
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </>
           )}
         </View>
 
@@ -505,6 +566,23 @@ const styles = StyleSheet.create({
   mainImage: {
     width: '100%',
     height: '100%',
+  },
+  paginationDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+    gap: 6,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#d1d5db',
+  },
+  dotActive: {
+    backgroundColor: '#6e39ea',
+    width: 24,
   },
   thumbnailScroll: {
     marginTop: 12,
