@@ -12,6 +12,12 @@ export interface Product {
   is_popular: boolean;
   in_stock: boolean;
   created_at: string;
+  original_price?: number;
+  discount_percentage?: number;
+  brand?: string;
+  rating?: number;
+  review_count?: number;
+  vendor?: string;
 }
 
 export interface User {

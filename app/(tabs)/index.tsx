@@ -27,20 +27,34 @@ export default function HomeScreen() {
 
   const loadProducts = async () => {
     try {
-      const { data: recommended } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_recommended', true)
-        .limit(10);
+      const response = await fetch('https://service.devmonkeys.ge/api/searchRatingListItemsPopular');
+      const data = await response.json();
 
-      const { data: popular } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_popular', true)
-        .limit(10);
+      if (data && data.Items) {
+        const formattedProducts: Product[] = data.Items.map((item: any) => ({
+          id: item.Id,
+          name: item.OriginalTitle || item.Title,
+          name_ka: item.Title,
+          description: item.Description || '',
+          description_ka: item.Description || '',
+          price: parseFloat(item.ConvertedPrice || '0'),
+          original_price: parseFloat(item.OriginalPrice || '0'),
+          image_url: item.MainPictureUrl || (item.Pictures && item.Pictures.length > 0 ? item.Pictures[0].Url : ''),
+          category: item.CategoryName || '',
+          category_ka: item.CategoryName || '',
+          brand: item.BrandName || '',
+          vendor: item.VendorName || '',
+          rating: item.FeaturedValues?.Rating || 0,
+          review_count: item.FeaturedValues?.ReviewCount || 0,
+          is_recommended: true,
+          is_popular: true,
+          in_stock: item.MasterQuantity > 0,
+          created_at: new Date().toISOString(),
+        }));
 
-      setRecommendedProducts(recommended || []);
-      setPopularProducts(popular || []);
+        setRecommendedProducts(formattedProducts.slice(0, 10));
+        setPopularProducts(formattedProducts.slice(10, 20));
+      }
     } catch (error) {
       console.error('Error loading products:', error);
     } finally {
