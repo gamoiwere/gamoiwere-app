@@ -1,10 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight } from 'lucide-react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 
@@ -60,45 +58,34 @@ export default function ProductDetailScreen() {
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [currentMainImage, setCurrentMainImage] = useState<string>('');
 
-  const translateX = useSharedValue(0);
-  const startX = useSharedValue(0);
+  const pan = useRef(new Animated.ValueXY()).current;
 
-  const goToNextImage = () => {
-    if (product && selectedImageIndex < product.images.length - 1) {
-      setSelectedImageIndex(selectedImageIndex + 1);
-      setCurrentMainImage('');
-    }
-  };
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 5;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        pan.setValue({ x: gestureState.dx, y: 0 });
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        const swipeThreshold = width * 0.2;
 
-  const goToPreviousImage = () => {
-    if (selectedImageIndex > 0) {
-      setSelectedImageIndex(selectedImageIndex - 1);
-      setCurrentMainImage('');
-    }
-  };
+        if (gestureState.dx < -swipeThreshold && product && selectedImageIndex < product.images.length - 1) {
+          setSelectedImageIndex(selectedImageIndex + 1);
+          setCurrentMainImage('');
+        } else if (gestureState.dx > swipeThreshold && selectedImageIndex > 0) {
+          setSelectedImageIndex(selectedImageIndex - 1);
+          setCurrentMainImage('');
+        }
 
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      startX.value = translateX.value;
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: true,
+        }).start();
+      },
     })
-    .onUpdate((event) => {
-      translateX.value = startX.value + event.translationX;
-    })
-    .onEnd((event) => {
-      const swipeThreshold = width * 0.2;
-
-      if (event.translationX < -swipeThreshold) {
-        runOnJS(goToNextImage)();
-      } else if (event.translationX > swipeThreshold) {
-        runOnJS(goToPreviousImage)();
-      }
-
-      translateX.value = withSpring(0);
-    });
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
+  ).current;
 
   useEffect(() => {
     if (id) {
@@ -206,15 +193,21 @@ export default function ProductDetailScreen() {
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageSection}>
-          <GestureDetector gesture={panGesture}>
-            <Animated.View style={[styles.mainImageContainer, animatedStyle]}>
-              <Image
-                source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
-                style={styles.mainImage}
-                resizeMode="contain"
-              />
-            </Animated.View>
-          </GestureDetector>
+          <Animated.View
+            style={[
+              styles.mainImageContainer,
+              {
+                transform: [{ translateX: pan.x }],
+              },
+            ]}
+            {...panResponder.panHandlers}
+          >
+            <Image
+              source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
+              style={styles.mainImage}
+              resizeMode="contain"
+            />
+          </Animated.View>
 
           {product.images.length > 1 && (
             <>
