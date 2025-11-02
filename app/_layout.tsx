@@ -17,6 +17,10 @@ export default function RootLayout() {
     };
 
     checkAuth();
+
+    const interval = setInterval(checkAuth, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

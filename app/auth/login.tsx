@@ -25,9 +25,10 @@ export default function LoginScreen() {
     try {
       await authService.login(email.trim(), password);
       setShowSuccess(true);
+      setLoading(false);
       setTimeout(() => {
         router.replace('/(tabs)');
-      }, 1000);
+      }, 1200);
     } catch (err: any) {
       setError(err.message || 'შესვლა ვერ მოხერხდა');
       setLoading(false);
