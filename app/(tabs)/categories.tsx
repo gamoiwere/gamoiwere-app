@@ -186,7 +186,7 @@ export default function CategoriesScreen() {
 
                         <View style={styles.arrowButton}>
                           <LinearGradient
-                            colors={category.color}
+                            colors={category.color as [string, string]}
                             style={styles.arrowGradient}
                           >
                             <ChevronRight size={16} color="#fff" strokeWidth={3} />

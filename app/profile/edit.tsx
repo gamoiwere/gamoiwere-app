@@ -22,10 +22,12 @@ export default function EditProfileScreen() {
     try {
       const profile = await authService.getProfile();
       setUser(profile);
-      setFullName(profile.full_name || '');
-      setUsername(profile.username || '');
-      setEmail(profile.email || '');
-      setPhone(profile.phone || '');
+      if (profile) {
+        setFullName(profile.full_name || '');
+        setUsername(profile.username || '');
+        setEmail(profile.email || '');
+        setPhone(profile.phone || '');
+      }
     } catch (error) {
       console.error('Error loading user:', error);
       Alert.alert('შეცდომა', 'პროფილის ჩატვირთვა ვერ მოხერხდა');
