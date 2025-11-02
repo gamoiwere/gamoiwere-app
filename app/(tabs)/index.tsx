@@ -6,7 +6,7 @@ import { BlurView } from 'expo-blur';
 import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Gift, Clock, MapPin } from 'lucide-react-native';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types';
-import { supabase } from '@/services/supabase';
+import { authService } from '@/services/auth';
 
 const { width } = Dimensions.get('window');
 
@@ -29,17 +29,9 @@ export default function HomeScreen() {
 
   const loadUserProfile = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('full_name')
-          .eq('id', user.id)
-          .maybeSingle();
-
-        if (profile?.full_name) {
-          setUserName(profile.full_name);
-        }
+      const profile = await authService.getProfile();
+      if (profile?.full_name) {
+        setUserName(profile.full_name);
       }
     } catch (error) {
       console.error('Error loading user profile:', error);
