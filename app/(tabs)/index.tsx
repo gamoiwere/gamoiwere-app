@@ -30,9 +30,13 @@ export default function HomeScreen() {
       const response = await fetch('https://service.devmonkeys.ge/api/searchRatingListItemsPopular');
       const data = await response.json();
 
-      console.log('API Response:', data);
+      console.log('API Response:', JSON.stringify(data).substring(0, 500));
+      console.log('Has Items?', data?.Items);
+      console.log('Is Array?', Array.isArray(data?.Items));
 
-      if (data && data.Items && Array.isArray(data.Items)) {
+      if (data && Array.isArray(data.Items) && data.Items.length > 0) {
+        console.log('First item:', JSON.stringify(data.Items[0]).substring(0, 500));
+
         const formattedProducts: Product[] = data.Items.map((item: any) => {
           const getRatingFromFeatured = () => {
             if (item.FeaturedValues && Array.isArray(item.FeaturedValues)) {
@@ -50,15 +54,21 @@ export default function HomeScreen() {
             return 0;
           };
 
+          const price = item.Price?.ConvertedPriceList?.Internal?.Price || 0;
+          const originalPrice = item.Price?.OriginalPrice || 0;
+          const currencySign = item.Price?.ConvertedPriceList?.Internal?.Sign || '₾';
+
+          console.log('Processing item:', item.Id, 'Price:', price, 'Sign:', currencySign);
+
           return {
             id: item.Id,
             name: item.OriginalTitle || item.Title,
             name_ka: item.Title,
             description: item.Description || '',
             description_ka: item.Description || '',
-            price: parseFloat(item.Price?.ConvertedPriceWithoutSign || item.Price?.ConvertedPriceList?.Internal?.Price || '0'),
-            original_price: parseFloat(item.Price?.OriginalPrice || '0'),
-            image_url: item.MainPictureUrl || (item.Pictures && item.Pictures.length > 0 ? item.Pictures[0].Url : ''),
+            price: parseFloat(price.toString()),
+            original_price: parseFloat(originalPrice.toString()),
+            image_url: item.MainPictureUrl || '',
             category: item.CategoryName || '',
             category_ka: item.CategoryName || '',
             brand: item.BrandName || '',
@@ -72,11 +82,15 @@ export default function HomeScreen() {
           };
         });
 
-        console.log('Formatted Products:', formattedProducts.length);
+        console.log('Total Formatted Products:', formattedProducts.length);
+        console.log('First product:', formattedProducts[0]);
+
         setRecommendedProducts(formattedProducts.slice(0, 10));
         setPopularProducts(formattedProducts.slice(10, 20));
       } else {
         console.log('No items in response or invalid data structure');
+        console.log('Data type:', typeof data);
+        console.log('Data keys:', data ? Object.keys(data) : 'no data');
       }
     } catch (error) {
       console.error('Error loading products:', error);
