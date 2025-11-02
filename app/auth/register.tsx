@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { authService } from '@/services/auth';
-import { Mail, Lock, User as UserIcon, ArrowRight, Eye, EyeOff, Star, Zap, Shield, Phone } from 'lucide-react-native';
+import { Mail, Lock, User as UserIcon, Eye, EyeOff, Phone } from 'lucide-react-native';
 import SuccessNotification from '@/components/SuccessNotification';
 
 export default function RegisterScreen() {
@@ -64,16 +63,6 @@ export default function RegisterScreen() {
         message="ანგარიში წარმატებით შეიქმნა!"
         onHide={() => setShowSuccess(false)}
       />
-      <LinearGradient
-        colors={['#0ea5e9', '#0284c7', '#0369a1']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.background}
-      >
-        <View style={styles.decorativeCircle1} />
-        <View style={styles.decorativeCircle2} />
-        <View style={styles.decorativeCircle3} />
-      </LinearGradient>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -84,45 +73,31 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.cardWrapper}>
-            <LinearGradient
-              colors={['rgba(255,255,255,0.95)', 'rgba(255,255,255,0.9)']}
-              style={styles.card}
-            >
-              <View style={styles.cardHeader}>
-                <View style={styles.iconBadge}>
-                  <Star size={24} color="#0ea5e9" strokeWidth={2.5} fill="#0ea5e9" />
-                </View>
-                <Text style={styles.cardTitle}>შემოგვიერთდით!</Text>
-                <Text style={styles.cardSubtitle}>შექმენით ანგარიში რამდენიმე წამში</Text>
-              </View>
+          <View style={styles.logoContainer}>
+            <Image
+              source={{ uri: 'https://gamoiwere.ge/assets/Asset%2023@4x-DOSuFs2H.png' }}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
 
-              {error ? (
-                <View style={styles.errorContainer}>
-                  <Text style={styles.errorText}>{error}</Text>
-                </View>
-              ) : null}
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <Text style={styles.cardTitle}>რეგისტრაცია</Text>
+              <Text style={styles.cardSubtitle}>შექმენით ახალი ანგარიში</Text>
+            </View>
 
-              <View style={styles.benefitsRow}>
-                <View style={styles.benefitBadge}>
-                  <Zap size={14} color="#0ea5e9" strokeWidth={2.5} />
-                  <Text style={styles.benefitText}>სწრაფი</Text>
-                </View>
-                <View style={styles.benefitBadge}>
-                  <Shield size={14} color="#0ea5e9" strokeWidth={2.5} />
-                  <Text style={styles.benefitText}>უსაფრთხო</Text>
-                </View>
-                <View style={styles.benefitBadge}>
-                  <Star size={14} color="#0ea5e9" strokeWidth={2.5} />
-                  <Text style={styles.benefitText}>ფასდაკლება</Text>
-                </View>
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
               </View>
+            ) : null}
 
               <View style={styles.form}>
                 <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>მომხმარებლის სახელი</Text>
+                  <Text style={styles.inputLabel}>მომხმარებელი</Text>
                   <View style={styles.inputWrapper}>
-                    <UserIcon size={20} color="#0ea5e9" strokeWidth={2} />
+                    <UserIcon size={18} color="#71717a" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="username"
@@ -138,7 +113,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ტელეფონი</Text>
                   <View style={styles.inputWrapper}>
-                    <Phone size={20} color="#0ea5e9" strokeWidth={2} />
+                    <Phone size={18} color="#71717a" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="+995555123456"
@@ -154,7 +129,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
                   <View style={styles.inputWrapper}>
-                    <Mail size={20} color="#0ea5e9" strokeWidth={2} />
+                    <Mail size={18} color="#71717a" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="example@mail.com"
@@ -171,7 +146,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>პაროლი</Text>
                   <View style={styles.inputWrapper}>
-                    <Lock size={20} color="#0ea5e9" strokeWidth={2} />
+                    <Lock size={18} color="#71717a" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="მინიმუმ 6 სიმბოლო"
@@ -197,7 +172,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
                   <View style={styles.inputWrapper}>
-                    <Lock size={20} color="#0ea5e9" strokeWidth={2} />
+                    <Lock size={18} color="#71717a" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="••••••••"
@@ -221,32 +196,23 @@ export default function RegisterScreen() {
                 </View>
 
                 <TouchableOpacity
-                  style={styles.button}
+                  style={[styles.button, loading && styles.buttonDisabled]}
                   onPress={handleRegister}
                   disabled={loading}
-                  activeOpacity={0.8}
+                  activeOpacity={0.9}
                 >
-                  <LinearGradient
-                    colors={['#0ea5e9', '#0284c7', '#0369a1']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.buttonGradient}
-                  >
-                    <Text style={styles.buttonText}>
-                      {loading ? 'იტვირთება...' : 'რეგისტრაცია'}
-                    </Text>
-                    {!loading && <ArrowRight size={22} color="#fff" strokeWidth={2.5} />}
-                  </LinearGradient>
+                  <Text style={styles.buttonText}>
+                    {loading ? 'იტვირთება...' : 'რეგისტრაცია'}
+                  </Text>
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.footer}>
-                <Text style={styles.footerText}>უკვე გაქვთ ანგარიში?</Text>
-                <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                  <Text style={styles.footerLink}>შესვლა</Text>
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>უკვე გაქვთ ანგარიში?</Text>
+              <TouchableOpacity onPress={() => router.push('/auth/login')}>
+                <Text style={styles.footerLink}>შესვლა</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -257,40 +223,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  background: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  decorativeCircle1: {
-    position: 'absolute',
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    top: -100,
-    right: -50,
-  },
-  decorativeCircle2: {
-    position: 'absolute',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    bottom: 100,
-    left: -50,
-  },
-  decorativeCircle3: {
-    position: 'absolute',
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    top: '40%',
-    right: 20,
+    backgroundColor: '#fafafa',
   },
   keyboardView: {
     flex: 1,
@@ -300,193 +233,117 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     paddingTop: 40,
-    paddingBottom: 120,
+    paddingBottom: 60,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 32,
-    marginTop: 20,
-  },
-  logoWrapper: {
-    width: 100,
-    height: 100,
-    borderRadius: 25,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    elevation: 10,
+    marginBottom: 40,
   },
   logo: {
-    width: 80,
-    height: 80,
-  },
-  brandName: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -1,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  cardWrapper: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 15,
+    width: 120,
+    height: 120,
   },
   card: {
-    borderRadius: 32,
-    padding: 28,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    padding: 32,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: '#e4e4e7',
+    maxWidth: 440,
+    width: '100%',
+    alignSelf: 'center',
   },
   cardHeader: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  iconBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: 'rgba(14, 165, 233, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-    borderWidth: 2,
-    borderColor: 'rgba(14, 165, 233, 0.2)',
+    marginBottom: 28,
   },
   cardTitle: {
     fontSize: 28,
-    fontWeight: '900',
+    fontWeight: '700',
     color: '#18181b',
-    marginBottom: 6,
-    letterSpacing: -1.5,
+    marginBottom: 8,
   },
   cardSubtitle: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#71717a',
-    fontWeight: '500',
-  },
-  benefitsRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 8,
-    marginBottom: 24,
-  },
-  benefitBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: 'rgba(14, 165, 233, 0.08)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(14, 165, 233, 0.15)',
-  },
-  benefitText: {
-    fontSize: 12,
-    color: '#0ea5e9',
-    fontWeight: '700',
+    fontWeight: '400',
   },
   errorContainer: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
-    borderLeftWidth: 4,
-    borderLeftColor: '#ef4444',
-    padding: 14,
-    borderRadius: 12,
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    padding: 12,
+    borderRadius: 6,
     marginBottom: 20,
   },
   errorText: {
     color: '#dc2626',
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
   },
   form: {
-    gap: 16,
+    gap: 18,
   },
   inputGroup: {
-    gap: 6,
+    gap: 8,
   },
   inputLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#3f3f46',
-    marginLeft: 4,
-    letterSpacing: 0.2,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#18181b',
+    marginBottom: 2,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 6,
+    paddingHorizontal: 14,
     paddingVertical: 2,
-    gap: 12,
-    borderWidth: 2,
-    borderColor: 'rgba(14, 165, 233, 0.1)',
-    shadowColor: '#0ea5e9',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: '#d4d4d8',
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     color: '#18181b',
-    fontWeight: '500',
-    paddingVertical: 14,
+    fontWeight: '400',
+    paddingVertical: 12,
   },
   eyeButton: {
     padding: 4,
   },
   button: {
     marginTop: 8,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#0ea5e9',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  buttonGradient: {
-    flexDirection: 'row',
+    backgroundColor: '#8b5cf6',
+    borderRadius: 6,
+    paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
-    paddingVertical: 16,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
     marginTop: 24,
   },
   footerText: {
     fontSize: 14,
     color: '#71717a',
-    fontWeight: '500',
+    fontWeight: '400',
   },
   footerLink: {
     fontSize: 14,
-    color: '#0ea5e9',
-    fontWeight: '800',
-    textDecorationLine: 'underline',
+    color: '#8b5cf6',
+    fontWeight: '600',
   },
 });
