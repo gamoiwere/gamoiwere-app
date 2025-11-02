@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Star, Package, Zap, TrendingUp, Shield, Truck } from 'lucide-react-native';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Star, Package, Zap, TrendingUp, Shield, Truck, Award, ThumbsUp, MessageCircle, User } from 'lucide-react-native';
 import { Product } from '@/types';
 import { supabase } from '@/services/supabase';
 
@@ -219,6 +219,119 @@ export default function ProductDetailScreen() {
             <Text style={styles.description}>
               {product.description_ka || 'აღწერა არ არის ხელმისაწვდომი'}
             </Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>რა გამოარჩევს?</Text>
+            <View style={styles.highlightsContainer}>
+              <View style={styles.highlightItem}>
+                <Award size={18} color="#3b82f6" strokeWidth={2.5} />
+                <Text style={styles.highlightText}>ორიგინალური პროდუქტი</Text>
+              </View>
+              <View style={styles.highlightItem}>
+                <ThumbsUp size={18} color="#22c55e" strokeWidth={2.5} />
+                <Text style={styles.highlightText}>98% კმაყოფილება</Text>
+              </View>
+              <View style={styles.highlightItem}>
+                <Shield size={18} color="#f59e0b" strokeWidth={2.5} />
+                <Text style={styles.highlightText}>უსაფრთხო გადახდა</Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.section}>
+            <View style={styles.reviewsHeader}>
+              <Text style={styles.sectionTitle}>მიმოხილვები</Text>
+              <View style={styles.reviewsBadge}>
+                <Star size={14} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
+                <Text style={styles.reviewsRating}>4.8</Text>
+                <Text style={styles.reviewsCount}>(256)</Text>
+              </View>
+            </View>
+
+            <View style={styles.reviewsList}>
+              <View style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <View style={styles.reviewerAvatar}>
+                    <User size={16} color="#fff" strokeWidth={2.5} />
+                  </View>
+                  <View style={styles.reviewerInfo}>
+                    <Text style={styles.reviewerName}>გიორგი მ.</Text>
+                    <View style={styles.reviewStars}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={12}
+                          color="#fbbf24"
+                          strokeWidth={2.5}
+                          fill="#fbbf24"
+                        />
+                      ))}
+                    </View>
+                  </View>
+                  <Text style={styles.reviewDate}>2 დღის წინ</Text>
+                </View>
+                <Text style={styles.reviewText}>
+                  შესანიშნავი პროდუქტი, ხარისხი შესაფერისია ფასთან. ძალიან კმაყოფილი ვარ შეძენით!
+                </Text>
+                <View style={styles.reviewFooter}>
+                  <View style={styles.reviewAction}>
+                    <ThumbsUp size={14} color="#666" strokeWidth={2} />
+                    <Text style={styles.reviewActionText}>24</Text>
+                  </View>
+                  <View style={styles.reviewAction}>
+                    <MessageCircle size={14} color="#666" strokeWidth={2} />
+                    <Text style={styles.reviewActionText}>5</Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <View style={styles.reviewerAvatar}>
+                    <User size={16} color="#fff" strokeWidth={2.5} />
+                  </View>
+                  <View style={styles.reviewerInfo}>
+                    <Text style={styles.reviewerName}>ნინო კ.</Text>
+                    <View style={styles.reviewStars}>
+                      {[1, 2, 3, 4].map((star) => (
+                        <Star
+                          key={star}
+                          size={12}
+                          color="#fbbf24"
+                          strokeWidth={2.5}
+                          fill="#fbbf24"
+                        />
+                      ))}
+                      <Star size={12} color="#e5e5e5" strokeWidth={2.5} fill="#e5e5e5" />
+                    </View>
+                  </View>
+                  <Text style={styles.reviewDate}>1 კვირის წინ</Text>
+                </View>
+                <Text style={styles.reviewText}>
+                  კარგი ხარისხის პროდუქტი, მაგრამ მიწოდება ცოტა დაგვიანდა.
+                </Text>
+                <View style={styles.reviewFooter}>
+                  <View style={styles.reviewAction}>
+                    <ThumbsUp size={14} color="#666" strokeWidth={2} />
+                    <Text style={styles.reviewActionText}>12</Text>
+                  </View>
+                  <View style={styles.reviewAction}>
+                    <MessageCircle size={14} color="#666" strokeWidth={2} />
+                    <Text style={styles.reviewActionText}>2</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            <TouchableOpacity style={styles.viewAllReviews}>
+              <Text style={styles.viewAllReviewsText}>ყველა მიმოხილვის ნახვა</Text>
+              <Star size={16} color="#3b82f6" strokeWidth={2.5} />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.divider} />
@@ -607,6 +720,133 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 120,
+  },
+  highlightsContainer: {
+    gap: 12,
+  },
+  highlightItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  highlightText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  reviewsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  reviewsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#fef3c7',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  reviewsRating: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#1a1a1a',
+  },
+  reviewsCount: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#999',
+  },
+  reviewsList: {
+    gap: 16,
+    marginBottom: 16,
+  },
+  reviewCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 12,
+  },
+  reviewerAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#3b82f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reviewerInfo: {
+    flex: 1,
+  },
+  reviewerName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 4,
+  },
+  reviewStars: {
+    flexDirection: 'row',
+    gap: 2,
+  },
+  reviewDate: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#999',
+  },
+  reviewText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#666',
+    lineHeight: 22,
+    marginBottom: 12,
+  },
+  reviewFooter: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  reviewAction: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  reviewActionText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#666',
+  },
+  viewAllReviews: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#f0f9ff',
+    padding: 14,
+    borderRadius: 12,
+  },
+  viewAllReviewsText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#3b82f6',
   },
   errorText: {
     fontSize: 16,

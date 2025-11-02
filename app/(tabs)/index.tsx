@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, Animated } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Zap, Star } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Gift, Clock, MapPin } from 'lucide-react-native';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types';
 import { supabase } from '@/services/supabase';
@@ -14,6 +14,12 @@ export default function HomeScreen() {
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const scrollY = new Animated.Value(0);
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [1, 0.9],
+    extrapolate: 'clamp',
+  });
 
   useEffect(() => {
     loadProducts();
@@ -78,10 +84,15 @@ export default function HomeScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
       >
         <View style={styles.heroSection}>
           <LinearGradient
@@ -192,8 +203,60 @@ export default function HomeScreen() {
           </View>
         </View>
 
+        <View style={styles.quickStats}>
+          <Text style={styles.quickStatsTitle}>რატომ ჩვენ?</Text>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#fef3c7' }]}>
+                <Award size={24} color="#f59e0b" strokeWidth={2.5} />
+              </View>
+              <Text style={styles.statValue}>2,000+</Text>
+              <Text style={styles.statLabel}>პროდუქტი</Text>
+            </View>
+
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#dbeafe' }]}>
+                <Flame size={24} color="#3b82f6" strokeWidth={2.5} />
+              </View>
+              <Text style={styles.statValue}>10K+</Text>
+              <Text style={styles.statLabel}>კმაყოფილი მომხმარებელი</Text>
+            </View>
+
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#dcfce7' }]}>
+                <Clock size={24} color="#22c55e" strokeWidth={2.5} />
+              </View>
+              <Text style={styles.statValue}>24/7</Text>
+              <Text style={styles.statLabel}>მხარდაჭერა</Text>
+            </View>
+
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#fce7f3' }]}>
+                <Gift size={24} color="#ec4899" strokeWidth={2.5} />
+              </View>
+              <Text style={styles.statValue}>უფასო</Text>
+              <Text style={styles.statLabel}>მიწოდება</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.locationBanner}>
+          <LinearGradient
+            colors={['#1e293b', '#334155']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.locationGradient}
+          >
+            <MapPin size={20} color="#fff" strokeWidth={2.5} />
+            <View style={styles.locationInfo}>
+              <Text style={styles.locationTitle}>მიწოდება თბილისში</Text>
+              <Text style={styles.locationSubtitle}>24 საათში • უფასო 50₾+ შეკვეთაზე</Text>
+            </View>
+          </LinearGradient>
+        </View>
+
         <View style={styles.bottomSpacer} />
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   );
 }
@@ -457,5 +520,79 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 30,
+  },
+  quickStats: {
+    padding: 20,
+    marginTop: 12,
+  },
+  quickStatsTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#1a1a1a',
+    marginBottom: 20,
+    letterSpacing: -0.5,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  statCard: {
+    width: (width - 56) / 2,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  statIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#1a1a1a',
+    marginBottom: 4,
+    letterSpacing: -0.5,
+  },
+  statLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#666',
+    textAlign: 'center',
+  },
+  locationBanner: {
+    paddingHorizontal: 20,
+    marginTop: 12,
+  },
+  locationGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    padding: 20,
+    borderRadius: 16,
+  },
+  locationInfo: {
+    flex: 1,
+  },
+  locationTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  locationSubtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.7)',
   },
 });
