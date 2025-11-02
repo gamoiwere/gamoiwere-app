@@ -6,6 +6,25 @@ import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, C
 
 const { width } = Dimensions.get('window');
 
+interface Attribute {
+  PropertyName: string;
+  Value: string;
+  IsConfigurator: boolean;
+}
+
+interface ConfiguredItem {
+  Id: string;
+  Quantity: number;
+  Configurators: Array<{ Pid: string; Vid: string }>;
+  Price: {
+    ConvertedPriceList: {
+      Internal: {
+        Price: number;
+      };
+    };
+  };
+}
+
 interface ProductDetail {
   id: string;
   title: string;
@@ -17,7 +36,9 @@ interface ProductDetail {
   inStock: boolean;
   mainImage: string;
   images: string[];
-  variations?: any[];
+  attributes: Attribute[];
+  configuredItems: ConfiguredItem[];
+  configurators: Attribute[];
 }
 
 export default function ProductDetailScreen() {
@@ -27,6 +48,7 @@ export default function ProductDetailScreen() {
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedVariation, setSelectedVariation] = useState<ConfiguredItem | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -42,8 +64,12 @@ export default function ProductDetailScreen() {
       if (data.ErrorCode === 'Ok' && data.Result?.Item) {
         const item = data.Result.Item;
         const images = item.Pictures?.map((p: any) => p.Url) || [];
+        const attributes = item.Attributes || [];
+        const configurators = attributes.filter((attr: Attribute) => attr.IsConfigurator);
+        const regularAttributes = attributes.filter((attr: Attribute) => !attr.IsConfigurator);
+        const configuredItems = item.ConfiguredItems || [];
 
-        setProduct({
+        const productData = {
           id: item.Id,
           title: item.Title,
           originalTitle: item.OriginalTitle,
@@ -54,8 +80,16 @@ export default function ProductDetailScreen() {
           inStock: item.MasterQuantity > 0,
           mainImage: item.MainPictureUrl,
           images: images,
-          variations: item.Variations,
-        });
+          attributes: regularAttributes,
+          configuredItems: configuredItems,
+          configurators: configurators,
+        };
+
+        setProduct(productData);
+
+        if (configuredItems.length > 0) {
+          setSelectedVariation(configuredItems[0]);
+        }
       }
     } catch (error) {
       console.error('Error loading product:', error);
@@ -166,9 +200,68 @@ export default function ProductDetailScreen() {
           <View style={styles.priceRow}>
             <View>
               <Text style={styles.priceLabel}>ფასი</Text>
-              <Text style={styles.priceValue}>₾{product.price.toFixed(2)}</Text>
+              <Text style={styles.priceValue}>
+                ₾{(selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price).toFixed(2)}
+              </Text>
             </View>
           </View>
+
+          {product.configurators.length > 0 && (
+            <View style={styles.configuratorsSection}>
+              {product.configurators.map((config, index) => {
+                const uniqueValues = Array.from(
+                  new Set(
+                    product.configuredItems.map((item) => {
+                      const conf = item.Configurators.find((c) => c.Pid === config.PropertyName.toLowerCase());
+                      return conf?.Vid;
+                    }).filter(Boolean)
+                  )
+                );
+
+                const currentValue = selectedVariation?.Configurators.find(
+                  (c) => c.Pid === config.PropertyName.toLowerCase()
+                )?.Vid;
+
+                return (
+                  <View key={index} style={styles.configuratorGroup}>
+                    <Text style={styles.configuratorLabel}>{config.PropertyName}</Text>
+                    <View style={styles.configuratorOptions}>
+                      {uniqueValues.map((value: any, vIndex) => {
+                        const isSelected = value === currentValue;
+                        const matchingItem = product.configuredItems.find((item) =>
+                          item.Configurators.some((c) => c.Vid === value)
+                        );
+
+                        return (
+                          <TouchableOpacity
+                            key={vIndex}
+                            style={[
+                              styles.configuratorOption,
+                              isSelected && styles.configuratorOptionSelected,
+                            ]}
+                            onPress={() => {
+                              if (matchingItem) {
+                                setSelectedVariation(matchingItem);
+                              }
+                            }}
+                          >
+                            <Text
+                              style={[
+                                styles.configuratorOptionText,
+                                isSelected && styles.configuratorOptionTextSelected,
+                              ]}
+                            >
+                              {value}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          )}
 
           <View style={styles.quickInfoSection}>
             <View style={styles.quickInfoItem}>
@@ -201,6 +294,24 @@ export default function ProductDetailScreen() {
               {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
             </Text>
           </View>
+
+          {product.attributes.length > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Package size={20} color="#1a1a1a" strokeWidth={2} />
+                <Text style={styles.sectionTitle}>მახასიათებლები</Text>
+              </View>
+              <View style={styles.attributesContainer}>
+                {product.attributes.map((attr, index) => (
+                  <View key={index} style={styles.attributeRow}>
+                    <Text style={styles.attributeLabel}>{attr.PropertyName}</Text>
+                    <View style={styles.attributeDivider} />
+                    <Text style={styles.attributeValue}>{attr.Value}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
 
           {product.vendorName && (
             <TouchableOpacity style={styles.vendorCard}>
@@ -432,6 +543,43 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     letterSpacing: -1,
   },
+  configuratorsSection: {
+    marginBottom: 20,
+    gap: 16,
+  },
+  configuratorGroup: {
+    gap: 10,
+  },
+  configuratorLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1a1a1a',
+  },
+  configuratorOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  configuratorOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: '#fafafa',
+    borderWidth: 1.5,
+    borderColor: '#e5e5e5',
+  },
+  configuratorOptionSelected: {
+    backgroundColor: '#f5f3ff',
+    borderColor: '#6e39ea',
+  },
+  configuratorOptionText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  configuratorOptionTextSelected: {
+    color: '#6e39ea',
+  },
   quickInfoSection: {
     flexDirection: 'row',
     backgroundColor: '#fafafa',
@@ -489,6 +637,38 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#666',
     fontWeight: '400',
+  },
+  attributesContainer: {
+    backgroundColor: '#fafafa',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  attributeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  attributeLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#999',
+    flex: 1,
+  },
+  attributeDivider: {
+    width: 1,
+    height: 14,
+    backgroundColor: '#e5e5e5',
+    marginHorizontal: 12,
+  },
+  attributeValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    flex: 1,
+    textAlign: 'right',
   },
   vendorCard: {
     flexDirection: 'row',
