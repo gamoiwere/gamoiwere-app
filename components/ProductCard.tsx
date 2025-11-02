@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
+    backdropFilter: 'blur(10px)',
   },
   outOfStockBadge: {
     position: 'absolute',

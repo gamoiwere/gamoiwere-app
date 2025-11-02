@@ -37,9 +37,6 @@ export interface Order {
   shippingPostalCode: string;
   recipientName: string;
   recipientPhone: string;
-  customerName?: string;
-  customerPhone?: string;
-  customerEmail?: string;
   notes?: string;
   bogOrderId?: string;
   externalOrderId?: string;
