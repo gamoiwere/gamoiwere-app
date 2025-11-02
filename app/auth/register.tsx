@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { Mail, Lock, User as UserIcon, Eye, EyeOff, Phone } from 'lucide-react-native';
 import SuccessNotification from '@/components/SuccessNotification';
+import Loader from '@/components/Loader';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
@@ -206,9 +207,11 @@ export default function RegisterScreen() {
                   disabled={loading}
                   activeOpacity={0.9}
                 >
-                  <Text style={styles.buttonText}>
-                    {loading ? 'იტვირთება...' : 'რეგისტრაცია'}
-                  </Text>
+                  {loading ? (
+                    <Loader />
+                  ) : (
+                    <Text style={styles.buttonText}>რეგისტრაცია</Text>
+                  )}
                 </TouchableOpacity>
               </View>
 

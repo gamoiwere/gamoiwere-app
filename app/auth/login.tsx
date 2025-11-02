@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 import SuccessNotification from '@/components/SuccessNotification';
+import Loader from '@/components/Loader';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -127,9 +128,11 @@ export default function LoginScreen() {
                   disabled={loading}
                   activeOpacity={0.9}
                 >
-                  <Text style={styles.buttonText}>
-                    {loading ? 'იტვირთება...' : 'შესვლა'}
-                  </Text>
+                  {loading ? (
+                    <Loader />
+                  ) : (
+                    <Text style={styles.buttonText}>შესვლა</Text>
+                  )}
                 </TouchableOpacity>
               </View>
 
