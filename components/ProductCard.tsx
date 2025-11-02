@@ -1,7 +1,5 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { Product } from '@/types';
 import { ShoppingCart, Heart, Star } from 'lucide-react-native';
 
@@ -14,7 +12,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     <TouchableOpacity
       style={styles.card}
       onPress={() => router.push(`/product/${product.id}`)}
-      activeOpacity={0.95}
+      activeOpacity={0.7}
     >
       <View style={styles.imageContainer}>
         <Image
@@ -23,43 +21,26 @@ export default function ProductCard({ product }: ProductCardProps) {
           resizeMode="cover"
         />
 
-        <LinearGradient
-          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.6)']}
-          style={styles.imageGradient}
-        />
-
         {!product.in_stock && (
           <View style={styles.outOfStockBadge}>
-            {Platform.OS === 'ios' ? (
-              <BlurView intensity={80} tint="dark" style={styles.badgeBlur}>
-                <Text style={styles.outOfStockText}>არ არის მარაგში</Text>
-              </BlurView>
-            ) : (
-              <View style={styles.badgeBlur}>
-                <Text style={styles.outOfStockText}>არ არის მარაგში</Text>
-              </View>
-            )}
+            <Text style={styles.outOfStockText}>არ არის მარაგში</Text>
           </View>
         )}
 
-        <TouchableOpacity style={styles.favoriteBtn} activeOpacity={0.8}>
-          <View style={styles.favoriteBg}>
-            <Heart size={16} color="#fff" strokeWidth={2.5} />
-          </View>
+        <TouchableOpacity style={styles.favoriteBtn} activeOpacity={0.7}>
+          <Heart size={18} color="#1a1a1a" strokeWidth={2} />
         </TouchableOpacity>
-
-        <View style={styles.ratingBadge}>
-          <Star size={12} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
-          <Text style={styles.ratingText}>4.8</Text>
-        </View>
       </View>
 
-      <LinearGradient
-        colors={['#fff', '#fafafa']}
-        style={styles.content}
-      >
-        <View style={styles.categoryBadge}>
+      <View style={styles.content}>
+        <View style={styles.header}>
           <Text style={styles.category}>{product.category_ka}</Text>
+          {product.rating && (
+            <View style={styles.ratingBadge}>
+              <Star size={12} color="#fbbf24" strokeWidth={2} fill="#fbbf24" />
+              <Text style={styles.ratingText}>4.8</Text>
+            </View>
+          )}
         </View>
 
         <Text style={styles.name} numberOfLines={2}>
@@ -67,23 +48,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         </Text>
 
         <View style={styles.footer}>
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceLabel}>ფასი</Text>
-            <Text style={styles.price}>₾{product.price.toFixed(2)}</Text>
-          </View>
+          <Text style={styles.price}>₾{product.price.toFixed(2)}</Text>
 
-          <TouchableOpacity style={styles.cartButton} activeOpacity={0.8}>
-            <LinearGradient
-              colors={['#6e39ea', '#9333ea']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.cartButtonGradient}
-            >
-              <ShoppingCart size={16} color="#fff" strokeWidth={2.5} />
-            </LinearGradient>
+          <TouchableOpacity style={styles.cartButton} activeOpacity={0.7}>
+            <ShoppingCart size={18} color="#1a1a1a" strokeWidth={2} />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -91,152 +62,103 @@ export default function ProductCard({ product }: ProductCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 12,
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 5,
-    borderWidth: 1,
-    borderColor: 'rgba(110, 57, 234, 0.1)',
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   imageContainer: {
     width: '100%',
-    height: 160,
+    height: 180,
     position: 'relative',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f8f8',
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  imageGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
-  },
   outOfStockBadge: {
     position: 'absolute',
-    top: 10,
-    left: 10,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  badgeBlur: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    top: 12,
+    left: 12,
+    backgroundColor: '#1a1a1a',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   outOfStockText: {
     color: '#fff',
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.3,
+    fontSize: 11,
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
   favoriteBtn: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-  },
-  favoriteBg: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    top: 12,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 3,
-  },
-  ratingBadge: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  ratingText: {
-    color: '#1a1a1a',
-    fontSize: 11,
-    fontWeight: '700',
+    elevation: 2,
   },
   content: {
-    padding: 14,
+    padding: 16,
   },
-  categoryBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(110, 57, 234, 0.1)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 10,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
   category: {
-    fontSize: 10,
-    color: '#6e39ea',
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+    textTransform: 'capitalize',
+  },
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ratingText: {
+    color: '#1a1a1a',
+    fontSize: 12,
+    fontWeight: '600',
   },
   name: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
     color: '#1a1a1a',
-    marginBottom: 10,
-    lineHeight: 18,
-    letterSpacing: -0.3,
+    marginBottom: 12,
+    lineHeight: 22,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  priceContainer: {
-    flex: 1,
-  },
-  priceLabel: {
-    fontSize: 10,
-    color: '#999',
-    fontWeight: '600',
-    marginBottom: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    alignItems: 'center',
   },
   price: {
-    fontSize: 18,
-    fontWeight: '900',
+    fontSize: 20,
+    fontWeight: '700',
     color: '#1a1a1a',
-    letterSpacing: -0.5,
   },
   cartButton: {
-    borderRadius: 14,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  cartButtonGradient: {
     width: 40,
     height: 40,
+    borderRadius: 12,
+    backgroundColor: '#f8f8f8',
     alignItems: 'center',
     justifyContent: 'center',
   },
