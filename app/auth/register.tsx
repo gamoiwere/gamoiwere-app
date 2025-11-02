@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { authService } from '@/services/auth';
-import { Mail, Lock, User as UserIcon, ArrowRight, Eye, EyeOff, Star, Zap, Shield } from 'lucide-react-native';
+import { Mail, Lock, User as UserIcon, ArrowRight, Eye, EyeOff, Star, Zap, Shield, Phone } from 'lucide-react-native';
+import SuccessNotification from '@/components/SuccessNotification';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
@@ -15,6 +16,7 @@ export default function RegisterScreen() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleRegister = async () => {
     if (!username || !email || !password || !confirmPassword || !phone) {
@@ -42,21 +44,28 @@ export default function RegisterScreen() {
 
     try {
       const response = await authService.register(username.trim(), email.trim(), password, phone);
-      router.push({
-        pathname: '/auth/verify-otp',
-        params: { userId: response.userId.toString() },
-      });
+      setShowSuccess(true);
+      setTimeout(() => {
+        router.push({
+          pathname: '/auth/verify-otp',
+          params: { userId: response.userId.toString() },
+        });
+      }, 1500);
     } catch (err: any) {
       setError(err.message || 'რეგისტრაცია ვერ მოხერხდა');
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
+      <SuccessNotification
+        visible={showSuccess}
+        message="ანგარიში წარმატებით შეიქმნა!"
+        onHide={() => setShowSuccess(false)}
+      />
       <LinearGradient
-        colors={['#8b5cf6', '#6d28d9', '#5b21b6']}
+        colors={['#0ea5e9', '#0284c7', '#0369a1']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.background}
@@ -82,7 +91,7 @@ export default function RegisterScreen() {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconBadge}>
-                  <Star size={24} color="#8b5cf6" strokeWidth={2.5} fill="#8b5cf6" />
+                  <Star size={24} color="#0ea5e9" strokeWidth={2.5} fill="#0ea5e9" />
                 </View>
                 <Text style={styles.cardTitle}>შემოგვიერთდით!</Text>
                 <Text style={styles.cardSubtitle}>შექმენით ანგარიში რამდენიმე წამში</Text>
@@ -96,15 +105,15 @@ export default function RegisterScreen() {
 
               <View style={styles.benefitsRow}>
                 <View style={styles.benefitBadge}>
-                  <Zap size={14} color="#8b5cf6" strokeWidth={2.5} />
+                  <Zap size={14} color="#0ea5e9" strokeWidth={2.5} />
                   <Text style={styles.benefitText}>სწრაფი</Text>
                 </View>
                 <View style={styles.benefitBadge}>
-                  <Shield size={14} color="#8b5cf6" strokeWidth={2.5} />
+                  <Shield size={14} color="#0ea5e9" strokeWidth={2.5} />
                   <Text style={styles.benefitText}>უსაფრთხო</Text>
                 </View>
                 <View style={styles.benefitBadge}>
-                  <Star size={14} color="#8b5cf6" strokeWidth={2.5} />
+                  <Star size={14} color="#0ea5e9" strokeWidth={2.5} />
                   <Text style={styles.benefitText}>ფასდაკლება</Text>
                 </View>
               </View>
@@ -113,7 +122,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>მომხმარებლის სახელი</Text>
                   <View style={styles.inputWrapper}>
-                    <UserIcon size={20} color="#8b5cf6" strokeWidth={2} />
+                    <UserIcon size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="username"
@@ -129,7 +138,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ტელეფონი</Text>
                   <View style={styles.inputWrapper}>
-                    <UserIcon size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Phone size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="+995555123456"
@@ -145,7 +154,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
                   <View style={styles.inputWrapper}>
-                    <Mail size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Mail size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="example@mail.com"
@@ -162,7 +171,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>პაროლი</Text>
                   <View style={styles.inputWrapper}>
-                    <Lock size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Lock size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="მინიმუმ 6 სიმბოლო"
@@ -188,7 +197,7 @@ export default function RegisterScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
                   <View style={styles.inputWrapper}>
-                    <Lock size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Lock size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="••••••••"
@@ -218,7 +227,7 @@ export default function RegisterScreen() {
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={['#8b5cf6', '#7c3aed', '#6d28d9']}
+                    colors={['#0ea5e9', '#0284c7', '#0369a1']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.buttonGradient}
@@ -346,12 +355,12 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 18,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(14, 165, 233, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
     borderWidth: 2,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(14, 165, 233, 0.2)',
   },
   cardTitle: {
     fontSize: 28,
@@ -375,16 +384,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    backgroundColor: 'rgba(14, 165, 233, 0.08)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(14, 165, 233, 0.15)',
   },
   benefitText: {
     fontSize: 12,
-    color: '#8b5cf6',
+    color: '#0ea5e9',
     fontWeight: '700',
   },
   errorContainer: {
@@ -422,8 +431,8 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     gap: 12,
     borderWidth: 2,
-    borderColor: 'rgba(139, 92, 246, 0.1)',
-    shadowColor: '#8b5cf6',
+    borderColor: 'rgba(14, 165, 233, 0.1)',
+    shadowColor: '#0ea5e9',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -443,7 +452,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#8b5cf6',
+    shadowColor: '#0ea5e9',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.4,
     shadowRadius: 20,
@@ -476,7 +485,7 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
-    color: '#8b5cf6',
+    color: '#0ea5e9',
     fontWeight: '800',
     textDecorationLine: 'underline',
   },

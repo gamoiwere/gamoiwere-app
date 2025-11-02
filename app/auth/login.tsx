@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 import { authService } from '@/services/auth';
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Sparkles } from 'lucide-react-native';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, ShoppingBag } from 'lucide-react-native';
+import SuccessNotification from '@/components/SuccessNotification';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -24,18 +25,25 @@ export default function LoginScreen() {
 
     try {
       await authService.login(email.trim(), password);
-      router.replace('/(tabs)');
+      setShowSuccess(true);
+      setTimeout(() => {
+        router.replace('/(tabs)');
+      }, 1000);
     } catch (err: any) {
       setError(err.message || 'შესვლა ვერ მოხერხდა');
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
+      <SuccessNotification
+        visible={showSuccess}
+        message="წარმატებით შეხვედით სისტემაში!"
+        onHide={() => setShowSuccess(false)}
+      />
       <LinearGradient
-        colors={['#8b5cf6', '#6d28d9', '#5b21b6']}
+        colors={['#0ea5e9', '#0284c7', '#0369a1']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.background}
@@ -71,7 +79,7 @@ export default function LoginScreen() {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconBadge}>
-                  <Sparkles size={24} color="#8b5cf6" strokeWidth={2.5} />
+                  <ShoppingBag size={24} color="#0ea5e9" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.cardTitle}>მოგესალმებით!</Text>
                 <Text style={styles.cardSubtitle}>შედით თქვენს ანგარიშში</Text>
@@ -87,7 +95,7 @@ export default function LoginScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ელ-ფოსტა / მომხმარებლის სახელი</Text>
                   <View style={styles.inputWrapper}>
-                    <Mail size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Mail size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="example@mail.com ან username"
@@ -104,7 +112,7 @@ export default function LoginScreen() {
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>პაროლი</Text>
                   <View style={styles.inputWrapper}>
-                    <Lock size={20} color="#8b5cf6" strokeWidth={2} />
+                    <Lock size={20} color="#0ea5e9" strokeWidth={2} />
                     <TextInput
                       style={styles.input}
                       placeholder="••••••••"
@@ -134,7 +142,7 @@ export default function LoginScreen() {
                   activeOpacity={0.8}
                 >
                   <LinearGradient
-                    colors={['#8b5cf6', '#7c3aed', '#6d28d9']}
+                    colors={['#0ea5e9', '#0284c7', '#0369a1']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.buttonGradient}
@@ -262,12 +270,12 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 20,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(14, 165, 233, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
     borderWidth: 2,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(14, 165, 233, 0.2)',
   },
   cardTitle: {
     fontSize: 32,
@@ -316,8 +324,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     gap: 12,
     borderWidth: 2,
-    borderColor: 'rgba(139, 92, 246, 0.1)',
-    shadowColor: '#8b5cf6',
+    borderColor: 'rgba(14, 165, 233, 0.1)',
+    shadowColor: '#0ea5e9',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -337,7 +345,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#8b5cf6',
+    shadowColor: '#0ea5e9',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.4,
     shadowRadius: 20,
@@ -370,7 +378,7 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 15,
-    color: '#8b5cf6',
+    color: '#0ea5e9',
     fontWeight: '800',
     textDecorationLine: 'underline',
   },
