@@ -28,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
 
         <TouchableOpacity style={styles.favoriteBtn} activeOpacity={0.8}>
-          <Heart size={20} color="#fff" strokeWidth={2.5} />
+          <Heart size={18} color="#fff" strokeWidth={2.5} />
         </TouchableOpacity>
 
         {!product.in_stock && (
@@ -38,7 +38,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
 
         <View style={styles.ratingBadge}>
-          <Star size={14} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
+          <Star size={12} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
           <Text style={styles.ratingText}>4.8</Text>
         </View>
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    height: 280,
+    height: 220,
     position: 'relative',
     backgroundColor: '#f8f9fa',
   },
@@ -90,11 +90,11 @@ const styles = StyleSheet.create({
   },
   favoriteBtn: {
     position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    top: 12,
+    right: 12,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -116,15 +116,15 @@ const styles = StyleSheet.create({
   },
   ratingBadge: {
     position: 'absolute',
-    top: 16,
-    left: 16,
+    top: 12,
+    left: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 5,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     color: '#1a1a1a',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
   },
   priceOverlay: {
@@ -141,11 +141,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
   price: {
-    fontSize: 32,
+    fontSize: 26,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -1,
@@ -154,13 +154,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 4,
   },
   content: {
-    padding: 20,
+    padding: 14,
   },
   name: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
     color: '#1a1a1a',
-    lineHeight: 26,
+    lineHeight: 22,
     letterSpacing: -0.3,
   },
 });

@@ -157,17 +157,21 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>იტვირთება...</Text>
-            </View>
-          ) : recommendedProducts.length === 0 ? (
-            <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>
-          ) : (
-            recommendedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
-          )}
+          <View style={styles.productsGrid}>
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>იტვირთება...</Text>
+              </View>
+            ) : recommendedProducts.length === 0 ? (
+              <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>
+            ) : (
+              recommendedProducts.map((product) => (
+                <View key={product.id} style={styles.productColumn}>
+                  <ProductCard product={product} />
+                </View>
+              ))
+            )}
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -182,17 +186,21 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>იტვირთება...</Text>
-            </View>
-          ) : popularProducts.length === 0 ? (
-            <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>
-          ) : (
-            popularProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))
-          )}
+          <View style={styles.productsGrid}>
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <Text style={styles.loadingText}>იტვირთება...</Text>
+              </View>
+            ) : popularProducts.length === 0 ? (
+              <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>
+            ) : (
+              popularProducts.map((product) => (
+                <View key={product.id} style={styles.productColumn}>
+                  <ProductCard product={product} />
+                </View>
+              ))
+            )}
+          </View>
         </View>
 
         <View style={styles.quickStats}>
@@ -483,6 +491,15 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#6e39ea',
+  },
+  productsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -4,
+  },
+  productColumn: {
+    width: '50%',
+    paddingHorizontal: 4,
   },
   loadingContainer: {
     width: '100%',
