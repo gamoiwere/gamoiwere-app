@@ -14,6 +14,7 @@ export default function HomeScreen() {
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState<string>('');
   const scrollY = new Animated.Value(0);
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -23,7 +24,27 @@ export default function HomeScreen() {
 
   useEffect(() => {
     loadProducts();
+    loadUserProfile();
   }, []);
+
+  const loadUserProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('full_name')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (profile?.full_name) {
+          setUserName(profile.full_name);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -111,7 +132,7 @@ export default function HomeScreen() {
           <View style={styles.headerTop}>
             <View>
               <Text style={styles.greeting}>გამარჯობა! 👋</Text>
-              <Text style={styles.brandName}>gamoiwere.ge</Text>
+              <Text style={styles.brandName}>{userName || 'gamoiwere.ge'}</Text>
             </View>
             <TouchableOpacity style={styles.notificationBtn}>
               <View style={styles.notificationDot} />
