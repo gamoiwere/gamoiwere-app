@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Product } from '@/types';
-import { Heart, Star, TrendingUp, Tag } from 'lucide-react-native';
+import { Heart, TrendingUp, Tag } from 'lucide-react-native';
 
 interface ProductCardProps {
   product: Product;
@@ -46,13 +46,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           <View style={styles.discountBadge}>
             <Tag size={12} color="#fff" strokeWidth={2.5} />
             <Text style={styles.discountText}>-{discountPercentage}%</Text>
-          </View>
-        )}
-
-        {product.rating && product.rating > 0 && (
-          <View style={styles.ratingBadge}>
-            <Star size={12} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
-            <Text style={styles.ratingText}>{product.rating.toFixed(1)}</Text>
           </View>
         )}
 
@@ -158,28 +151,6 @@ const styles = StyleSheet.create({
   },
   discountText: {
     color: '#fff',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  ratingBadge: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  ratingText: {
-    color: '#1a1a1a',
     fontSize: 13,
     fontWeight: '800',
   },
