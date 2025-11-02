@@ -7,8 +7,12 @@ import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, C
 const { width } = Dimensions.get('window');
 
 interface Attribute {
+  Pid: string;
+  Vid: string;
   PropertyName: string;
   Value: string;
+  OriginalPropertyName: string;
+  OriginalValue: string;
   IsConfigurator: boolean;
 }
 
@@ -49,6 +53,7 @@ export default function ProductDetailScreen() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedVariation, setSelectedVariation] = useState<ConfiguredItem | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (id) {
@@ -89,6 +94,11 @@ export default function ProductDetailScreen() {
 
         if (configuredItems.length > 0) {
           setSelectedVariation(configuredItems[0]);
+          const initialOptions: Record<string, string> = {};
+          configuredItems[0].Configurators.forEach((conf) => {
+            initialOptions[conf.Pid] = conf.Vid;
+          });
+          setSelectedOptions(initialOptions);
         }
       }
     } catch (error) {
@@ -208,58 +218,70 @@ export default function ProductDetailScreen() {
 
           {product.configurators.length > 0 && (
             <View style={styles.configuratorsSection}>
-              {product.configurators.map((config, index) => {
-                const uniqueValues = Array.from(
-                  new Set(
-                    product.configuredItems.map((item) => {
-                      const conf = item.Configurators.find((c) => c.Pid === config.PropertyName.toLowerCase());
-                      return conf?.Vid;
-                    }).filter(Boolean)
-                  )
-                );
+              {(() => {
+                const groupedByPid: Record<string, Attribute[]> = {};
+                product.configurators.forEach((config) => {
+                  if (!groupedByPid[config.Pid]) {
+                    groupedByPid[config.Pid] = [];
+                  }
+                  groupedByPid[config.Pid].push(config);
+                });
 
-                const currentValue = selectedVariation?.Configurators.find(
-                  (c) => c.Pid === config.PropertyName.toLowerCase()
-                )?.Vid;
+                return Object.entries(groupedByPid).map(([pid, configs]) => {
+                  const propertyName = configs[0].OriginalPropertyName;
+                  const uniqueValues = Array.from(
+                    new Set(configs.map((c) => ({ vid: c.Vid, value: c.OriginalValue })))
+                  );
 
-                return (
-                  <View key={index} style={styles.configuratorGroup}>
-                    <Text style={styles.configuratorLabel}>{config.PropertyName}</Text>
-                    <View style={styles.configuratorOptions}>
-                      {uniqueValues.map((value: any, vIndex) => {
-                        const isSelected = value === currentValue;
-                        const matchingItem = product.configuredItems.find((item) =>
-                          item.Configurators.some((c) => c.Vid === value)
-                        );
+                  const currentValue = selectedOptions[pid];
 
-                        return (
-                          <TouchableOpacity
-                            key={vIndex}
-                            style={[
-                              styles.configuratorOption,
-                              isSelected && styles.configuratorOptionSelected,
-                            ]}
-                            onPress={() => {
-                              if (matchingItem) {
-                                setSelectedVariation(matchingItem);
-                              }
-                            }}
-                          >
-                            <Text
+                  return (
+                    <View key={pid} style={styles.configuratorGroup}>
+                      <Text style={styles.configuratorLabel}>{propertyName}</Text>
+                      <View style={styles.configuratorOptions}>
+                        {uniqueValues.map((item, vIndex) => {
+                          const isSelected = item.vid === currentValue;
+
+                          return (
+                            <TouchableOpacity
+                              key={vIndex}
                               style={[
-                                styles.configuratorOptionText,
-                                isSelected && styles.configuratorOptionTextSelected,
+                                styles.configuratorOption,
+                                isSelected && styles.configuratorOptionSelected,
                               ]}
+                              onPress={() => {
+                                const newOptions = { ...selectedOptions, [pid]: item.vid };
+                                setSelectedOptions(newOptions);
+
+                                const matchingItem = product.configuredItems.find((configItem) => {
+                                  return Object.entries(newOptions).every(([key, val]) => {
+                                    return configItem.Configurators.some(
+                                      (c) => c.Pid === key && c.Vid === val
+                                    );
+                                  });
+                                });
+
+                                if (matchingItem) {
+                                  setSelectedVariation(matchingItem);
+                                }
+                              }}
                             >
-                              {value}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      })}
+                              <Text
+                                style={[
+                                  styles.configuratorOptionText,
+                                  isSelected && styles.configuratorOptionTextSelected,
+                                ]}
+                              >
+                                {item.value}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
                     </View>
-                  </View>
-                );
-              })}
+                  );
+                });
+              })()}
             </View>
           )}
 
