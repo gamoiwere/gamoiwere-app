@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Gift, Clock, MapPin } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Package, Clock, MapPin, Shield, Truck } from 'lucide-react-native';
 import ProductCard from '@/components/ProductCard';
 import { Product } from '@/types';
 import { authService } from '@/services/auth';
@@ -271,50 +271,80 @@ export default function HomeScreen() {
           <Text style={styles.quickStatsTitle}>რატომ ჩვენ?</Text>
           <View style={styles.statsGrid}>
             <View style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: '#fef3c7' }]}>
-                <Award size={24} color="#f59e0b" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>2,000+</Text>
-              <Text style={styles.statLabel}>პროდუქტი</Text>
+              <LinearGradient
+                colors={['#7c3aed', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statCardGradient}
+              >
+                <View style={styles.statIcon}>
+                  <Package size={28} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.statValueWhite}>800M+</Text>
+                <Text style={styles.statLabelWhite}>პროდუქტი მსოფლიოდან</Text>
+              </LinearGradient>
             </View>
 
             <View style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: '#dbeafe' }]}>
-                <Flame size={24} color="#3b82f6" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>10K+</Text>
-              <Text style={styles.statLabel}>კმაყოფილი მომხმარებელი</Text>
+              <LinearGradient
+                colors={['#ec4899', '#f472b6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statCardGradient}
+              >
+                <View style={styles.statIcon}>
+                  <Shield size={28} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.statValueWhite}>100%</Text>
+                <Text style={styles.statLabelWhite}>უსაფრთხო გადახდა</Text>
+              </LinearGradient>
             </View>
 
             <View style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: '#dcfce7' }]}>
-                <Clock size={24} color="#22c55e" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>24/7</Text>
-              <Text style={styles.statLabel}>მხარდაჭერა</Text>
+              <LinearGradient
+                colors={['#f59e0b', '#fbbf24']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statCardGradient}
+              >
+                <View style={styles.statIcon}>
+                  <Clock size={28} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.statValueWhite}>24/7</Text>
+                <Text style={styles.statLabelWhite}>მხარდაჭერა</Text>
+              </LinearGradient>
             </View>
 
             <View style={styles.statCard}>
-              <View style={[styles.statIcon, { backgroundColor: '#fce7f3' }]}>
-                <Gift size={24} color="#ec4899" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>უფასო</Text>
-              <Text style={styles.statLabel}>მიწოდება</Text>
+              <LinearGradient
+                colors={['#3b82f6', '#60a5fa']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statCardGradient}
+              >
+                <View style={styles.statIcon}>
+                  <Truck size={28} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.statValueWhite}>სწრაფი</Text>
+                <Text style={styles.statLabelWhite}>მიწოდება საქართველოში</Text>
+              </LinearGradient>
             </View>
           </View>
         </View>
 
         <View style={styles.locationBanner}>
           <LinearGradient
-            colors={['#1e293b', '#334155']}
+            colors={['#7c3aed', '#8b5cf6']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.locationGradient}
           >
-            <MapPin size={20} color="#fff" strokeWidth={2.5} />
+            <View style={styles.locationIconContainer}>
+              <MapPin size={24} color="#fff" strokeWidth={2.5} fill="#fff" />
+            </View>
             <View style={styles.locationInfo}>
               <Text style={styles.locationTitle}>მიწოდება თბილისში</Text>
-              <Text style={styles.locationSubtitle}>24 საათში • უფასო 50₾+ შეკვეთაზე</Text>
+              <Text style={styles.locationSubtitle}>24-48 საათში მთელს საქართველოში</Text>
             </View>
           </LinearGradient>
         </View>
@@ -584,7 +614,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   bottomSpacer: {
-    height: 30,
+    height: 120,
   },
   quickStats: {
     padding: 20,
@@ -604,23 +634,30 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: (width - 56) / 2,
-    backgroundColor: '#fff',
     borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  statCardGradient: {
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    minHeight: 160,
+    justifyContent: 'center',
   },
   statIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   statValue: {
     fontSize: 28,
@@ -629,11 +666,26 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     letterSpacing: -0.5,
   },
+  statValueWhite: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#fff',
+    marginBottom: 8,
+    letterSpacing: -1,
+  },
   statLabel: {
     fontSize: 13,
     fontWeight: '600',
     color: '#666',
     textAlign: 'center',
+  },
+  statLabelWhite: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+    textAlign: 'center',
+    opacity: 0.95,
+    lineHeight: 18,
   },
   locationBanner: {
     paddingHorizontal: 20,
@@ -642,22 +694,38 @@ const styles = StyleSheet.create({
   locationGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    padding: 20,
-    borderRadius: 16,
+    gap: 16,
+    padding: 24,
+    borderRadius: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  locationIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   locationInfo: {
     flex: 1,
   },
   locationTitle: {
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.3,
   },
   locationSubtitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.9)',
   },
 });
