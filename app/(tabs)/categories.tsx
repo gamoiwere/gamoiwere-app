@@ -29,11 +29,10 @@ export default function CategoriesScreen() {
       const response = await fetch('https://service.devmonkeys.ge/api/getProviderBriefCatalog');
       const data = await response.json();
 
+      console.log('API Response:', data);
+
       if (Array.isArray(data)) {
         setCategories(data);
-      } else if (data && typeof data === 'object') {
-        const categoriesArray = Object.values(data);
-        setCategories(Array.isArray(categoriesArray) ? categoriesArray : []);
       } else {
         setCategories([]);
       }
@@ -112,22 +111,30 @@ export default function CategoriesScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
-        <View style={styles.statsCard}>
-          <LinearGradient
-            colors={['#ffffff', '#fafafa']}
-            style={styles.statsGradient}
-          >
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{categories.length}</Text>
-              <Text style={styles.statLabel}>მთავარი კატეგორიები</Text>
-            </View>
-            <View style={styles.statDivider} />
-            <View style={styles.statItem}>
-              <Text style={styles.statValue}>{getTotalCategories()}</Text>
-              <Text style={styles.statLabel}>სულ კატეგორიები</Text>
-            </View>
-          </LinearGradient>
-        </View>
+        {categories.length > 0 && (
+          <View style={styles.statsCard}>
+            <LinearGradient
+              colors={['#ffffff', '#fafafa']}
+              style={styles.statsGradient}
+            >
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>{categories.length}</Text>
+                <Text style={styles.statLabel}>მთავარი კატეგორიები</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>{getTotalCategories()}</Text>
+                <Text style={styles.statLabel}>სულ კატეგორიები</Text>
+              </View>
+            </LinearGradient>
+          </View>
+        )}
+
+        {categories.length === 0 && (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>კატეგორიები არ მოიძებნა</Text>
+          </View>
+        )}
 
         <View style={styles.categoriesContainer}>
           {Array.isArray(categories) && categories.map((category, index) => (
@@ -482,5 +489,14 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 100,
+  },
+  emptyContainer: {
+    paddingVertical: 60,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#9ca3af',
   },
 });
