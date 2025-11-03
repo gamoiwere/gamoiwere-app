@@ -29,10 +29,8 @@ export default function CategoriesScreen() {
       const response = await fetch('https://service.devmonkeys.ge/api/getProviderBriefCatalog');
       const data = await response.json();
 
-      console.log('API Response:', data);
-
-      if (Array.isArray(data)) {
-        setCategories(data);
+      if (data && data.Result && Array.isArray(data.Result.Roots)) {
+        setCategories(data.Result.Roots);
       } else {
         setCategories([]);
       }
