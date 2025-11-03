@@ -417,17 +417,52 @@ export default function ProductDetailScreen() {
           )}
 
           <View style={styles.deliveryPromoBanner}>
-            <View style={styles.promoHeader}>
-              <Truck size={22} color="#2563eb" strokeWidth={2} />
-              <Text style={styles.promoTitle}>სპეციალური შეთავაზება!</Text>
-            </View>
-            <Text style={styles.promoDescription}>
-              დღეს შეკვეთის შემთხვევაში მიიღებთ 10-14 სამუშაო დღეში
-            </Text>
-            <View style={styles.deliveryDateRow}>
-              <Calendar size={16} color="#6e39ea" strokeWidth={2} />
-              <Text style={styles.deliveryDate}>მიწოდების თარიღი: {getDeliveryDateRange()}</Text>
-            </View>
+            <LinearGradient
+              colors={['#f0f9ff', '#e0f2fe', '#bae6fd']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.promoGradient}
+            >
+              <View style={styles.promoIconContainer}>
+                <View style={styles.promoIconCircle}>
+                  <Truck size={28} color="#0284c7" strokeWidth={2.5} />
+                </View>
+              </View>
+
+              <View style={styles.promoContent}>
+                <Text style={styles.promoTitle}>სპეციალური შეთავაზება</Text>
+                <Text style={styles.promoSubtitle}>სწრაფი და უსაფრთხო მიწოდება</Text>
+
+                <View style={styles.promoDetailsContainer}>
+                  <View style={styles.promoDetailItem}>
+                    <View style={styles.promoDetailIcon}>
+                      <Calendar size={18} color="#0284c7" strokeWidth={2} />
+                    </View>
+                    <View style={styles.promoDetailText}>
+                      <Text style={styles.promoDetailLabel}>მიწოდების ვადა</Text>
+                      <Text style={styles.promoDetailValue}>10-14 სამუშაო დღე</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.promoDivider} />
+
+                  <View style={styles.promoDetailItem}>
+                    <View style={styles.promoDetailIcon}>
+                      <Shield size={18} color="#0284c7" strokeWidth={2} />
+                    </View>
+                    <View style={styles.promoDetailText}>
+                      <Text style={styles.promoDetailLabel}>დაზღვეული მიწოდება</Text>
+                      <Text style={styles.promoDetailValue}>100% გარანტია</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.deliveryDateCard}>
+                  <Text style={styles.deliveryDateLabel}>მოსალოდნელი თარიღი:</Text>
+                  <Text style={styles.deliveryDateValue}>{getDeliveryDateRange()}</Text>
+                </View>
+              </View>
+            </LinearGradient>
           </View>
 
           <View style={styles.section}>
@@ -784,44 +819,119 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   deliveryPromoBanner: {
-    backgroundColor: '#eff6ff',
-    borderRadius: 16,
-    padding: 18,
     marginBottom: 24,
-    borderWidth: 2,
-    borderColor: '#2563eb',
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#0284c7',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
   },
-  promoHeader: {
+  promoGradient: {
+    padding: 20,
+    borderRadius: 20,
+  },
+  promoIconContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  promoIconCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#0284c7',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  promoContent: {
+    alignItems: 'center',
+  },
+  promoTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#0c4a6e',
+    marginBottom: 4,
+    textAlign: 'center',
+    letterSpacing: 0.3,
+  },
+  promoSubtitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#0369a1',
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  promoDetailsContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 14,
+  },
+  promoDetailItem: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    marginBottom: 8,
   },
-  promoTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#2563eb',
-  },
-  promoDescription: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#374151',
-    marginBottom: 12,
-    lineHeight: 20,
-  },
-  deliveryDateRow: {
-    flexDirection: 'row',
+  promoDetailIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: '#e0f2fe',
     alignItems: 'center',
-    gap: 8,
-    backgroundColor: '#ffffff',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 10,
+    justifyContent: 'center',
   },
-  deliveryDate: {
-    fontSize: 13,
+  promoDetailText: {
+    flex: 1,
+  },
+  promoDetailLabel: {
+    fontSize: 11,
     fontWeight: '600',
-    color: '#6e39ea',
+    color: '#64748b',
+    marginBottom: 2,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  promoDetailValue: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0c4a6e',
+  },
+  promoDivider: {
+    width: 1,
+    backgroundColor: '#cbd5e1',
+    marginHorizontal: 10,
+  },
+  deliveryDateCard: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(2, 132, 199, 0.2)',
+  },
+  deliveryDateLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#64748b',
+    marginBottom: 4,
+    letterSpacing: 0.5,
+  },
+  deliveryDateValue: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0284c7',
+    letterSpacing: 0.3,
   },
   section: {
     marginBottom: 24,
