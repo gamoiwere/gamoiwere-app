@@ -161,7 +161,7 @@ export default function HomeScreen() {
         <View style={styles.heroSection}>
           <TouchableOpacity activeOpacity={0.9}>
             <Image
-              source={require('@/assets/images/Promo Section.png')}
+              source={require('@/assets/images/Promo Section copy.png')}
               style={styles.promoImage}
               resizeMode="cover"
             />
