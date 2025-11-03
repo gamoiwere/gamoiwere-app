@@ -65,4 +65,45 @@ export const api = {
       return [];
     }
   },
+
+  async getFavorites(): Promise<Product[]> {
+    try {
+      const headers = await getHeaders();
+      const response = await fetch(`${API_BASE_URL}/favorites`, { headers });
+      if (!response.ok) throw new Error('Failed to fetch favorites');
+      return await response.json();
+    } catch (error) {
+      console.error('API Error:', error);
+      return [];
+    }
+  },
+
+  async addToFavorites(productId: string): Promise<boolean> {
+    try {
+      const headers = await getHeaders();
+      const response = await fetch(`${API_BASE_URL}/favorites`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ product_id: productId }),
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('API Error:', error);
+      return false;
+    }
+  },
+
+  async removeFromFavorites(productId: string): Promise<boolean> {
+    try {
+      const headers = await getHeaders();
+      const response = await fetch(`${API_BASE_URL}/favorites/${productId}`, {
+        method: 'DELETE',
+        headers,
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('API Error:', error);
+      return false;
+    }
+  },
 };

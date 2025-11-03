@@ -192,7 +192,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => router.push('/(tabs)/categories')}
+          onPress={() => router.push('/profile/favorites')}
         >
           <View style={styles.menuItemLeft}>
             <View style={[styles.menuIcon, { backgroundColor: '#ec489920' }]}>
