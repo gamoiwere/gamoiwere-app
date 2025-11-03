@@ -9,6 +9,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const hasDiscount = product.original_price && product.original_price > product.price;
+  const discountPercentage = hasDiscount
+    ? Math.round(((product.original_price! - product.price) / product.original_price!) * 100)
+    : 0;
 
   return (
     <TouchableOpacity
@@ -32,12 +35,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             <Text style={styles.outOfStockText}>არ არის მარაგში</Text>
           </View>
         )}
-
-        <View style={styles.bagButton}>
-          <View style={styles.bagIcon}>
-            <Text style={styles.bagIconText}>🛍️</Text>
-          </View>
-        </View>
       </View>
 
       <View style={styles.content}>
@@ -53,10 +50,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </View>
 
-          <View style={styles.ratingContainer}>
-            <Star size={14} color="#fbbf24" fill="#fbbf24" strokeWidth={0} />
-            <Text style={styles.rating}>4k</Text>
-          </View>
+          {hasDiscount && (
+            <View style={styles.discountBadge}>
+              <Text style={styles.discountText}>-{discountPercentage}%</Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -115,27 +113,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  bagButton: {
-    position: 'absolute',
-    bottom: 12,
-    right: 12,
-  },
-  bagIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#8b5cf6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  bagIconText: {
-    fontSize: 20,
-  },
   content: {
     padding: 12,
     paddingTop: 10,
@@ -168,14 +145,15 @@ const styles = StyleSheet.create({
     color: '#a1a1aa',
     textDecorationLine: 'line-through',
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
+  discountBadge: {
+    backgroundColor: '#ef4444',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
   },
-  rating: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#71717a',
+  discountText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
