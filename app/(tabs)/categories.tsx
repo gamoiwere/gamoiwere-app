@@ -77,7 +77,7 @@ export default function CategoriesScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6e39ea" />
+        <ActivityIndicator size="large" color="#FF6B35" />
         <Text style={styles.loadingText}>იტვირთება...</Text>
       </View>
     );
@@ -86,7 +86,7 @@ export default function CategoriesScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#6e39ea', '#8b5cf6', '#a855f7']}
+        colors={['#FF6B35', '#FF8555', '#FFA075']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -143,14 +143,14 @@ export default function CategoriesScreen() {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={index % 2 === 0 ? ['#f0f9ff', '#e0f2fe'] : ['#fef3c7', '#fde68a']}
+                  colors={['#FFFFFF', '#FFF5F2']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.mainCategoryGradient}
                 >
                   <View style={styles.mainCategoryLeft}>
                     <View style={[styles.categoryIconBadge, {
-                      backgroundColor: index % 2 === 0 ? '#0284c7' : '#f59e0b'
+                      backgroundColor: '#FF6B35'
                     }]}>
                       <LayoutGrid size={24} color="#fff" strokeWidth={2.5} />
                     </View>
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 32,
     paddingHorizontal: 24,
-    shadowColor: '#6e39ea',
+    shadowColor: '#FF6B35',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
@@ -428,8 +428,8 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#6e39ea',
-    shadowColor: '#6e39ea',
+    backgroundColor: '#FF6B35',
+    shadowColor: '#FF6B35',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
