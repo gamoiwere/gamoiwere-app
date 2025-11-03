@@ -159,54 +159,13 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <View style={styles.heroSection}>
-          <LinearGradient
-            colors={['#1a1a1a', '#2d2d2d', '#1a1a1a']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.heroCard}
-          >
-            <View style={styles.heroOverlay} />
-
-            <View style={styles.heroBadge}>
-              <Sparkles size={14} color="#fbbf24" strokeWidth={2.5} />
-              <Text style={styles.heroBadgeText}>სპეციალური შეთავაზება</Text>
-            </View>
-
-            <Text style={styles.heroTitle}>50% ფასდაკლება</Text>
-            <Text style={styles.heroSubtitle}>ყველა პროდუქტზე • შეზღუდული დრო</Text>
-
-            <View style={styles.heroStats}>
-              <View style={styles.heroStat}>
-                <Text style={styles.heroStatValue}>2K+</Text>
-                <Text style={styles.heroStatLabel}>პროდუქტი</Text>
-              </View>
-              <View style={styles.heroStatDivider} />
-              <View style={styles.heroStat}>
-                <Text style={styles.heroStatValue}>500+</Text>
-                <Text style={styles.heroStatLabel}>კმაყოფილი</Text>
-              </View>
-              <View style={styles.heroStatDivider} />
-              <View style={styles.heroStat}>
-                <Text style={styles.heroStatValue}>4.9★</Text>
-                <Text style={styles.heroStatLabel}>რეიტინგი</Text>
-              </View>
-            </View>
-
-            <TouchableOpacity style={styles.heroButton}>
-              <LinearGradient
-                colors={['#6e39ea', '#9333ea']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.heroButtonGradient}
-              >
-                <Zap size={18} color="#fff" strokeWidth={2.5} fill="#fff" />
-                <Text style={styles.heroButtonText}>შეიძინე ახლავე</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            <View style={styles.heroDecor1} />
-            <View style={styles.heroDecor2} />
-          </LinearGradient>
+          <TouchableOpacity activeOpacity={0.9}>
+            <Image
+              source={require('@/assets/images/Promo Section.png')}
+              style={styles.promoImage}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
@@ -397,125 +356,13 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   heroSection: {
-    padding: 20,
+    paddingHorizontal: 20,
     paddingTop: 24,
   },
-  heroCard: {
-    borderRadius: 24,
-    padding: 28,
-    position: 'relative',
-    overflow: 'hidden',
-    minHeight: 280,
-  },
-  heroOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(110, 57, 234, 0.1)',
-  },
-  heroBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    alignSelf: 'flex-start',
-    backgroundColor: 'rgba(251, 191, 36, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  promoImage: {
+    width: '100%',
+    height: 180,
     borderRadius: 20,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 191, 36, 0.3)',
-  },
-  heroBadgeText: {
-    color: '#fbbf24',
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  heroTitle: {
-    fontSize: 42,
-    fontWeight: '900',
-    color: '#fff',
-    marginBottom: 8,
-    letterSpacing: -1,
-  },
-  heroSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 24,
-    fontWeight: '500',
-  },
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  heroStat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  heroStatValue: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  heroStatLabel: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.6)',
-    fontWeight: '600',
-  },
-  heroStatDivider: {
-    width: 1,
-    height: 30,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-  },
-  heroButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  heroButtonGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingVertical: 18,
-    paddingHorizontal: 32,
-  },
-  heroButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '800',
-    letterSpacing: 0.3,
-  },
-  heroDecor1: {
-    position: 'absolute',
-    top: -50,
-    right: -50,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(110, 57, 234, 0.3)',
-    opacity: 0.3,
-  },
-  heroDecor2: {
-    position: 'absolute',
-    bottom: -80,
-    left: -80,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: 'rgba(147, 51, 234, 0.2)',
-    opacity: 0.3,
   },
   section: {
     paddingHorizontal: 8,
