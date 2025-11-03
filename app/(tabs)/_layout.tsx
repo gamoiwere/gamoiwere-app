@@ -1,13 +1,13 @@
 import { Tabs } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
-import { Home, ShoppingBag, Heart, User } from 'lucide-react-native';
+import { Home, ShoppingBag, Heart, User, LayoutGrid } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#a78bfa',
+        tabBarActiveTintColor: '#8b5cf6',
         tabBarInactiveTintColor: '#9ca3af',
         tabBarShowLabel: false,
         tabBarStyle: {
@@ -52,7 +52,7 @@ export default function TabLayout() {
               styles.iconContainer,
               focused && styles.iconContainerActive
             ]}>
-              <ShoppingBag
+              <LayoutGrid
                 size={22}
                 color={focused ? '#fff' : '#9ca3af'}
                 strokeWidth={2}
@@ -71,7 +71,7 @@ export default function TabLayout() {
             ]}>
               <ShoppingBag
                 size={28}
-                color={focused ? '#fff' : '#a78bfa'}
+                color={focused ? '#fff' : '#8b5cf6'}
                 strokeWidth={2.5}
               />
             </View>
@@ -125,8 +125,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainerActive: {
-    backgroundColor: '#a78bfa',
-    shadowColor: '#a78bfa',
+    backgroundColor: '#8b5cf6',
+    shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.25,
     shadowRadius: 6,
