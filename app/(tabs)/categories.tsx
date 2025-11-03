@@ -1,103 +1,85 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, Animated } from 'react-native';
-import { Smartphone, Laptop, Headphones, Watch, Camera, ShoppingBag, Sparkles, TrendingUp, ChevronRight } from 'lucide-react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { ChevronRight, ChevronDown, LayoutGrid, Search, TrendingUp } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
-const categories = [
-  {
-    id: '1',
-    name_ka: 'სმარტფონები',
-    name_en: 'Smartphones',
-    icon: Smartphone,
-    color: ['#3b82f6', '#2563eb'],
-    bgColor: '#dbeafe',
-    count: 342,
-    trending: true,
-  },
-  {
-    id: '2',
-    name_ka: 'ლეპტოპები',
-    name_en: 'Laptops',
-    icon: Laptop,
-    color: ['#8b5cf6', '#7c3aed'],
-    bgColor: '#ede9fe',
-    count: 156,
-    trending: false,
-  },
-  {
-    id: '3',
-    name_ka: 'ყურსასმენები',
-    name_en: 'Headphones',
-    icon: Headphones,
-    color: ['#ec4899', '#db2777'],
-    bgColor: '#fce7f3',
-    count: 428,
-    trending: true,
-  },
-  {
-    id: '4',
-    name_ka: 'სმარტ საათები',
-    name_en: 'Smart Watches',
-    icon: Watch,
-    color: ['#10b981', '#059669'],
-    bgColor: '#d1fae5',
-    count: 289,
-    trending: false,
-  },
-  {
-    id: '5',
-    name_ka: 'კამერები',
-    name_en: 'Cameras',
-    icon: Camera,
-    color: ['#f59e0b', '#d97706'],
-    bgColor: '#fef3c7',
-    count: 124,
-    trending: false,
-  },
-  {
-    id: '6',
-    name_ka: 'აქსესუარები',
-    name_en: 'Accessories',
-    icon: ShoppingBag,
-    color: ['#6366f1', '#4f46e5'],
-    bgColor: '#e0e7ff',
-    count: 867,
-    trending: true,
-  },
-];
+interface Category {
+  Id: string;
+  Name: string;
+  Children?: Category[];
+  ProviderType: string;
+  UpdatedTime: string;
+}
 
 export default function CategoriesScreen() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const fadeAnim = new Animated.Value(0);
-  const scaleAnim = new Animated.Value(0.95);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 50,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    fetchCategories();
   }, []);
 
-  const handleCategoryPress = (categoryId: string) => {
-    setSelectedCategory(categoryId);
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('https://service.devmonkeys.ge/api/getProviderBriefCatalog');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const toggleCategory = (categoryId: string) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId);
+    } else {
+      newExpanded.add(categoryId);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
+  const toggleSubCategory = (subCategoryId: string) => {
+    const newExpanded = new Set(expandedSubCategories);
+    if (newExpanded.has(subCategoryId)) {
+      newExpanded.delete(subCategoryId);
+    } else {
+      newExpanded.add(subCategoryId);
+    }
+    setExpandedSubCategories(newExpanded);
+  };
+
+  const countTotalProducts = (category: Category): number => {
+    if (!category.Children || category.Children.length === 0) {
+      return 1;
+    }
+    return category.Children.reduce((sum, child) => sum + countTotalProducts(child), 0);
+  };
+
+  const getTotalCategories = () => {
+    return categories.reduce((sum, cat) => sum + countTotalProducts(cat), 0);
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6e39ea" />
+        <Text style={styles.loadingText}>იტვირთება...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#1e293b', '#334155', '#475569']}
+        colors={['#6e39ea', '#8b5cf6', '#a855f7']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -105,12 +87,11 @@ export default function CategoriesScreen() {
         <View style={styles.headerContent}>
           <View style={styles.headerTop}>
             <View>
-              <Text style={styles.headerSubtitle}>იპოვე შენი</Text>
+              <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
               <Text style={styles.headerTitle}>კატეგორიები</Text>
             </View>
-            <View style={styles.headerBadge}>
-              <Sparkles size={16} color="#fbbf24" strokeWidth={2.5} fill="#fbbf24" />
-              <Text style={styles.headerBadgeText}>ახალი</Text>
+            <View style={styles.headerIconBadge}>
+              <LayoutGrid size={28} color="#fff" strokeWidth={2.5} />
             </View>
           </View>
         </View>
@@ -121,102 +102,116 @@ export default function CategoriesScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
-        <View style={styles.statsRow}>
-          <View style={styles.miniStat}>
-            <Text style={styles.miniStatValue}>2,206</Text>
-            <Text style={styles.miniStatLabel}>სულ პროდუქტი</Text>
-          </View>
-          <View style={styles.miniStatDivider} />
-          <View style={styles.miniStat}>
-            <Text style={styles.miniStatValue}>6</Text>
-            <Text style={styles.miniStatLabel}>კატეგორიები</Text>
-          </View>
-          <View style={styles.miniStatDivider} />
-          <View style={styles.miniStat}>
-            <Text style={styles.miniStatValue}>3</Text>
-            <Text style={styles.miniStatLabel}>ტრენდული</Text>
-          </View>
-        </View>
-
-        <View style={styles.categoriesGrid}>
-          {categories.map((category, index) => {
-            const Icon = category.icon;
-            const delay = index * 80;
-
-            return (
-              <Animated.View
-                key={category.id}
-                style={[
-                  styles.categoryCardWrapper,
-                  {
-                    opacity: fadeAnim,
-                    transform: [{ scale: scaleAnim }],
-                  },
-                ]}
-              >
-                <TouchableOpacity
-                  style={styles.categoryCard}
-                  onPress={() => handleCategoryPress(category.id)}
-                  activeOpacity={0.9}
-                >
-                  <LinearGradient
-                    colors={['#fff', '#fafafa']}
-                    style={styles.categoryGradient}
-                  >
-                    {category.trending && (
-                      <View style={styles.trendingBadge}>
-                        <TrendingUp size={12} color="#22c55e" strokeWidth={2.5} />
-                        <Text style={styles.trendingText}>ტრენდი</Text>
-                      </View>
-                    )}
-
-                    <View style={[styles.iconContainer, { backgroundColor: category.bgColor }]}>
-                      <Icon size={32} color={category.color[0]} strokeWidth={2.5} />
-                    </View>
-
-                    <View style={styles.categoryInfo}>
-                      <Text style={styles.categoryName}>{category.name_ka}</Text>
-                      <Text style={styles.categoryNameEn}>{category.name_en}</Text>
-
-                      <View style={styles.categoryFooter}>
-                        <View style={styles.countBadge}>
-                          <Text style={styles.countText}>{category.count}</Text>
-                          <Text style={styles.countLabel}>პროდუქტი</Text>
-                        </View>
-
-                        <View style={styles.arrowButton}>
-                          <LinearGradient
-                            colors={category.color}
-                            style={styles.arrowGradient}
-                          >
-                            <ChevronRight size={16} color="#fff" strokeWidth={3} />
-                          </LinearGradient>
-                        </View>
-                      </View>
-                    </View>
-                  </LinearGradient>
-                </TouchableOpacity>
-              </Animated.View>
-            );
-          })}
-        </View>
-
-        <View style={styles.promoSection}>
+        <View style={styles.statsCard}>
           <LinearGradient
-            colors={['#6366f1', '#8b5cf6', '#a855f7']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.promoCard}
+            colors={['#ffffff', '#fafafa']}
+            style={styles.statsGradient}
           >
-            <Sparkles size={32} color="#fff" strokeWidth={2.5} />
-            <Text style={styles.promoTitle}>განსაკუთრებული შეთავაზება</Text>
-            <Text style={styles.promoSubtitle}>
-              მიიღეთ 20% ფასდაკლება ყველა კატეგორიაში პირველ შეკვეთაზე
-            </Text>
-            <TouchableOpacity style={styles.promoButton}>
-              <Text style={styles.promoButtonText}>გაიგე მეტი</Text>
-            </TouchableOpacity>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{categories.length}</Text>
+              <Text style={styles.statLabel}>მთავარი კატეგორიები</Text>
+            </View>
+            <View style={styles.statDivider} />
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>{getTotalCategories()}</Text>
+              <Text style={styles.statLabel}>სულ კატეგორიები</Text>
+            </View>
           </LinearGradient>
+        </View>
+
+        <View style={styles.categoriesContainer}>
+          {categories.map((category, index) => (
+            <View key={category.Id} style={styles.mainCategoryWrapper}>
+              <TouchableOpacity
+                style={styles.mainCategoryCard}
+                onPress={() => toggleCategory(category.Id)}
+                activeOpacity={0.8}
+              >
+                <LinearGradient
+                  colors={index % 2 === 0 ? ['#f0f9ff', '#e0f2fe'] : ['#fef3c7', '#fde68a']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.mainCategoryGradient}
+                >
+                  <View style={styles.mainCategoryLeft}>
+                    <View style={[styles.categoryIconBadge, {
+                      backgroundColor: index % 2 === 0 ? '#0284c7' : '#f59e0b'
+                    }]}>
+                      <LayoutGrid size={24} color="#fff" strokeWidth={2.5} />
+                    </View>
+                    <View style={styles.mainCategoryInfo}>
+                      <Text style={styles.mainCategoryName}>{category.Name}</Text>
+                      <Text style={styles.mainCategoryCount}>
+                        {category.Children?.length || 0} ქვეკატეგორია
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.expandIcon}>
+                    {expandedCategories.has(category.Id) ? (
+                      <ChevronDown size={24} color="#1a1a1a" strokeWidth={2.5} />
+                    ) : (
+                      <ChevronRight size={24} color="#1a1a1a" strokeWidth={2.5} />
+                    )}
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              {expandedCategories.has(category.Id) && category.Children && (
+                <View style={styles.subCategoriesContainer}>
+                  {category.Children.map((subCategory, subIndex) => (
+                    <View key={subCategory.Id} style={styles.subCategoryWrapper}>
+                      <TouchableOpacity
+                        style={styles.subCategoryCard}
+                        onPress={() => toggleSubCategory(subCategory.Id)}
+                        activeOpacity={0.8}
+                      >
+                        <View style={styles.subCategoryContent}>
+                          <View style={styles.subCategoryLeft}>
+                            <View style={styles.subCategoryDot} />
+                            <View style={styles.subCategoryInfo}>
+                              <Text style={styles.subCategoryName}>{subCategory.Name}</Text>
+                              {subCategory.Children && subCategory.Children.length > 0 && (
+                                <Text style={styles.subCategoryCount}>
+                                  {subCategory.Children.length} ელემენტი
+                                </Text>
+                              )}
+                            </View>
+                          </View>
+                          {subCategory.Children && subCategory.Children.length > 0 && (
+                            <View style={styles.subExpandIcon}>
+                              {expandedSubCategories.has(subCategory.Id) ? (
+                                <ChevronDown size={20} color="#666" strokeWidth={2.5} />
+                              ) : (
+                                <ChevronRight size={20} color="#666" strokeWidth={2.5} />
+                              )}
+                            </View>
+                          )}
+                        </View>
+                      </TouchableOpacity>
+
+                      {expandedSubCategories.has(subCategory.Id) && subCategory.Children && (
+                        <View style={styles.subSubCategoriesContainer}>
+                          {subCategory.Children.map((subSubCategory) => (
+                            <TouchableOpacity
+                              key={subSubCategory.Id}
+                              style={styles.subSubCategoryCard}
+                              activeOpacity={0.7}
+                            >
+                              <View style={styles.subSubCategoryContent}>
+                                <View style={styles.subSubCategoryDot} />
+                                <Text style={styles.subSubCategoryName}>{subSubCategory.Name}</Text>
+                              </View>
+                              <ChevronRight size={16} color="#999" strokeWidth={2} />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      )}
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+          ))}
         </View>
 
         <View style={styles.bottomSpacer} />
@@ -230,10 +225,27 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f8f9fa',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#666',
+  },
   header: {
     paddingTop: 60,
     paddingBottom: 32,
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   headerContent: {
     flex: 1,
@@ -246,31 +258,25 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.7)',
-    marginBottom: 4,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 6,
+    letterSpacing: 0.5,
   },
   headerTitle: {
-    fontSize: 36,
+    fontSize: 38,
     fontWeight: '900',
     color: '#fff',
-    letterSpacing: -1,
+    letterSpacing: -1.5,
   },
-  headerBadge: {
-    flexDirection: 'row',
+  headerIconBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(251, 191, 36, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 191, 36, 0.3)',
-  },
-  headerBadgeText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#fbbf24',
-    textTransform: 'uppercase',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   scrollView: {
     flex: 1,
@@ -278,176 +284,193 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
-  statsRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
+  statsCard: {
     marginBottom: 24,
+    borderRadius: 20,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
-    elevation: 2,
+    elevation: 3,
   },
-  miniStat: {
+  statsGradient: {
+    flexDirection: 'row',
+    padding: 24,
+  },
+  statItem: {
     flex: 1,
     alignItems: 'center',
   },
-  miniStatValue: {
-    fontSize: 24,
+  statValue: {
+    fontSize: 32,
     fontWeight: '900',
     color: '#1a1a1a',
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -1,
   },
-  miniStatLabel: {
-    fontSize: 11,
+  statLabel: {
+    fontSize: 12,
     fontWeight: '600',
-    color: '#666',
+    color: '#6b7280',
     textAlign: 'center',
   },
-  miniStatDivider: {
+  statDivider: {
     width: 1,
-    backgroundColor: '#e5e5e5',
-    marginHorizontal: 12,
+    backgroundColor: '#e5e7eb',
+    marginHorizontal: 20,
   },
-  categoriesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  categoriesContainer: {
     gap: 16,
   },
-  categoryCardWrapper: {
-    width: (width - 56) / 2,
+  mainCategoryWrapper: {
+    marginBottom: 8,
   },
-  categoryCard: {
-    borderRadius: 24,
+  mainCategoryCard: {
+    borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  categoryGradient: {
-    padding: 20,
-    minHeight: 220,
-  },
-  trendingBadge: {
+  mainCategoryGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#dcfce7',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-    marginBottom: 12,
+    justifyContent: 'space-between',
+    padding: 20,
   },
-  trendingText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#22c55e',
-    textTransform: 'uppercase',
-  },
-  iconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
+  mainCategoryLeft: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  categoryInfo: {
+    gap: 16,
     flex: 1,
   },
-  categoryName: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    marginBottom: 2,
-    letterSpacing: -0.3,
-  },
-  categoryNameEn: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#999',
-    marginBottom: 16,
-  },
-  categoryFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 'auto',
-  },
-  countBadge: {
-    backgroundColor: '#f8f9fa',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-  },
-  countText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    marginBottom: 2,
-  },
-  countLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#666',
-  },
-  arrowButton: {
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  arrowGradient: {
-    width: 36,
-    height: 36,
+  categoryIconBadge: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  promoSection: {
-    marginTop: 24,
+  mainCategoryInfo: {
+    flex: 1,
   },
-  promoCard: {
-    borderRadius: 24,
-    padding: 28,
-    alignItems: 'center',
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  promoTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#fff',
-    marginTop: 16,
-    marginBottom: 8,
-    textAlign: 'center',
+  mainCategoryName: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1a1a1a',
+    marginBottom: 4,
     letterSpacing: -0.5,
   },
-  promoSubtitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.9)',
-    textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 22,
+  mainCategoryCount: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6b7280',
   },
-  promoButton: {
+  expandIcon: {
+    marginLeft: 12,
+  },
+  subCategoriesContainer: {
     backgroundColor: '#fff',
-    paddingHorizontal: 32,
-    paddingVertical: 14,
     borderRadius: 16,
+    marginTop: 8,
+    marginLeft: 16,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 1,
   },
-  promoButtonText: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#8b5cf6',
+  subCategoryWrapper: {
+    marginBottom: 4,
+  },
+  subCategoryCard: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    backgroundColor: '#f8f9fa',
+  },
+  subCategoryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  subCategoryLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  subCategoryDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#6e39ea',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+  },
+  subCategoryInfo: {
+    flex: 1,
+  },
+  subCategoryName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    marginBottom: 2,
+  },
+  subCategoryCount: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#9ca3af',
+  },
+  subExpandIcon: {
+    marginLeft: 8,
+  },
+  subSubCategoriesContainer: {
+    marginLeft: 22,
+    marginTop: 8,
+    gap: 4,
+  },
+  subSubCategoryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+  subSubCategoryContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+  },
+  subSubCategoryDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#94a3b8',
+  },
+  subSubCategoryName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4b5563',
+    flex: 1,
   },
   bottomSpacer: {
-    height: 20,
+    height: 100,
   },
 });

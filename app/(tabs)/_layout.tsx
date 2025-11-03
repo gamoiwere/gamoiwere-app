@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Home, Heart, ShoppingBag, User } from 'lucide-react-native';
+import { Home, LayoutGrid, ShoppingBag, User } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -59,13 +59,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
-          title: 'რჩეულები',
+          title: 'კატეგორიები',
           tabBarIcon: ({ focused }) => (
-            <Heart
+            <LayoutGrid
               size={26}
               color={focused ? '#007AFF' : '#8E8E93'}
               strokeWidth={2}
-              fill={focused ? '#007AFF' : 'transparent'}
             />
           ),
         }}
