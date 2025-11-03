@@ -59,8 +59,8 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Text style={styles.title}>Welcome to Fashion</Text>
-            <Text style={styles.subtitle}>login now!</Text>
+            <Text style={styles.title}>მოგესალმებით</Text>
+            <Text style={styles.subtitle}>შესვლა!</Text>
           </View>
 
           {error ? (
@@ -71,7 +71,7 @@ export default function LoginScreen() {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
               <TextInput
                 style={styles.input}
                 placeholder="mica.brooks@gmail.com"
@@ -85,7 +85,7 @@ export default function LoginScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Password</Text>
+              <Text style={styles.inputLabel}>პაროლი</Text>
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={styles.passwordInput}
@@ -117,11 +117,11 @@ export default function LoginScreen() {
                 <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
                   {rememberMe && <View style={styles.checkmark} />}
                 </View>
-                <Text style={styles.rememberText}>Remember me</Text>
+                <Text style={styles.rememberText}>დამიმახსოვრე</Text>
               </TouchableOpacity>
 
               <TouchableOpacity>
-                <Text style={styles.forgotText}>Forget Password?</Text>
+                <Text style={styles.forgotText}>დაგავიწყდა პაროლი?</Text>
               </TouchableOpacity>
             </View>
 
@@ -134,13 +134,13 @@ export default function LoginScreen() {
               {loading ? (
                 <Loader />
               ) : (
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>შესვლა</Text>
               )}
             </TouchableOpacity>
 
             <View style={styles.dividerContainer}>
               <View style={styles.divider} />
-              <Text style={styles.dividerText}>Or Login with</Text>
+              <Text style={styles.dividerText}>ან შედით</Text>
               <View style={styles.divider} />
             </View>
 
@@ -158,9 +158,9 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Don't hove an account? </Text>
+            <Text style={styles.footerText}>არ გაქვთ ანგარიში? </Text>
             <TouchableOpacity onPress={() => router.push('/auth/register')}>
-              <Text style={styles.footerLink}>Create on account</Text>
+              <Text style={styles.footerLink}>რეგისტრაცია</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
