@@ -2,9 +2,32 @@ import { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight } from 'lucide-react-native';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, Calendar } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
+
+const getDeliveryDateRange = () => {
+  const today = new Date();
+  const minDays = 10;
+  const maxDays = 14;
+
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() + minDays);
+
+  const endDate = new Date(today);
+  endDate.setDate(today.getDate() + maxDays);
+
+  const monthNames = [
+    'იანვარი', 'თებერვალი', 'მარტი', 'აპრილი', 'მაისი', 'ივნისი',
+    'ივლისი', 'აგვისტო', 'სექტემბერი', 'ოქტომბერი', 'ნოემბერი', 'დეკემბერი'
+  ];
+
+  const formatDate = (date: Date) => {
+    return `${date.getDate()} ${monthNames[date.getMonth()]}`;
+  };
+
+  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+};
 
 interface Attribute {
   Pid: string;
