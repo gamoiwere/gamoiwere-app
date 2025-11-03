@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, Calendar } from 'lucide-react-native';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -80,6 +80,8 @@ export default function ProductDetailScreen() {
   const [selectedVariation, setSelectedVariation] = useState<ConfiguredItem | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [currentMainImage, setCurrentMainImage] = useState<string>('');
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [isAttributesExpanded, setIsAttributesExpanded] = useState(false);
 
   const pan = useRef(new Animated.ValueXY()).current;
   const touchStartX = useRef(0);
@@ -429,30 +431,56 @@ export default function ProductDetailScreen() {
           </View>
 
           <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Info size={20} color="#1a1a1a" strokeWidth={2} />
-              <Text style={styles.sectionTitle}>აღწერა</Text>
-            </View>
-            <Text style={styles.descriptionText}>
-              {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
-            </Text>
+            <TouchableOpacity
+              style={styles.collapsibleHeader}
+              onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.collapsibleHeaderContent}>
+                <Info size={20} color="#1a1a1a" strokeWidth={2} />
+                <Text style={styles.sectionTitle}>აღწერა</Text>
+              </View>
+              {isDescriptionExpanded ? (
+                <ChevronDown size={20} color="#666" strokeWidth={2} />
+              ) : (
+                <ChevronRight size={20} color="#666" strokeWidth={2} />
+              )}
+            </TouchableOpacity>
+            {isDescriptionExpanded && (
+              <Text style={styles.descriptionText}>
+                {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
+              </Text>
+            )}
           </View>
 
           {product.attributes.length > 0 && (
             <View style={styles.section}>
-              <View style={styles.sectionHeader}>
-                <Package size={20} color="#1a1a1a" strokeWidth={2} />
-                <Text style={styles.sectionTitle}>მახასიათებლები</Text>
-              </View>
-              <View style={styles.attributesContainer}>
-                {product.attributes.map((attr, index) => (
-                  <View key={index} style={styles.attributeRow}>
-                    <Text style={styles.attributeLabel}>{attr.PropertyName}</Text>
-                    <View style={styles.attributeDivider} />
-                    <Text style={styles.attributeValue}>{attr.Value}</Text>
-                  </View>
-                ))}
-              </View>
+              <TouchableOpacity
+                style={styles.collapsibleHeader}
+                onPress={() => setIsAttributesExpanded(!isAttributesExpanded)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.collapsibleHeaderContent}>
+                  <Package size={20} color="#1a1a1a" strokeWidth={2} />
+                  <Text style={styles.sectionTitle}>მახასიათებლები</Text>
+                </View>
+                {isAttributesExpanded ? (
+                  <ChevronDown size={20} color="#666" strokeWidth={2} />
+                ) : (
+                  <ChevronRight size={20} color="#666" strokeWidth={2} />
+                )}
+              </TouchableOpacity>
+              {isAttributesExpanded && (
+                <View style={styles.attributesContainer}>
+                  {product.attributes.map((attr, index) => (
+                    <View key={index} style={styles.attributeRow}>
+                      <Text style={styles.attributeLabel}>{attr.PropertyName}</Text>
+                      <View style={styles.attributeDivider} />
+                      <Text style={styles.attributeValue}>{attr.Value}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
             </View>
           )}
 
@@ -797,6 +825,20 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 24,
+  },
+  collapsibleHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#fafafa',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  collapsibleHeaderContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   sectionHeader: {
     flexDirection: 'row',
