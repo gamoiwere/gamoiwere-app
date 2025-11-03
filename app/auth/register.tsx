@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { Mail, Lock, User as UserIcon, Eye, EyeOff, Phone } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react-native';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
 
@@ -17,10 +17,16 @@ export default function RegisterScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleRegister = async () => {
     if (!username || !email || !password || !confirmPassword || !phone) {
       setError('გთხოვთ შეავსოთ ყველა ველი');
+      return;
+    }
+
+    if (!agreeToTerms) {
+      setError('თქვენ უნდა დაეთანხმოთ წესებს და პირობებს');
       return;
     }
 
@@ -59,11 +65,6 @@ export default function RegisterScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.decorativeShape1} />
-      <View style={styles.decorativeShape2} />
-      <View style={styles.decorativeShape3} />
-      <View style={styles.decorativeShape4} />
-
       <SuccessNotification
         visible={showSuccess}
         message="ანგარიში წარმატებით შეიქმნა!"
@@ -79,148 +80,164 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.logoContainer}>
-            <Image
-              source={{ uri: 'https://gamoiwere.ge/assets/Asset%2023@4x-DOSuFs2H.png' }}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <View style={styles.header}>
+            <Text style={styles.title}>რეგისტრაცია</Text>
+            <Text style={styles.subtitle}>შექმენით ანგარიში!</Text>
           </View>
 
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>რეგისტრაცია</Text>
-              <Text style={styles.cardSubtitle}>შექმენით ახალი ანგარიში</Text>
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
+
+          <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>მომხმარებელი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="username"
+                placeholderTextColor="#a1a1aa"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+                editable={!loading}
+              />
             </View>
 
-            {error ? (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
-            ) : null}
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="example@mail.com"
+                placeholderTextColor="#a1a1aa"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                editable={!loading}
+              />
+            </View>
 
-              <View style={styles.form}>
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>მომხმარებელი</Text>
-                  <View style={styles.inputWrapper}>
-                    <UserIcon size={18} color="#71717a" strokeWidth={2} />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="username"
-                      placeholderTextColor="#a1a1aa"
-                      value={username}
-                      onChangeText={setUsername}
-                      autoCapitalize="none"
-                      editable={!loading}
-                    />
-                  </View>
-                </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>ტელეფონი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="+995555123456"
+                placeholderTextColor="#a1a1aa"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                editable={!loading}
+              />
+            </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>ტელეფონი</Text>
-                  <View style={styles.inputWrapper}>
-                    <Phone size={18} color="#71717a" strokeWidth={2} />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="+995555123456"
-                      placeholderTextColor="#a1a1aa"
-                      value={phone}
-                      onChangeText={setPhone}
-                      keyboardType="phone-pad"
-                      editable={!loading}
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
-                  <View style={styles.inputWrapper}>
-                    <Mail size={18} color="#71717a" strokeWidth={2} />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="example@mail.com"
-                      placeholderTextColor="#a1a1aa"
-                      value={email}
-                      onChangeText={setEmail}
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      editable={!loading}
-                    />
-                  </View>
-                </View>
-
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>პაროლი</Text>
-                  <View style={styles.inputWrapper}>
-                    <Lock size={18} color="#71717a" strokeWidth={2} />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="მინიმუმ 6 სიმბოლო"
-                      placeholderTextColor="#a1a1aa"
-                      value={password}
-                      onChangeText={setPassword}
-                      secureTextEntry={!showPassword}
-                      editable={!loading}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowPassword(!showPassword)}
-                      style={styles.eyeButton}
-                    >
-                      {showPassword ? (
-                        <EyeOff size={20} color="#71717a" strokeWidth={2} />
-                      ) : (
-                        <Eye size={20} color="#71717a" strokeWidth={2} />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
-                  <View style={styles.inputWrapper}>
-                    <Lock size={18} color="#71717a" strokeWidth={2} />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="••••••••"
-                      placeholderTextColor="#a1a1aa"
-                      value={confirmPassword}
-                      onChangeText={setConfirmPassword}
-                      secureTextEntry={!showConfirmPassword}
-                      editable={!loading}
-                    />
-                    <TouchableOpacity
-                      onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                      style={styles.eyeButton}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff size={20} color="#71717a" strokeWidth={2} />
-                      ) : (
-                        <Eye size={20} color="#71717a" strokeWidth={2} />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>პაროლი</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="მინიმუმ 6 სიმბოლო"
+                  placeholderTextColor="#a1a1aa"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  editable={!loading}
+                />
                 <TouchableOpacity
-                  style={[styles.button, loading && styles.buttonDisabled]}
-                  onPress={handleRegister}
-                  disabled={loading}
-                  activeOpacity={0.9}
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
                 >
-                  {loading ? (
-                    <Loader />
+                  {showPassword ? (
+                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
                   ) : (
-                    <Text style={styles.buttonText}>რეგისტრაცია</Text>
+                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
                   )}
                 </TouchableOpacity>
               </View>
+            </View>
 
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>უკვე გაქვთ ანგარიში?</Text>
-              <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                <Text style={styles.footerLink}>შესვლა</Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="••••••••"
+                  placeholderTextColor="#a1a1aa"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry={!showConfirmPassword}
+                  editable={!loading}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeButton}
+                >
+                  {showConfirmPassword ? (
+                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                  ) : (
+                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.termsRow}>
+              <TouchableOpacity
+                style={styles.checkboxRow}
+                onPress={() => setAgreeToTerms(!agreeToTerms)}
+              >
+                <View style={[styles.checkbox, agreeToTerms && styles.checkboxChecked]}>
+                  {agreeToTerms && <View style={styles.checkmark} />}
+                </View>
+                <Text style={styles.termsText}>
+                  ვეთანხმები{' '}
+                  <Text style={styles.termsLink}>წესებსა და პირობებს</Text>
+                </Text>
               </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleRegister}
+              disabled={loading}
+              activeOpacity={0.9}
+            >
+              {loading ? (
+                <Loader />
+              ) : (
+                <Text style={styles.buttonText}>რეგისტრაცია</Text>
+              )}
+            </TouchableOpacity>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>ან შედით</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <View style={styles.socialContainer}>
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialIcon}></Text>
+                <Text style={styles.socialText}>Apple</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.googleIcon}>G</Text>
+                <Text style={styles.socialText}>Google</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>უკვე გაქვთ ანგარიში? </Text>
+            <TouchableOpacity onPress={() => router.push('/auth/login')}>
+              <Text style={styles.footerLink}>შესვლა</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -231,94 +248,53 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8b5cf6',
-    position: 'relative',
-  },
-  decorativeShape1: {
-    position: 'absolute',
-    width: 400,
-    height: 400,
-    borderRadius: 200,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    top: -150,
-    right: -100,
-  },
-  decorativeShape2: {
-    position: 'absolute',
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    bottom: -100,
-    left: -80,
-  },
-  decorativeShape3: {
-    position: 'absolute',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
-    top: '45%',
-    right: -50,
-  },
-  decorativeShape4: {
-    position: 'absolute',
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
-    top: '20%',
-    left: 30,
+    backgroundColor: '#f5f5f5',
   },
   keyboardView: {
     flex: 1,
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: 24,
-    paddingTop: 40,
-    paddingBottom: 60,
+    paddingTop: 60,
   },
-  logoContainer: {
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#ffffff',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  header: {
     marginBottom: 40,
   },
-  logo: {
-    width: 120,
-    height: 120,
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 32,
-    borderWidth: 1,
-    borderColor: '#e4e4e7',
-    maxWidth: 440,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  cardHeader: {
-    marginBottom: 28,
-  },
-  cardTitle: {
-    fontSize: 28,
+  title: {
+    fontSize: 40,
     fontWeight: '700',
     color: '#18181b',
-    marginBottom: 8,
+    marginBottom: 0,
+    lineHeight: 48,
   },
-  cardSubtitle: {
-    fontSize: 15,
-    color: '#71717a',
-    fontWeight: '400',
+  subtitle: {
+    fontSize: 40,
+    fontWeight: '700',
+    color: '#18181b',
+    lineHeight: 48,
   },
   errorContainer: {
     backgroundColor: '#fef2f2',
     borderWidth: 1,
     borderColor: '#fecaca',
     padding: 12,
-    borderRadius: 6,
-    marginBottom: 20,
+    borderRadius: 12,
+    marginBottom: 24,
   },
   errorText: {
     color: '#dc2626',
@@ -326,43 +302,89 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   form: {
-    gap: 18,
+    gap: 20,
   },
   inputGroup: {
     gap: 8,
   },
   inputLabel: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#18181b',
-    marginBottom: 2,
+    fontWeight: '400',
+    color: '#71717a',
+    marginBottom: 4,
   },
-  inputWrapper: {
+  input: {
+    backgroundColor: '#ffffff',
+    borderRadius: 32,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    fontSize: 15,
+    color: '#18181b',
+    fontWeight: '500',
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+  },
+  passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: 6,
-    paddingHorizontal: 14,
-    paddingVertical: 2,
-    gap: 10,
+    borderRadius: 32,
+    paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#d4d4d8',
+    borderColor: '#e5e5e5',
   },
-  input: {
+  passwordInput: {
     flex: 1,
+    paddingVertical: 18,
     fontSize: 15,
     color: '#18181b',
-    fontWeight: '400',
-    paddingVertical: 12,
+    fontWeight: '500',
   },
   eyeButton: {
     padding: 4,
   },
-  button: {
-    marginTop: 8,
-    backgroundColor: '#8b5cf6',
+  termsRow: {
+    marginTop: 4,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
     borderRadius: 6,
-    paddingVertical: 14,
+    borderWidth: 2,
+    borderColor: '#d4d4d8',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxChecked: {
+    backgroundColor: '#8b5cf6',
+    borderColor: '#8b5cf6',
+  },
+  checkmark: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 2,
+  },
+  termsText: {
+    fontSize: 14,
+    color: '#71717a',
+    fontWeight: '400',
+    flex: 1,
+  },
+  termsLink: {
+    color: '#8b5cf6',
+    fontWeight: '600',
+  },
+  button: {
+    marginTop: 12,
+    backgroundColor: '#8b5cf6',
+    borderRadius: 32,
+    paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -371,15 +393,62 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#e5e5e5',
+  },
+  dividerText: {
+    fontSize: 14,
+    color: '#a1a1aa',
+    marginHorizontal: 16,
+    fontWeight: '400',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 8,
+  },
+  socialButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#ffffff',
+    borderRadius: 32,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
+  },
+  socialIcon: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#4285f4',
+  },
+  socialText: {
     fontSize: 15,
     fontWeight: '600',
+    color: '#18181b',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 24,
+    marginTop: 40,
   },
   footerText: {
     fontSize: 14,
