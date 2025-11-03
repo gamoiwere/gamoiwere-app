@@ -54,7 +54,7 @@ export default function LoginScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/onboarding')}>
             <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
           </TouchableOpacity>
 
