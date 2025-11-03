@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet, Platform } from 'react-native';
-import { Home, ShoppingBag, Heart, User } from 'lucide-react-native';
+import { View, StyleSheet } from 'react-native';
+import { Home, LayoutGrid, ShoppingBag, Heart, User } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -51,7 +51,7 @@ export default function TabLayout() {
               styles.iconContainer,
               focused && styles.iconContainerActive
             ]}>
-              <ShoppingBag
+              <LayoutGrid
                 size={24}
                 color={focused ? '#fff' : '#18181b'}
                 strokeWidth={2}
@@ -78,7 +78,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="favorites"
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={[
@@ -95,9 +95,8 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="__placeholder"
+        name="profile"
         options={{
-          href: null,
           tabBarIcon: ({ focused }) => (
             <View style={[
               styles.iconContainer,
@@ -110,11 +109,6 @@ export default function TabLayout() {
               />
             </View>
           ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-          },
         }}
       />
     </Tabs>
