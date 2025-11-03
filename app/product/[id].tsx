@@ -59,29 +59,52 @@ export default function ProductDetailScreen() {
   const [currentMainImage, setCurrentMainImage] = useState<string>('');
 
   const pan = useRef(new Animated.ValueXY()).current;
+  const touchStartX = useRef(0);
 
   const panResponder = useRef(
     PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dx) > 5;
+      },
+      onMoveShouldSetPanResponderCapture: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 5;
+      },
+      onPanResponderGrant: (evt) => {
+        touchStartX.current = evt.nativeEvent.pageX;
+        pan.setOffset({
+          x: (pan.x as any)._value,
+          y: 0,
+        });
+        pan.setValue({ x: 0, y: 0 });
       },
       onPanResponderMove: (_, gestureState) => {
         pan.setValue({ x: gestureState.dx, y: 0 });
       },
       onPanResponderRelease: (_, gestureState) => {
-        const swipeThreshold = width * 0.2;
+        pan.flattenOffset();
+        const swipeThreshold = 50;
 
-        if (gestureState.dx < -swipeThreshold && product && selectedImageIndex < product.images.length - 1) {
+        if (gestureState.dx < -swipeThreshold && gestureState.vx < -0.3 && product && selectedImageIndex < product.images.length - 1) {
           setSelectedImageIndex(selectedImageIndex + 1);
           setCurrentMainImage('');
-        } else if (gestureState.dx > swipeThreshold && selectedImageIndex > 0) {
+        } else if (gestureState.dx > swipeThreshold && gestureState.vx > 0.3 && selectedImageIndex > 0) {
           setSelectedImageIndex(selectedImageIndex - 1);
           setCurrentMainImage('');
         }
 
         Animated.spring(pan, {
           toValue: { x: 0, y: 0 },
-          useNativeDriver: true,
+          useNativeDriver: false,
+          friction: 7,
+          tension: 50,
+        }).start();
+      },
+      onPanResponderTerminate: () => {
+        Animated.spring(pan, {
+          toValue: { x: 0, y: 0 },
+          useNativeDriver: false,
         }).start();
       },
     })
