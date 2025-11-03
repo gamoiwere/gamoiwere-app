@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Linking } from 'react-native';
 import { router } from 'expo-router';
-import { Heart, ChevronLeft, Trash2 } from 'lucide-react-native';
+import { Heart, ChevronLeft, Trash2, ExternalLink } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import ProductCard from '@/components/ProductCard';
-import { Product } from '@/types';
+import { Favorite } from '@/types';
 import { api } from '@/services/api';
 
 export default function FavoritesScreen() {
-  const [favorites, setFavorites] = useState<Product[]>([]);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +28,13 @@ export default function FavoritesScreen() {
   const handleRemoveFavorite = async (productId: string) => {
     const success = await api.removeFromFavorites(productId);
     if (success) {
-      setFavorites(favorites.filter(p => p.id !== productId));
+      setFavorites(favorites.filter(f => f.productId !== productId));
+    }
+  };
+
+  const handleOpenProduct = (url: string) => {
+    if (url) {
+      Linking.openURL(url);
     }
   };
 
@@ -90,9 +95,46 @@ export default function FavoritesScreen() {
             </View>
 
             <View style={styles.productsGrid}>
-              {favorites.map((product) => (
-                <View key={product.id} style={styles.productColumn}>
-                  <ProductCard product={product} />
+              {favorites.map((favorite) => (
+                <View key={favorite.id} style={styles.favoriteItem}>
+                  <TouchableOpacity
+                    style={styles.productCard}
+                    onPress={() => handleOpenProduct(favorite.productUrl)}
+                  >
+                    <View style={styles.imageContainer}>
+                      {favorite.productImage ? (
+                        <Image
+                          source={{ uri: favorite.productImage }}
+                          style={styles.productImage}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <View style={styles.placeholderImage}>
+                          <Heart size={32} color="#e5e7eb" strokeWidth={2} />
+                        </View>
+                      )}
+                    </View>
+                    <View style={styles.productInfo}>
+                      <Text style={styles.productTitle} numberOfLines={2}>
+                        {favorite.productTitle}
+                      </Text>
+                      <Text style={styles.productPrice}>
+                        {favorite.productPrice.toFixed(2)} ₾
+                      </Text>
+                      {favorite.productUrl && (
+                        <View style={styles.linkIndicator}>
+                          <ExternalLink size={12} color="#7c3aed" strokeWidth={2} />
+                          <Text style={styles.linkText}>გახსნა</Text>
+                        </View>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleRemoveFavorite(favorite.productId)}
+                  >
+                    <Trash2 size={18} color="#ef4444" strokeWidth={2} />
+                  </TouchableOpacity>
                 </View>
               ))}
             </View>
@@ -208,9 +250,78 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingHorizontal: 16,
   },
-  productColumn: {
+  favoriteItem: {
     width: '50%',
     paddingHorizontal: 4,
+    marginBottom: 16,
+  },
+  productCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 160,
+    backgroundColor: '#f3f4f6',
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+  },
+  placeholderImage: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f9fafb',
+  },
+  productInfo: {
+    padding: 12,
+  },
+  productTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1a1a1a',
+    marginBottom: 8,
+    lineHeight: 18,
+  },
+  productPrice: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#7c3aed',
+    marginBottom: 6,
+  },
+  linkIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  linkText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#7c3aed',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 8,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
   bottomSpacer: {
     height: 120,

@@ -1,7 +1,7 @@
-import { Product } from '@/types';
+import { Product, Favorite } from '@/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = 'https://gamoiwere.ge/api';
+const API_BASE_URL = 'https://gamoiwere.ge/api/mobile';
 
 async function getHeaders(): Promise<HeadersInit> {
   const token = await AsyncStorage.getItem('authToken');
@@ -66,27 +66,37 @@ export const api = {
     }
   },
 
-  async getFavorites(): Promise<Product[]> {
+  async getFavorites(): Promise<Favorite[]> {
     try {
       const headers = await getHeaders();
       const response = await fetch(`${API_BASE_URL}/favorites`, { headers });
       if (!response.ok) throw new Error('Failed to fetch favorites');
-      return await response.json();
+      const data = await response.json();
+      return data.success ? data.favorites : [];
     } catch (error) {
       console.error('API Error:', error);
       return [];
     }
   },
 
-  async addToFavorites(productId: string): Promise<boolean> {
+  async addToFavorites(productId: string, productData: {
+    productTitle: string;
+    productImage: string;
+    productPrice: number;
+    productUrl: string;
+  }): Promise<boolean> {
     try {
       const headers = await getHeaders();
       const response = await fetch(`${API_BASE_URL}/favorites`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ product_id: productId }),
+        body: JSON.stringify({
+          productId,
+          ...productData,
+        }),
       });
-      return response.ok;
+      const data = await response.json();
+      return data.success;
     } catch (error) {
       console.error('API Error:', error);
       return false;
@@ -100,7 +110,21 @@ export const api = {
         method: 'DELETE',
         headers,
       });
-      return response.ok;
+      const data = await response.json();
+      return data.success;
+    } catch (error) {
+      console.error('API Error:', error);
+      return false;
+    }
+  },
+
+  async checkIsFavorite(productId: string): Promise<boolean> {
+    try {
+      const headers = await getHeaders();
+      const response = await fetch(`${API_BASE_URL}/favorites/${productId}/check`, { headers });
+      if (!response.ok) return false;
+      const data = await response.json();
+      return data.success && data.isFavorite;
     } catch (error) {
       console.error('API Error:', error);
       return false;
