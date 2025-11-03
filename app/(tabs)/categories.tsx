@@ -28,9 +28,18 @@ export default function CategoriesScreen() {
     try {
       const response = await fetch('https://service.devmonkeys.ge/api/getProviderBriefCatalog');
       const data = await response.json();
-      setCategories(data);
+
+      if (Array.isArray(data)) {
+        setCategories(data);
+      } else if (data && typeof data === 'object') {
+        const categoriesArray = Object.values(data);
+        setCategories(Array.isArray(categoriesArray) ? categoriesArray : []);
+      } else {
+        setCategories([]);
+      }
     } catch (error) {
       console.error('Failed to fetch categories:', error);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -64,6 +73,7 @@ export default function CategoriesScreen() {
   };
 
   const getTotalCategories = () => {
+    if (!Array.isArray(categories)) return 0;
     return categories.reduce((sum, cat) => sum + countTotalProducts(cat), 0);
   };
 
@@ -120,7 +130,7 @@ export default function CategoriesScreen() {
         </View>
 
         <View style={styles.categoriesContainer}>
-          {categories.map((category, index) => (
+          {Array.isArray(categories) && categories.map((category, index) => (
             <View key={category.Id} style={styles.mainCategoryWrapper}>
               <TouchableOpacity
                 style={styles.mainCategoryCard}
