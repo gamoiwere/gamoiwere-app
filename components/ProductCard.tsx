@@ -1,8 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Product } from '@/types';
-import { Heart, TrendingUp, Tag } from 'lucide-react-native';
+import { Heart, Star } from 'lucide-react-native';
 
 interface ProductCardProps {
   product: Product;
@@ -10,9 +9,6 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const hasDiscount = product.original_price && product.original_price > product.price;
-  const discountPercentage = hasDiscount
-    ? Math.round(((product.original_price! - product.price) / product.original_price!) * 100)
-    : 0;
 
   return (
     <TouchableOpacity
@@ -27,13 +23,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           resizeMode="cover"
         />
 
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.6)']}
-          style={styles.imageOverlay}
-        />
-
         <TouchableOpacity style={styles.favoriteBtn} activeOpacity={0.8}>
-          <Heart size={18} color="#fff" strokeWidth={2.5} />
+          <Heart size={18} color="#18181b" strokeWidth={2} />
         </TouchableOpacity>
 
         {!product.in_stock && (
@@ -42,36 +33,31 @@ export default function ProductCard({ product }: ProductCardProps) {
           </View>
         )}
 
-        {hasDiscount && (
-          <View style={styles.discountBadge}>
-            <Tag size={12} color="#fff" strokeWidth={2.5} />
-            <Text style={styles.discountText}>-{discountPercentage}%</Text>
+        <View style={styles.bagButton}>
+          <View style={styles.bagIcon}>
+            <Text style={styles.bagIconText}>🛍️</Text>
           </View>
-        )}
-
-        <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.9)']}
-          style={styles.priceOverlay}
-        >
-          <View style={styles.priceContainer}>
-            {hasDiscount && (
-              <Text style={styles.originalPrice}>₾{product.original_price!.toFixed(2)}</Text>
-            )}
-            <Text style={styles.price}>₾{product.price.toFixed(2)}</Text>
-          </View>
-        </LinearGradient>
+        </View>
       </View>
 
       <View style={styles.content}>
         <Text style={styles.name} numberOfLines={2}>
           {product.name_ka}
         </Text>
-        {product.brand && (
-          <View style={styles.brandContainer}>
-            <TrendingUp size={12} color="#6e39ea" strokeWidth={2} />
-            <Text style={styles.brand}>{product.brand}</Text>
+
+        <View style={styles.priceRow}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>₾{product.price.toFixed(0)}</Text>
+            {hasDiscount && (
+              <Text style={styles.originalPrice}>₾{product.original_price!.toFixed(0)}</Text>
+            )}
           </View>
-        )}
+
+          <View style={styles.ratingContainer}>
+            <Star size={14} color="#fbbf24" fill="#fbbf24" strokeWidth={0} />
+            <Text style={styles.rating}>4k</Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -80,130 +66,116 @@ export default function ProductCard({ product }: ProductCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 24,
+    borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 12,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
   imageContainer: {
     width: '100%',
-    height: 220,
+    height: 200,
     position: 'relative',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f5',
   },
   image: {
     width: '100%',
     height: '100%',
   },
-  imageOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 120,
-  },
   favoriteBtn: {
     position: 'absolute',
     top: 12,
     right: 12,
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    backdropFilter: 'blur(10px)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   outOfStockBadge: {
     position: 'absolute',
-    top: 16,
-    left: 16,
+    top: 12,
+    left: 12,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   outOfStockText: {
     color: '#fff',
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '600',
   },
-  discountBadge: {
+  bagButton: {
     position: 'absolute',
-    top: 12,
-    left: 12,
-    flexDirection: 'row',
+    bottom: 12,
+    right: 12,
+  },
+  bagIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#8b5cf6',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#ef4444',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 10,
-    shadowColor: '#ef4444',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    justifyContent: 'center',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
     elevation: 4,
   },
-  discountText: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '800',
+  bagIconText: {
+    fontSize: 20,
   },
-  priceOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  content: {
+    padding: 12,
+    paddingTop: 10,
+  },
+  name: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#18181b',
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-  },
-  originalPrice: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#999',
-    textDecorationLine: 'line-through',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    gap: 6,
   },
   price: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -1,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
-  },
-  content: {
-    padding: 14,
-  },
-  name: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '700',
-    color: '#1a1a1a',
-    lineHeight: 22,
-    letterSpacing: -0.3,
-    marginBottom: 6,
+    color: '#18181b',
   },
-  brandContainer: {
+  originalPrice: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#a1a1aa',
+    textDecorationLine: 'line-through',
+  },
+  ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  brand: {
-    fontSize: 12,
+  rating: {
+    fontSize: 13,
     fontWeight: '600',
-    color: '#6e39ea',
+    color: '#71717a',
   },
 });
