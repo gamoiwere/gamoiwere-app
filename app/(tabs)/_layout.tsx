@@ -8,7 +8,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#007AFF',
+        tabBarActiveTintColor: '#7c3aed',
         tabBarInactiveTintColor: '#8E8E93',
         tabBarStyle: {
           position: 'absolute',
@@ -50,7 +50,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <Home
               size={26}
-              color={focused ? '#007AFF' : '#8E8E93'}
+              color={focused ? '#7c3aed' : '#8E8E93'}
               strokeWidth={2}
             />
           ),
@@ -63,7 +63,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <LayoutGrid
               size={26}
-              color={focused ? '#007AFF' : '#8E8E93'}
+              color={focused ? '#7c3aed' : '#8E8E93'}
               strokeWidth={2}
             />
           ),
@@ -76,7 +76,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <ShoppingBag
               size={26}
-              color={focused ? '#007AFF' : '#8E8E93'}
+              color={focused ? '#7c3aed' : '#8E8E93'}
               strokeWidth={2}
             />
           ),
@@ -89,7 +89,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <User
               size={26}
-              color={focused ? '#007AFF' : '#8E8E93'}
+              color={focused ? '#7c3aed' : '#8E8E93'}
               strokeWidth={2}
             />
           ),
