@@ -1,6 +1,30 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
-import { ChevronRight, ChevronDown, LayoutGrid, Search, TrendingUp } from 'lucide-react-native';
+import {
+  ChevronRight,
+  ChevronDown,
+  LayoutGrid,
+  User,
+  Users,
+  Baby,
+  Home,
+  ShoppingBag,
+  Sparkles,
+  Shirt,
+  Mountain,
+  Laptop,
+  Scissors,
+  Heart,
+  Briefcase,
+  BookOpen,
+  Gift,
+  Wrench,
+  Car,
+  Hammer,
+  Gem,
+  Palette,
+  Download
+} from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
@@ -74,10 +98,35 @@ export default function CategoriesScreen() {
     return categories.reduce((sum, cat) => sum + countTotalProducts(cat), 0);
   };
 
+  const getCategoryIcon = (categoryName: string) => {
+    const name = categoryName.toLowerCase();
+    if (name.includes('ქალ') || name.includes('ქალის')) return User;
+    if (name.includes('მამაკაც')) return Users;
+    if (name.includes('ბავშვ') || name.includes('დედა')) return Baby;
+    if (name.includes('საყოფაცხოვრებო') || name.includes('ავეჯი')) return Home;
+    if (name.includes('ყოველდღიური')) return ShoppingBag;
+    if (name.includes('სილამაზე') || name.includes('ჰიგიენა')) return Sparkles;
+    if (name.includes('ფეხსაცმელი')) return Shirt;
+    if (name.includes('სპორტ') || name.includes('გარე')) return Mountain;
+    if (name.includes('ელექტრონიკა')) return Laptop;
+    if (name.includes('ქსოვილი')) return Scissors;
+    if (name.includes('ორსული')) return Heart;
+    if (name.includes('სამსახური')) return Briefcase;
+    if (name.includes('წიგნ')) return BookOpen;
+    if (name.includes('ჰობი') || name.includes('არდადეგ')) return Gift;
+    if (name.includes('მოწყობილობ')) return Wrench;
+    if (name.includes('მანქან') || name.includes('მოტო')) return Car;
+    if (name.includes('გაუმჯობესება') || name.includes('ბაღ')) return Hammer;
+    if (name.includes('სამკაულ') || name.includes('აქსესუარ')) return Gem;
+    if (name.includes('ნამუშევრ')) return Palette;
+    if (name.includes('ციფრული')) return Download;
+    return LayoutGrid;
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B35" />
+        <ActivityIndicator size="large" color="#7c3aed" />
         <Text style={styles.loadingText}>იტვირთება...</Text>
       </View>
     );
@@ -86,7 +135,7 @@ export default function CategoriesScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#FF6B35', '#FF8555', '#FFA075']}
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -143,16 +192,19 @@ export default function CategoriesScreen() {
                 activeOpacity={0.8}
               >
                 <LinearGradient
-                  colors={['#FFFFFF', '#FFF5F2']}
+                  colors={['#FFFFFF', '#faf5ff']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.mainCategoryGradient}
                 >
                   <View style={styles.mainCategoryLeft}>
                     <View style={[styles.categoryIconBadge, {
-                      backgroundColor: '#FF6B35'
+                      backgroundColor: '#7c3aed'
                     }]}>
-                      <LayoutGrid size={24} color="#fff" strokeWidth={2.5} />
+                      {(() => {
+                        const IconComponent = getCategoryIcon(category.Name);
+                        return <IconComponent size={24} color="#fff" strokeWidth={2.5} />;
+                      })()}
                     </View>
                     <View style={styles.mainCategoryInfo}>
                       <Text style={styles.mainCategoryName}>{category.Name}</Text>
@@ -256,7 +308,7 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 32,
     paddingHorizontal: 24,
-    shadowColor: '#FF6B35',
+    shadowColor: '#7c3aed',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
@@ -428,8 +480,8 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#FF6B35',
-    shadowColor: '#FF6B35',
+    backgroundColor: '#7c3aed',
+    shadowColor: '#7c3aed',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
