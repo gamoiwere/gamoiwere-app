@@ -188,7 +188,16 @@ export default function CategoriesScreen() {
             <View key={category.Id} style={styles.mainCategoryWrapper}>
               <TouchableOpacity
                 style={styles.mainCategoryCard}
-                onPress={() => toggleCategory(category.Id)}
+                onPress={() => {
+                  if (category.Children && category.Children.length > 0) {
+                    toggleCategory(category.Id);
+                  } else {
+                    router.push({
+                      pathname: '/category/[id]',
+                      params: { id: category.Id, name: category.Name }
+                    });
+                  }
+                }}
                 activeOpacity={0.8}
               >
                 <LinearGradient
@@ -229,7 +238,16 @@ export default function CategoriesScreen() {
                     <View key={subCategory.Id} style={styles.subCategoryWrapper}>
                       <TouchableOpacity
                         style={styles.subCategoryCard}
-                        onPress={() => toggleSubCategory(subCategory.Id)}
+                        onPress={() => {
+                          if (subCategory.Children && subCategory.Children.length > 0) {
+                            toggleSubCategory(subCategory.Id);
+                          } else {
+                            router.push({
+                              pathname: '/category/[id]',
+                              params: { id: subCategory.Id, name: subCategory.Name }
+                            });
+                          }
+                        }}
                         activeOpacity={0.8}
                       >
                         <View style={styles.subCategoryContent}>
@@ -263,6 +281,10 @@ export default function CategoriesScreen() {
                               key={subSubCategory.Id}
                               style={styles.subSubCategoryCard}
                               activeOpacity={0.7}
+                              onPress={() => router.push({
+                                pathname: '/category/[id]',
+                                params: { id: subSubCategory.Id, name: subSubCategory.Name }
+                              })}
                             >
                               <View style={styles.subSubCategoryContent}>
                                 <View style={styles.subSubCategoryDot} />
