@@ -3,21 +3,17 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { authService } from '@/services/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RootLayout() {
   useFrameworkReady();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
       const token = await authService.getToken();
-      const onboardingSeen = await AsyncStorage.getItem('hasSeenOnboarding');
       setIsAuthenticated(!!token);
-      setHasSeenOnboarding(onboardingSeen === 'true');
     };
 
     checkAuth();
@@ -28,22 +24,22 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated === null || hasSeenOnboarding === null) return;
+    if (isAuthenticated === null) return;
 
     const inAuthGroup = segments[0] === 'auth';
     const inOnboarding = segments[0] === 'onboarding';
     const inSplash = segments[0] === 'splash';
 
-    if (!hasSeenOnboarding && !inSplash && !inOnboarding) {
+    if (!inSplash && !inOnboarding && !inAuthGroup && segments.length === 0) {
       router.replace('/splash');
-    } else if (!isAuthenticated && !inAuthGroup && hasSeenOnboarding) {
+    } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash) {
       router.replace('/auth/login');
     } else if (isAuthenticated && inAuthGroup) {
       router.replace('/(tabs)');
     }
-  }, [isAuthenticated, hasSeenOnboarding, segments]);
+  }, [isAuthenticated, segments]);
 
-  if (isAuthenticated === null || hasSeenOnboarding === null) {
+  if (isAuthenticated === null) {
     return null;
   }
 

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimen
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,17 +30,15 @@ const onboardingData = [
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (currentIndex < onboardingData.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
       router.replace('/auth/login');
     }
   };
 
-  const handleSkip = async () => {
-    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+  const handleSkip = () => {
     router.replace('/auth/login');
   };
 
