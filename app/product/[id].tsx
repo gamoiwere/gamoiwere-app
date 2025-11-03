@@ -391,25 +391,17 @@ export default function ProductDetailScreen() {
             </View>
           )}
 
-          <View style={styles.quickInfoSection}>
-            <View style={styles.quickInfoItem}>
-              <View style={styles.quickInfoIcon}>
-                <Shield size={20} color="#6e39ea" strokeWidth={2} />
-              </View>
-              <View>
-                <Text style={styles.quickInfoLabel}>გარანტია</Text>
-                <Text style={styles.quickInfoValue}>12 თვე</Text>
-              </View>
+          <View style={styles.deliveryPromoBanner}>
+            <View style={styles.promoHeader}>
+              <Truck size={22} color="#2563eb" strokeWidth={2} />
+              <Text style={styles.promoTitle}>სპეციალური შეთავაზება!</Text>
             </View>
-            <View style={styles.quickInfoDivider} />
-            <View style={styles.quickInfoItem}>
-              <View style={styles.quickInfoIcon}>
-                <Truck size={20} color="#6e39ea" strokeWidth={2} />
-              </View>
-              <View>
-                <Text style={styles.quickInfoLabel}>მიწოდება</Text>
-                <Text style={styles.quickInfoValue}>უფასო</Text>
-              </View>
+            <Text style={styles.promoDescription}>
+              დღეს შეკვეთის შემთხვევაში მიიღებთ 10-14 სამუშაო დღეში
+            </Text>
+            <View style={styles.deliveryDateRow}>
+              <Calendar size={16} color="#6e39ea" strokeWidth={2} />
+              <Text style={styles.deliveryDate}>მიწოდების თარიღი: {getDeliveryDateRange()}</Text>
             </View>
           </View>
 
@@ -740,43 +732,45 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#f5f5f5',
   },
-  quickInfoSection: {
-    flexDirection: 'row',
-    backgroundColor: '#fafafa',
+  deliveryPromoBanner: {
+    backgroundColor: '#eff6ff',
     borderRadius: 16,
-    padding: 16,
+    padding: 18,
     marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#2563eb',
   },
-  quickInfoItem: {
-    flex: 1,
+  promoHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
+    marginBottom: 8,
   },
-  quickInfoIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f5f3ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  quickInfoLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#999',
-    marginBottom: 2,
-  },
-  quickInfoValue: {
-    fontSize: 14,
+  promoTitle: {
+    fontSize: 18,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#2563eb',
   },
-  quickInfoDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: '#e5e5e5',
-    marginHorizontal: 16,
+  promoDescription: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  deliveryDateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#ffffff',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+  },
+  deliveryDate: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6e39ea',
   },
   section: {
     marginBottom: 24,
