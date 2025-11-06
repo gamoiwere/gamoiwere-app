@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -10,19 +10,19 @@ const { width, height } = Dimensions.get('window');
 const onboardingData = [
   {
     id: 1,
-    image: require('@/assets/images/1.png'),
+    colors: ['#8b5cf6', '#7c3aed'],
     title: 'აღმოაჩინე უნიკალური სტილი',
     subtitle: 'იპოვე შენთვის შესაფერისი ფეშენ პროდუქტები მთელი მსოფლიოდან',
   },
   {
     id: 2,
-    image: require('@/assets/images/2.png'),
+    colors: ['#6d28d9', '#5b21b6'],
     title: 'განსაკუთრებული კოლექციები',
     subtitle: 'ექსკლუზიური სეზონური კოლექციები და ახალი ტრენდები ყოველ კვირას',
   },
   {
     id: 3,
-    image: require('@/assets/images/3.png'),
+    colors: ['#7c3aed', '#6d28d9'],
     title: 'მარტივი და სწრაფი შეკვეთა',
     subtitle: 'შეუკვეთე საყვარელი პროდუქტები და მიიღე სწრაფი მიწოდებით',
   },
@@ -49,15 +49,13 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={currentSlide.image}
+      <LinearGradient
+        colors={currentSlide.colors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
         style={styles.backgroundImage}
-        resizeMode="cover"
       >
-        <LinearGradient
-          colors={['rgba(124, 58, 237, 0.3)', 'rgba(124, 58, 237, 0.7)', 'rgba(124, 58, 237, 0.9)']}
-          style={styles.overlay}
-        >
+        <View style={styles.overlay}>
           <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
             <Text style={styles.skipText}>გამოტოვება</Text>
           </TouchableOpacity>
@@ -99,8 +97,8 @@ export default function OnboardingScreen() {
               </TouchableOpacity>
             </View>
           </View>
-        </LinearGradient>
-      </ImageBackground>
+        </View>
+      </LinearGradient>
     </View>
   );
 }

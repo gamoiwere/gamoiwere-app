@@ -160,11 +160,14 @@ export default function HomeScreen() {
       >
         <View style={styles.heroSection}>
           <TouchableOpacity activeOpacity={0.9}>
-            <Image
-              source={require('@/assets/images/Promo Section copy.png')}
+            <LinearGradient
+              colors={['#6e39ea', '#8b5cf6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
               style={styles.promoImage}
-              resizeMode="cover"
-            />
+            >
+              <Text style={styles.promoText}>სპეციალური შეთავაზება</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
 
@@ -363,6 +366,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 180,
     borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  promoText: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: -0.5,
   },
   section: {
     paddingHorizontal: 8,
