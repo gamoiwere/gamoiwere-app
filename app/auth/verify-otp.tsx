@@ -15,8 +15,11 @@ export default function VerifyOTPScreen() {
 
   useEffect(() => {
     const loadPhone = async () => {
+      console.log('📱 Loading phone numbers from AsyncStorage...');
       const phone = await AsyncStorage.getItem('registrationPhone');
       const phoneFull = await AsyncStorage.getItem('registrationPhoneFull');
+      console.log('📱 Masked phone from storage:', phone);
+      console.log('📱 Full phone from storage:', phoneFull);
       if (phone) {
         setMaskedPhone(phone);
       }
