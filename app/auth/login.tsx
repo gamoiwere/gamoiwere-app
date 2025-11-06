@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, EyeOff, Eye, Apple } from 'lucide-react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { ArrowLeft, EyeOff, Eye } from 'lucide-react-native';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
 
@@ -145,12 +144,12 @@ export default function LoginScreen() {
 
             <View style={styles.socialContainer}>
               <TouchableOpacity style={styles.socialButton}>
-                <Apple size={20} color="#000000" strokeWidth={2} />
+                <Image source={require('@/assets/images/apple.png')} style={styles.socialIcon} />
                 <Text style={styles.socialText}>Apple</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.socialButton}>
-                <Ionicons name="logo-google" size={20} color="#4285F4" />
+                <Image source={require('@/assets/images/google.png')} style={styles.socialIcon} />
                 <Text style={styles.socialText}>Google</Text>
               </TouchableOpacity>
             </View>
@@ -350,6 +349,10 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderWidth: 1,
     borderColor: '#e5e5e5',
+  },
+  socialIcon: {
+    width: 20,
+    height: 20,
   },
   socialText: {
     fontSize: 15,
