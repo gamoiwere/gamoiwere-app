@@ -1,31 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Platform, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {
-  ChevronRight,
-  ChevronDown,
-  LayoutGrid,
-  User,
-  Users,
-  Baby,
-  Home,
-  ShoppingBag,
-  Sparkles,
-  Shirt,
-  Mountain,
-  Laptop,
-  Scissors,
-  Heart,
-  Briefcase,
-  BookOpen,
-  Gift,
-  Wrench,
-  Car,
-  Hammer,
-  Gem,
-  Palette,
-  Download
-} from 'lucide-react-native';
+import { ChevronRight, ChevronDown, LayoutGrid, User, Users, Baby, Hop as Home, ShoppingBag, Sparkles, Shirt, Mountain, Laptop, Scissors, Heart, Briefcase, BookOpen, Gift, Wrench, Car, Hammer, Gem, Palette, Download } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 
