@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService, User as AuthUser } from '@/services/auth';
 import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ProfileScreen() {
+  const insets = useSafeAreaInsets();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,22 @@ export default function ProfileScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.loadingText}>იტვირთება...</Text>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.headerGradient, { paddingTop: insets.top + 20 }]}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>პროფილი</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.loadingContainer}>
+          <User size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
+        </View>
       </View>
     );
   }
@@ -50,26 +67,52 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>პროფილი</Text>
-        </View>
-
-        <View style={styles.guestContainer}>
-          <View style={styles.guestIconContainer}>
-            <User size={48} color="#6e39ea" strokeWidth={2} />
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.headerGradient, { paddingTop: insets.top + 20 }]}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>პროფილი</Text>
           </View>
-          <Text style={styles.guestTitle}>შედით თქვენს ანგარიშში</Text>
-          <Text style={styles.guestSubtitle}>
-            შეკვეთების შესახებ ინფორმაციის სანახავად და თქვენი პროფილის მართვისთვის
-          </Text>
+        </LinearGradient>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleNavigateToAuth}>
-            <Text style={styles.loginButtonText}>შესვლა</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.push('/auth/register')}>
-            <Text style={styles.registerLink}>რეგისტრაცია</Text>
-          </TouchableOpacity>
+        <View style={styles.authContainer}>
+          <View style={styles.authCard}>
+            <View style={styles.authIconWrapper}>
+              <LinearGradient
+                colors={['#7c3aed', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.authIcon}
+              >
+                <User size={48} color="#fff" strokeWidth={2} />
+              </LinearGradient>
+            </View>
+            <Text style={styles.authTitle}>შედით ანგარიშში</Text>
+            <Text style={styles.authDescription}>
+              თქვენი პროფილის სანახავად და მართვისთვის
+              გთხოვთ გაიარეთ ავტორიზაცია
+            </Text>
+            <TouchableOpacity
+              style={styles.authButton}
+              onPress={handleNavigateToAuth}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={['#7c3aed', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.authButtonGradient}
+              >
+                <Text style={styles.authButtonText}>შესვლა</Text>
+                <ChevronRight size={20} color="#fff" strokeWidth={3} />
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -77,36 +120,44 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#6e39ea', '#8b5cf6', '#a78bfa']}
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
+        style={[styles.headerGradient, { paddingTop: insets.top + 20 }]}
       >
-        <View style={styles.headerContent}>
-          <View style={styles.avatarSection}>
-            <View style={styles.avatarContainer}>
-              <User size={48} color="#fff" strokeWidth={2.5} />
-            </View>
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{user?.full_name || user?.username || 'მომხმარებელი'}</Text>
-              {user?.verification_status === 'verified' && (
-                <View style={styles.verifiedBadge}>
-                  <ShieldCheck size={14} color="#10b981" strokeWidth={2} />
-                  <Text style={styles.verifiedText}>დადასტურებული</Text>
-                </View>
-              )}
-              <View style={styles.contactInfo}>
-                <Mail size={12} color="#e9d5ff" strokeWidth={2} />
-                <Text style={styles.contactText}>{user?.email}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerSubtitle}>თქვენი</Text>
+          <Text style={styles.headerTitle}>პროფილი</Text>
+        </View>
+        <View style={styles.avatarSection}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.avatarContainer}
+          >
+            <User size={48} color="#fff" strokeWidth={2.5} />
+          </LinearGradient>
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>{user?.full_name || user?.username || 'მომხმარებელი'}</Text>
+            {user?.verification_status === 'verified' && (
+              <View style={styles.verifiedBadge}>
+                <ShieldCheck size={14} color="#10b981" strokeWidth={2} />
+                <Text style={styles.verifiedText}>დადასტურებული</Text>
               </View>
-              {user?.phone && (
-                <View style={styles.contactInfo}>
-                  <Phone size={12} color="#e9d5ff" strokeWidth={2} />
-                  <Text style={styles.contactText}>{user.phone}</Text>
-                </View>
-              )}
+            )}
+            <View style={styles.contactInfo}>
+              <Mail size={12} color="rgba(255, 255, 255, 0.8)" strokeWidth={2} />
+              <Text style={styles.contactText}>{user?.email}</Text>
             </View>
+            {user?.phone && (
+              <View style={styles.contactInfo}>
+                <Phone size={12} color="rgba(255, 255, 255, 0.8)" strokeWidth={2} />
+                <Text style={styles.contactText}>{user.phone}</Text>
+              </View>
+            )}
           </View>
         </View>
       </LinearGradient>
@@ -114,7 +165,7 @@ export default function ProfileScreen() {
       <View style={styles.balanceSection}>
         <View style={styles.balanceCard}>
           <LinearGradient
-            colors={['#6e39ea', '#8b5cf6']}
+            colors={['#7c3aed', '#8b5cf6']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.balanceGradient}
@@ -243,100 +294,146 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f7',
   },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-    backgroundColor: '#fff',
+  titleContainer: {
+    gap: 4,
+    marginBottom: 20,
   },
-  title: {
-    fontSize: 32,
+  headerSubtitle: {
+    fontSize: 13,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: 'rgba(255, 255, 255, 0.75)',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
+  },
+  headerTitle: {
+    fontSize: 42,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -2,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    gap: 16,
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    paddingVertical: 40,
+    fontWeight: '600',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
   },
-  guestContainer: {
-    padding: 24,
+  authContainer: {
+    flex: 1,
     alignItems: 'center',
-    marginTop: 40,
+    justifyContent: 'center',
+    padding: 24,
+    paddingBottom: 120,
   },
-  guestIconContainer: {
+  authCard: {
+    backgroundColor: '#fff',
+    borderRadius: 32,
+    padding: 40,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+    elevation: 10,
+  },
+  authIconWrapper: {
+    marginBottom: 24,
+  },
+  authIcon: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#6e39ea20',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  guestTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 8,
+  authTitle: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
   },
-  guestSubtitle: {
+  authDescription: {
     fontSize: 15,
-    color: '#666',
+    color: '#6b7280',
     textAlign: 'center',
-    marginBottom: 32,
     lineHeight: 22,
+    marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
   },
-  loginButton: {
-    backgroundColor: '#6e39ea',
-    paddingHorizontal: 48,
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 16,
+  authButton: {
+    width: '100%',
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  loginButtonText: {
+  authButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 18,
+    gap: 8,
+  },
+  authButtonText: {
+    fontSize: 17,
+    fontWeight: '800',
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  registerLink: {
-    color: '#6e39ea',
-    fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'MarkGEO-Regular',
   },
   headerGradient: {
-    paddingTop: 60,
-    paddingBottom: 40,
-    paddingHorizontal: 20,
-  },
-  headerContent: {
-    flex: 1,
+    paddingBottom: 28,
+    paddingHorizontal: 24,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
   avatarSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 14,
   },
   avatarContainer: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   userInfo: {
     flex: 1,
   },
   userName: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '900',
     color: '#fff',
     marginBottom: 8,
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   verifiedBadge: {
     flexDirection: 'row',
@@ -353,6 +450,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#10b981',
+    fontFamily: 'MarkGEO-Regular',
   },
   contactInfo: {
     flexDirection: 'row',
@@ -362,26 +460,27 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 13,
-    color: '#e9d5ff',
+    color: 'rgba(255, 255, 255, 0.8)',
     fontWeight: '500',
+    fontFamily: 'MarkGEO-Regular',
   },
   balanceSection: {
-    paddingHorizontal: 20,
-    marginTop: -20,
+    paddingHorizontal: 16,
+    marginTop: 16,
     marginBottom: 24,
   },
   balanceCard: {
-    borderRadius: 20,
+    borderRadius: 18,
     overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
-    marginBottom: 16,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
+    marginBottom: 12,
   },
   balanceGradient: {
-    padding: 24,
+    padding: 20,
   },
   balanceHeader: {
     flexDirection: 'row',
@@ -390,16 +489,20 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   balanceTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#e9d5ff',
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   balanceMainAmount: {
-    fontSize: 42,
-    fontWeight: '800',
+    fontSize: 38,
+    fontWeight: '900',
     color: '#fff',
     marginBottom: 16,
-    letterSpacing: -1,
+    letterSpacing: -1.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   balanceCodeContainer: {
     flexDirection: 'row',
@@ -413,23 +516,27 @@ const styles = StyleSheet.create({
   balanceCodeLabel: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#e9d5ff',
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontFamily: 'MarkGEO-Regular',
   },
   balanceCode: {
     fontSize: 16,
     fontWeight: '700',
     color: '#fff',
     letterSpacing: 1,
+    fontFamily: 'MarkGEO-Regular',
   },
   feesCard: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 18,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
-    shadowRadius: 12,
+    shadowRadius: 8,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   feesContent: {
     flexDirection: 'row',
@@ -453,21 +560,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#666',
     marginBottom: 4,
+    fontFamily: 'MarkGEO-Regular',
   },
   feesAmount: {
     fontSize: 22,
     fontWeight: '700',
     color: '#f59e0b',
+    fontFamily: 'MarkGEO-Regular',
   },
   section: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#9ca3af',
     marginBottom: 12,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   menuItem: {
     backgroundColor: '#fff',
@@ -475,13 +587,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     marginBottom: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -489,16 +603,17 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   menuIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   menuItemText: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#1a1a1a',
+    fontFamily: 'MarkGEO-Regular',
   },
   logoutButton: {
     backgroundColor: '#fff',
@@ -506,18 +621,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     gap: 8,
     shadowColor: '#dc2626',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.12,
     shadowRadius: 8,
-    elevation: 2,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#fee2e2',
   },
   logoutText: {
     fontSize: 16,
     fontWeight: '700',
     color: '#dc2626',
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpacer: {
     height: 100,
