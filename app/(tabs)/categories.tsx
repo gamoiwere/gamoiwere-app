@@ -144,13 +144,19 @@ export default function CategoriesScreen() {
         style={[styles.header, { paddingTop: insets.top + 20 }]}
       >
         <View style={styles.headerContent}>
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
-              <Text style={styles.headerTitle}>კატეგორიები</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
+            <Text style={styles.headerTitle}>კატეგორიები</Text>
+          </View>
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>{categories.length}</Text>
+              <Text style={styles.statText}>მთავარი</Text>
             </View>
-            <View style={styles.headerIconBadge}>
-              <LayoutGrid size={28} color="#fff" strokeWidth={2.5} />
+            <View style={styles.statDividerVertical} />
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>{getTotalCategories()}</Text>
+              <Text style={styles.statText}>სულ</Text>
             </View>
           </View>
         </View>
@@ -161,27 +167,9 @@ export default function CategoriesScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
       >
-        {categories.length > 0 && (
-          <View style={styles.statsCard}>
-            <LinearGradient
-              colors={['#ffffff', '#fafafa']}
-              style={styles.statsGradient}
-            >
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{categories.length}</Text>
-                <Text style={styles.statLabel}>მთავარი კატეგორიები</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>{getTotalCategories()}</Text>
-                <Text style={styles.statLabel}>სულ კატეგორიები</Text>
-              </View>
-            </LinearGradient>
-          </View>
-        )}
-
         {categories.length === 0 && (
           <View style={styles.emptyContainer}>
+            <LayoutGrid size={64} color="#e0e0e0" strokeWidth={1.5} />
             <Text style={styles.emptyText}>კატეგორიები არ მოიძებნა</Text>
           </View>
         )}
@@ -201,23 +189,21 @@ export default function CategoriesScreen() {
                     });
                   }
                 }}
-                activeOpacity={0.8}
+                activeOpacity={0.7}
               >
-                <LinearGradient
-                  colors={['#FFFFFF', '#faf5ff']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.mainCategoryGradient}
-                >
+                <View style={styles.mainCategoryContent}>
                   <View style={styles.mainCategoryLeft}>
-                    <View style={[styles.categoryIconBadge, {
-                      backgroundColor: '#7c3aed'
-                    }]}>
+                    <LinearGradient
+                      colors={['#7c3aed', '#8b5cf6']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.categoryIconBadge}
+                    >
                       {(() => {
                         const IconComponent = getCategoryIcon(category.Name);
-                        return <IconComponent size={24} color="#fff" strokeWidth={2.5} />;
+                        return <IconComponent size={26} color="#fff" strokeWidth={2.5} />;
                       })()}
-                    </View>
+                    </LinearGradient>
                     <View style={styles.mainCategoryInfo}>
                       <Text style={styles.mainCategoryName}>{category.Name}</Text>
                       <Text style={styles.mainCategoryCount}>
@@ -225,14 +211,14 @@ export default function CategoriesScreen() {
                       </Text>
                     </View>
                   </View>
-                  <View style={styles.expandIcon}>
+                  <View style={styles.expandIconContainer}>
                     {expandedCategories.has(category.Id) ? (
-                      <ChevronDown size={24} color="#1a1a1a" strokeWidth={2.5} />
+                      <ChevronDown size={22} color="#7c3aed" strokeWidth={3} />
                     ) : (
-                      <ChevronRight size={24} color="#1a1a1a" strokeWidth={2.5} />
+                      <ChevronRight size={22} color="#7c3aed" strokeWidth={3} />
                     )}
                   </View>
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
 
               {expandedCategories.has(category.Id) && category.Children && (
@@ -251,29 +237,29 @@ export default function CategoriesScreen() {
                             });
                           }
                         }}
-                        activeOpacity={0.8}
+                        activeOpacity={0.7}
                       >
                         <View style={styles.subCategoryContent}>
                           <View style={styles.subCategoryLeft}>
                             <View style={styles.subCategoryDot} />
-                            <View style={styles.subCategoryInfo}>
-                              <Text style={styles.subCategoryName}>{subCategory.Name}</Text>
-                              {subCategory.Children && subCategory.Children.length > 0 && (
-                                <Text style={styles.subCategoryCount}>
-                                  {subCategory.Children.length} ელემენტი
-                                </Text>
-                              )}
-                            </View>
+                            <Text style={styles.subCategoryName}>{subCategory.Name}</Text>
                           </View>
-                          {subCategory.Children && subCategory.Children.length > 0 && (
-                            <View style={styles.subExpandIcon}>
-                              {expandedSubCategories.has(subCategory.Id) ? (
-                                <ChevronDown size={20} color="#666" strokeWidth={2.5} />
-                              ) : (
-                                <ChevronRight size={20} color="#666" strokeWidth={2.5} />
-                              )}
-                            </View>
-                          )}
+                          <View style={styles.subCategoryRight}>
+                            {subCategory.Children && subCategory.Children.length > 0 && (
+                              <View style={styles.subCountBadge}>
+                                <Text style={styles.subCountText}>{subCategory.Children.length}</Text>
+                              </View>
+                            )}
+                            {subCategory.Children && subCategory.Children.length > 0 && (
+                              <View style={styles.subExpandIcon}>
+                                {expandedSubCategories.has(subCategory.Id) ? (
+                                  <ChevronDown size={18} color="#7c3aed" strokeWidth={2.5} />
+                                ) : (
+                                  <ChevronRight size={18} color="#7c3aed" strokeWidth={2.5} />
+                                )}
+                              </View>
+                            )}
+                          </View>
                         </View>
                       </TouchableOpacity>
 
@@ -315,13 +301,13 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f7',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f7',
     gap: 16,
   },
   loadingText: {
@@ -330,164 +316,156 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   header: {
-    paddingBottom: 32,
+    paddingBottom: 28,
     paddingHorizontal: 24,
     shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
   headerContent: {
-    flex: 1,
+    gap: 20,
   },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  titleContainer: {
+    gap: 4,
   },
   headerSubtitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginBottom: 6,
-    letterSpacing: 0.5,
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.75)',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
   headerTitle: {
-    fontSize: 38,
+    fontSize: 42,
     fontWeight: '900',
     color: '#fff',
-    letterSpacing: -1.5,
+    letterSpacing: -2,
   },
-  headerIconBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  statBox: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 4,
+  },
+  statNumber: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -1,
+  },
+  statText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  statDividerVertical: {
+    width: 1,
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    padding: 20,
+    padding: 16,
   },
-  statsCard: {
-    marginBottom: 24,
-    borderRadius: 20,
+  categoriesContainer: {
+    gap: 12,
+  },
+  mainCategoryWrapper: {
+    marginBottom: 4,
+  },
+  mainCategoryCard: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
-  statsGradient: {
-    flexDirection: 'row',
-    padding: 24,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#1a1a1a',
-    marginBottom: 6,
-    letterSpacing: -1,
-  },
-  statLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6b7280',
-    textAlign: 'center',
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: '#e5e7eb',
-    marginHorizontal: 20,
-  },
-  categoriesContainer: {
-    gap: 16,
-  },
-  mainCategoryWrapper: {
-    marginBottom: 8,
-  },
-  mainCategoryCard: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  mainCategoryGradient: {
+  mainCategoryContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 18,
   },
   mainCategoryLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 14,
     flex: 1,
   },
   categoryIconBadge: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
+    width: 60,
+    height: 60,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
   mainCategoryInfo: {
     flex: 1,
   },
   mainCategoryName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     color: '#1a1a1a',
-    marginBottom: 4,
-    letterSpacing: -0.5,
+    marginBottom: 3,
+    letterSpacing: -0.3,
   },
   mainCategoryCount: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
-    color: '#6b7280',
+    color: '#999',
+    letterSpacing: 0.2,
   },
-  expandIcon: {
-    marginLeft: 12,
+  expandIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: '#f5f3ff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subCategoriesContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
+    backgroundColor: '#fafafa',
+    borderRadius: 14,
     marginTop: 8,
-    marginLeft: 16,
-    padding: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 1,
+    marginHorizontal: 8,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   subCategoryWrapper: {
-    marginBottom: 4,
+    marginBottom: 6,
   },
   subCategoryCard: {
-    paddingVertical: 12,
-    paddingHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   subCategoryContent: {
     flexDirection: 'row',
@@ -501,47 +479,58 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   subCategoryDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: '#7c3aed',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-  },
-  subCategoryInfo: {
-    flex: 1,
   },
   subCategoryName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
     color: '#1a1a1a',
-    marginBottom: 2,
+    letterSpacing: -0.2,
+    flex: 1,
   },
-  subCategoryCount: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#9ca3af',
+  subCategoryRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  subCountBadge: {
+    backgroundColor: '#f5f3ff',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e9d5ff',
+  },
+  subCountText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#7c3aed',
+    letterSpacing: -0.2,
   },
   subExpandIcon: {
-    marginLeft: 8,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   subSubCategoriesContainer: {
-    marginLeft: 22,
+    marginLeft: 20,
     marginTop: 8,
-    gap: 4,
+    gap: 6,
   },
   subSubCategoryCard: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    backgroundColor: '#ffffff',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    backgroundColor: '#fafafa',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#f0f0f0',
   },
   subSubCategoryContent: {
     flexDirection: 'row',
@@ -550,27 +539,30 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   subSubCategoryDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#94a3b8',
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#a78bfa',
   },
   subSubCategoryName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4b5563',
+    color: '#444',
     flex: 1,
+    letterSpacing: -0.1,
   },
   bottomSpacer: {
     height: 100,
   },
   emptyContainer: {
-    paddingVertical: 60,
+    paddingVertical: 80,
     alignItems: 'center',
+    gap: 16,
   },
   emptyText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#9ca3af',
+    color: '#bbb',
+    letterSpacing: 0.2,
   },
 });
