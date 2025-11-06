@@ -69,10 +69,10 @@ export default function LoginScreen() {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
+              <Text style={styles.inputLabel}>მომხმარებლის სახელი</Text>
               <TextInput
                 style={styles.input}
-                placeholder="mica.brooks@gmail.com"
+                placeholder="მომხმარებლის სახელი"
                 placeholderTextColor="#a1a1aa"
                 value={email}
                 onChangeText={setEmail}
