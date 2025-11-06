@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Platform, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   ChevronRight,
   ChevronDown,
@@ -39,6 +40,7 @@ interface Category {
 }
 
 export default function CategoriesScreen() {
+  const insets = useSafeAreaInsets();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
@@ -134,11 +136,12 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
         colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.header}
+        style={[styles.header, { paddingTop: insets.top + 20 }]}
       >
         <View style={styles.headerContent}>
           <View style={styles.headerTop}>
@@ -327,7 +330,6 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   header: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 50,
     paddingBottom: 32,
     paddingHorizontal: 24,
     shadowColor: '#7c3aed',
