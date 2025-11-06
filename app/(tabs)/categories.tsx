@@ -267,8 +267,6 @@ export default function CategoriesScreen() {
           ))}
         </View>
 
-        </View>
-
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </View>
