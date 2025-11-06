@@ -47,6 +47,7 @@ export interface RegisterResponse {
   success: boolean;
   message: string;
   phone: string;
+  sessionToken?: string;
 }
 
 export interface VerifyOTPResponse {
@@ -129,6 +130,11 @@ export const authService = {
 
       await AsyncStorage.setItem('registrationPhone', data.phone);
 
+      if (data.sessionToken) {
+        await AsyncStorage.setItem('registrationSession', data.sessionToken);
+        console.log('💾 Session token saved');
+      }
+
       return data;
     } catch (error: any) {
       console.error('❌ Register error:', error);
@@ -140,12 +146,21 @@ export const authService = {
     try {
       console.log('🔐 Verifying OTP');
 
+      const sessionToken = await AsyncStorage.getItem('registrationSession');
+
+      const headers: any = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      if (sessionToken) {
+        headers['Authorization'] = `Bearer ${sessionToken}`;
+        console.log('🔑 Using session token for verification');
+      }
+
       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        headers,
         body: JSON.stringify({
           otp,
         }),
@@ -153,6 +168,7 @@ export const authService = {
 
       const data = await response.json();
       console.log('📡 Verify OTP response status:', response.status);
+      console.log('📦 Response data:', JSON.stringify(data, null, 2));
 
       if (!response.ok) {
         console.error('❌ Verification failed:', data.message);
@@ -164,6 +180,7 @@ export const authService = {
       await AsyncStorage.setItem('authToken', data.token);
       await AsyncStorage.setItem('user', JSON.stringify(data.user));
       await AsyncStorage.removeItem('registrationPhone');
+      await AsyncStorage.removeItem('registrationSession');
 
       console.log('💾 Token and user saved to AsyncStorage');
 
