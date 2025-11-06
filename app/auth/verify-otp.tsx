@@ -11,12 +11,17 @@ export default function VerifyOTPScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [maskedPhone, setMaskedPhone] = useState('');
+  const [fullPhone, setFullPhone] = useState('');
 
   useEffect(() => {
     const loadPhone = async () => {
       const phone = await AsyncStorage.getItem('registrationPhone');
+      const phoneFull = await AsyncStorage.getItem('registrationPhoneFull');
       if (phone) {
         setMaskedPhone(phone);
+      }
+      if (phoneFull) {
+        setFullPhone(phoneFull);
       }
     };
     loadPhone();
@@ -28,11 +33,16 @@ export default function VerifyOTPScreen() {
       return;
     }
 
+    if (!fullPhone) {
+      setError('ტელეფონის ნომერი ვერ მოიძებნა');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
     try {
-      await authService.verifyOTP(otp);
+      await authService.verifyOTP(otp, fullPhone);
       router.replace('/(tabs)');
     } catch (err: any) {
       setError(err.message || 'ვერიფიკაცია ვერ მოხერხდა');

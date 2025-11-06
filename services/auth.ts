@@ -130,6 +130,7 @@ export const authService = {
       console.log('📱 Masked phone:', data.phone);
 
       await AsyncStorage.setItem('registrationPhone', data.phone);
+      await AsyncStorage.setItem('registrationPhoneFull', phone);
 
       if (data.sessionToken) {
         await AsyncStorage.setItem('registrationSession', data.sessionToken);
@@ -143,9 +144,9 @@ export const authService = {
     }
   },
 
-  async verifyOTP(otp: string): Promise<VerifyOTPResponse> {
+  async verifyOTP(otp: string, phone: string): Promise<VerifyOTPResponse> {
     try {
-      console.log('🔐 Verifying OTP');
+      console.log('🔐 Verifying OTP for phone:', phone);
 
       const sessionToken = await AsyncStorage.getItem('registrationSession');
 
@@ -165,6 +166,7 @@ export const authService = {
         credentials: 'include',
         body: JSON.stringify({
           otp,
+          phone,
         }),
       });
 
@@ -182,6 +184,7 @@ export const authService = {
       await AsyncStorage.setItem('authToken', data.token);
       await AsyncStorage.setItem('user', JSON.stringify(data.user));
       await AsyncStorage.removeItem('registrationPhone');
+      await AsyncStorage.removeItem('registrationPhoneFull');
       await AsyncStorage.removeItem('registrationSession');
 
       console.log('💾 Token and user saved to AsyncStorage');
