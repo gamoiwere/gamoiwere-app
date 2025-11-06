@@ -146,7 +146,10 @@ export const authService = {
 
   async verifyOTP(otp: string, phone: string): Promise<VerifyOTPResponse> {
     try {
-      console.log('🔐 Verifying OTP for phone:', phone);
+      console.log('🔐 Verifying OTP');
+      console.log('📱 Phone:', phone);
+      console.log('🔢 OTP:', otp);
+      console.log('🌐 API URL:', `${API_BASE_URL}/verify-otp`);
 
       const sessionToken = await AsyncStorage.getItem('registrationSession');
 
@@ -160,14 +163,18 @@ export const authService = {
         console.log('🔑 Using session token for verification');
       }
 
+      const requestBody = {
+        otp,
+        phone,
+      };
+
+      console.log('📤 Request body:', JSON.stringify(requestBody, null, 2));
+
       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
         headers,
         credentials: 'include',
-        body: JSON.stringify({
-          otp,
-          phone,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await response.json();
