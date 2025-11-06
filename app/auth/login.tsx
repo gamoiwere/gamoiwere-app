@@ -351,15 +351,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e5e5e5',
   },
-  socialIcon: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  googleIcon: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#4285f4',
-  },
   socialText: {
     fontSize: 15,
     fontWeight: '600',
