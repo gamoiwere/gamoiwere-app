@@ -106,6 +106,7 @@ export const authService = {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           username,
           email,
@@ -161,6 +162,7 @@ export const authService = {
       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
         headers,
+        credentials: 'include',
         body: JSON.stringify({
           otp,
         }),
