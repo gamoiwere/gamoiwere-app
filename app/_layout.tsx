@@ -1,14 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { authService } from '@/services/auth';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   useFrameworkReady();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const segments = useSegments();
   const router = useRouter();
+
+  const [fontsLoaded, fontError] = useFonts({
+    'MarkGEO-Regular': require('../assets/fonts/MarkGEO-Regular.ttf'),
+    'MarkGEOCAPS-Regular': require('../assets/fonts/MarkGEOCAPS-Regular.ttf'),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -38,6 +53,10 @@ export default function RootLayout() {
       router.replace('/(tabs)');
     }
   }, [isAuthenticated, segments]);
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
 
   if (isAuthenticated === null) {
     return null;

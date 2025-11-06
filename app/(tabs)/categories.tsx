@@ -314,6 +314,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#666',
+    fontFamily: 'MarkGEO-Regular',
   },
   header: {
     paddingBottom: 28,
@@ -336,12 +337,14 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.75)',
     letterSpacing: 2,
     textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   headerTitle: {
     fontSize: 42,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -2,
+    fontFamily: 'MarkGEO-Regular',
   },
   statsRow: {
     flexDirection: 'row',
@@ -362,6 +365,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
   },
   statText: {
     fontSize: 11,
@@ -369,6 +373,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   statDividerVertical: {
     width: 1,
@@ -432,12 +437,14 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     marginBottom: 3,
     letterSpacing: -0.3,
+    fontFamily: 'MarkGEO-Regular',
   },
   mainCategoryCount: {
     fontSize: 12,
     fontWeight: '600',
     color: '#999',
     letterSpacing: 0.2,
+    fontFamily: 'MarkGEO-Regular',
   },
   expandIconContainer: {
     width: 32,
@@ -490,6 +497,7 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     letterSpacing: -0.2,
     flex: 1,
+    fontFamily: 'MarkGEO-Regular',
   },
   subCategoryRight: {
     flexDirection: 'row',
@@ -509,6 +517,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#7c3aed',
     letterSpacing: -0.2,
+    fontFamily: 'MarkGEO-Regular',
   },
   subExpandIcon: {
     width: 24,
@@ -550,6 +559,7 @@ const styles = StyleSheet.create({
     color: '#444',
     flex: 1,
     letterSpacing: -0.1,
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpacer: {
     height: 100,
@@ -564,5 +574,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#bbb',
     letterSpacing: 0.2,
+    fontFamily: 'MarkGEO-Regular',
   },
 });
