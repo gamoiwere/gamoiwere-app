@@ -113,36 +113,35 @@ export default function CategoriesScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 20 }]}
-      >
-        <View style={styles.headerContent}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
-            <Text style={styles.headerTitle}>კატეგორიები</Text>
-          </View>
-          <View style={styles.statsRow}>
-            <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{categories.length}</Text>
-              <Text style={styles.statText}>მთავარი</Text>
-            </View>
-            <View style={styles.statDividerVertical} />
-            <View style={styles.statBox}>
-              <Text style={styles.statNumber}>{getTotalCategories()}</Text>
-              <Text style={styles.statText}>სულ</Text>
-            </View>
-          </View>
-        </View>
-      </LinearGradient>
-
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top }]}
       >
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <View style={styles.headerContent}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
+              <Text style={styles.headerTitle}>კატეგორიები</Text>
+            </View>
+            <View style={styles.statsRow}>
+              <View style={styles.statBox}>
+                <Text style={styles.statNumber}>{categories.length}</Text>
+                <Text style={styles.statText}>მთავარი</Text>
+              </View>
+              <View style={styles.statDividerVertical} />
+              <View style={styles.statBox}>
+                <Text style={styles.statNumber}>{getTotalCategories()}</Text>
+                <Text style={styles.statText}>სულ</Text>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
         {categories.length === 0 && (
           <View style={styles.emptyContainer}>
             <LayoutGrid size={64} color="#e0e0e0" strokeWidth={1.5} />
@@ -150,7 +149,7 @@ export default function CategoriesScreen() {
           </View>
         )}
 
-        <View style={styles.categoriesContainer}>
+        <View style={styles.categoriesWrapper}>
           {Array.isArray(categories) && categories.map((category, index) => (
             <View key={category.Id} style={styles.mainCategoryWrapper}>
               <TouchableOpacity
@@ -268,6 +267,8 @@ export default function CategoriesScreen() {
           ))}
         </View>
 
+        </View>
+
         <View style={styles.bottomSpacer} />
       </ScrollView>
     </View>
@@ -293,13 +294,16 @@ const styles = StyleSheet.create({
     fontFamily: 'MarkGEO-Regular',
   },
   header: {
-    paddingBottom: 28,
-    paddingHorizontal: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 20,
     shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
   },
   headerContent: {
     gap: 20,
@@ -308,25 +312,25 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   headerSubtitle: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.75)',
-    letterSpacing: 2,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
     fontFamily: 'MarkGEOCAPS-Regular',
   },
   headerTitle: {
-    fontSize: 42,
+    fontSize: 28,
     fontWeight: '900',
     color: '#fff',
-    letterSpacing: -2,
+    letterSpacing: -1,
     fontFamily: 'MarkGEO-Regular',
   },
   statsRow: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 12,
+    padding: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
@@ -337,14 +341,14 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   statNumber: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: '900',
     color: '#fff',
-    letterSpacing: -1,
+    letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
   statText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.5,
@@ -353,30 +357,32 @@ const styles = StyleSheet.create({
   },
   statDividerVertical: {
     width: 1,
-    height: 40,
+    height: 32,
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    padding: 16,
+    paddingBottom: 16,
   },
-  categoriesContainer: {
-    gap: 12,
+  categoriesWrapper: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    gap: 10,
   },
   mainCategoryWrapper: {
     marginBottom: 4,
   },
   mainCategoryCard: {
     backgroundColor: '#fff',
-    borderRadius: 18,
+    borderRadius: 14,
     overflow: 'hidden',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
@@ -384,7 +390,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 18,
+    padding: 14,
   },
   mainCategoryLeft: {
     flexDirection: 'row',
@@ -393,39 +399,39 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryIconBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 18,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
   },
   mainCategoryInfo: {
     flex: 1,
   },
   mainCategoryName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '800',
     color: '#1a1a1a',
-    marginBottom: 3,
-    letterSpacing: -0.3,
+    marginBottom: 2,
+    letterSpacing: -0.2,
     fontFamily: 'MarkGEO-Regular',
   },
   mainCategoryCount: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#999',
-    letterSpacing: 0.2,
+    letterSpacing: 0.1,
     fontFamily: 'MarkGEO-Regular',
   },
   expandIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: 28,
+    height: 28,
+    borderRadius: 8,
     backgroundColor: '#f5f3ff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -443,9 +449,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   subCategoryCard: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#f0f0f0',
@@ -468,10 +474,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#7c3aed',
   },
   subCategoryName: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: '#1a1a1a',
-    letterSpacing: -0.2,
+    letterSpacing: -0.1,
     flex: 1,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -510,10 +516,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     backgroundColor: '#fafafa',
-    borderRadius: 10,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
@@ -530,11 +536,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#a78bfa',
   },
   subSubCategoryName: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: '#444',
     flex: 1,
-    letterSpacing: -0.1,
+    letterSpacing: 0,
     fontFamily: 'MarkGEO-Regular',
   },
   bottomSpacer: {
