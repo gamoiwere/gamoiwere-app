@@ -86,13 +86,11 @@ export default function RegisterScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
-          </TouchableOpacity>
-
           <View style={styles.header}>
-            <Text style={styles.title}>რეგისტრაცია</Text>
-            <Text style={styles.subtitle}>შექმენით ანგარიში!</Text>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
+            </TouchableOpacity>
+            <Text style={styles.title}>ანგარიშის შექმნა</Text>
           </View>
 
           {error ? (
@@ -276,6 +274,12 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingTop: 60,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 40,
+    gap: 12,
+  },
   backButton: {
     width: 48,
     height: 48,
@@ -283,28 +287,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 40,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  header: {
-    marginBottom: 40,
-  },
   title: {
     fontSize: 16,
     fontWeight: '700',
     color: '#18181b',
-    marginBottom: 0,
-    lineHeight: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#18181b',
-    lineHeight: 20,
+    flex: 1,
   },
   errorContainer: {
     backgroundColor: '#fef2f2',
