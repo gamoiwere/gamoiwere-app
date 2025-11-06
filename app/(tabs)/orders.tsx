@@ -17,6 +17,8 @@ export default function OrdersScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>('ALL');
+  const [totalCount, setTotalCount] = useState(0);
+  const [statusCounts, setStatusCounts] = useState<{ [key: string]: number }>({});
 
   useEffect(() => {
     checkUserAndLoadOrders();
@@ -39,15 +41,41 @@ export default function OrdersScreen() {
 
   const loadOrders = async (status?: string) => {
     try {
-      let fetchedOrders: Order[];
+      const token = await authService.getToken();
+      if (!token) throw new Error('არ ხართ ავტორიზებული');
 
+      let response;
       if (status && status !== 'ALL') {
-        fetchedOrders = await ordersService.getOrdersByStatus(status);
+        response = await fetch(`https://gamoiwere.ge/api/mobile/orders/status/${status}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
       } else {
-        fetchedOrders = await ordersService.getAllOrders();
+        response = await fetch('https://gamoiwere.ge/api/mobile/orders', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
       }
 
-      setOrders(fetchedOrders);
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
+      }
+
+      setOrders(data.orders || []);
+
+      if (status === 'ALL' || !status) {
+        setTotalCount(data.total || 0);
+        await loadStatusCounts(token);
+      }
     } catch (error) {
       console.error('Error loading orders:', error);
       setOrders([]);
@@ -88,10 +116,42 @@ export default function OrdersScreen() {
     });
   };
 
-  const getFilteredOrdersCount = (filterKey: string, ordersList: Order[]) => {
-    if (!ordersList || ordersList.length === 0) return 0;
-    if (filterKey === 'ALL') return ordersList.length;
-    return ordersList.filter(order => order.status === filterKey).length;
+  const loadStatusCounts = async (token: string) => {
+    try {
+      const statuses = ['PENDING', 'PAID', 'SHIPPED', 'DELIVERED'];
+      const counts: { [key: string]: number } = {};
+
+      await Promise.all(
+        statuses.map(async (status) => {
+          try {
+            const response = await fetch(`https://gamoiwere.ge/api/mobile/orders/status/${status}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+            });
+            const data = await response.json();
+            if (response.ok) {
+              counts[status] = data.total || 0;
+            }
+          } catch (error) {
+            console.error(`Error loading count for ${status}:`, error);
+            counts[status] = 0;
+          }
+        })
+      );
+
+      setStatusCounts(counts);
+    } catch (error) {
+      console.error('Error loading status counts:', error);
+    }
+  };
+
+  const getFilteredOrdersCount = (filterKey: string) => {
+    if (filterKey === 'ALL') return totalCount;
+    return statusCounts[filterKey] || 0;
   };
 
   if (loading) {
@@ -180,12 +240,6 @@ export default function OrdersScreen() {
     { key: 'DELIVERED', label: 'მიწოდებულია', icon: CheckCircle },
   ];
 
-  const allOrders = orders || [];
-
-  const filteredOrders = selectedFilter === 'ALL'
-    ? allOrders
-    : allOrders.filter(order => order.status === selectedFilter);
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -201,12 +255,12 @@ export default function OrdersScreen() {
         </View>
         <View style={styles.statsRow}>
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{allOrders.length}</Text>
+            <Text style={styles.statNumber}>{totalCount}</Text>
             <Text style={styles.statText}>სულ</Text>
           </View>
           <View style={styles.statDividerVertical} />
           <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{filteredOrders.length}</Text>
+            <Text style={styles.statNumber}>{orders.length}</Text>
             <Text style={styles.statText}>ფილტრი</Text>
           </View>
         </View>
@@ -220,7 +274,7 @@ export default function OrdersScreen() {
           {filters.map((filter) => {
             const Icon = filter.icon;
             const isActive = selectedFilter === filter.key;
-            const count = getFilteredOrdersCount(filter.key, allOrders);
+            const count = getFilteredOrdersCount(filter.key);
 
             return (
               <TouchableOpacity
@@ -258,7 +312,7 @@ export default function OrdersScreen() {
         }
       >
         <View style={styles.content}>
-          {filteredOrders.length === 0 ? (
+          {orders.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIconCircle}>
                 <Package size={64} color="#d1d5db" strokeWidth={1.5} />
@@ -289,7 +343,7 @@ export default function OrdersScreen() {
               )}
             </View>
           ) : (
-            filteredOrders.map((order, index) => {
+            orders.map((order, index) => {
               const statusInfo = getStatusInfo(order.status);
               const StatusIcon = statusInfo.icon;
 
