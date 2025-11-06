@@ -294,17 +294,17 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    fontSize: 40,
+    fontSize: 16,
     fontWeight: '700',
     color: '#18181b',
     marginBottom: 0,
-    lineHeight: 48,
+    lineHeight: 20,
   },
   subtitle: {
-    fontSize: 40,
+    fontSize: 16,
     fontWeight: '700',
     color: '#18181b',
-    lineHeight: 48,
+    lineHeight: 20,
   },
   errorContainer: {
     backgroundColor: '#fef2f2',
