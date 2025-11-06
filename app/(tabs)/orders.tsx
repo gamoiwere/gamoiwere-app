@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, Dimensions } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, Dimensions, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { ordersService } from '@/services/orders';
@@ -10,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 export default function OrdersScreen() {
+  const insets = useSafeAreaInsets();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -95,24 +97,21 @@ export default function OrdersScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#6e39ea', '#8b5cf6', '#a78bfa']}
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.header}
+          style={[styles.header, { paddingTop: insets.top + 20 }]}
         >
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.greeting}>შეკვეთები</Text>
-              <Text style={styles.headerSubtitle}>იტვირთება...</Text>
-            </View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>შეკვეთები</Text>
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <View style={styles.loadingSpinner}>
-            <Package size={56} color="#6e39ea" strokeWidth={2} />
-          </View>
-          <Text style={styles.loadingText}>იტვირთება შეკვეთები...</Text>
+          <Package size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
         </View>
       </View>
     );
@@ -121,17 +120,16 @@ export default function OrdersScreen() {
   if (!user) {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#6e39ea', '#8b5cf6', '#a78bfa']}
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.header}
+          style={[styles.header, { paddingTop: insets.top + 20 }]}
         >
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.greeting}>შეკვეთები</Text>
-              <Text style={styles.headerSubtitle}>გაიარეთ ავტორიზაცია</Text>
-            </View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>შეკვეთები</Text>
           </View>
         </LinearGradient>
 
@@ -190,20 +188,27 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#6e39ea', '#8b5cf6', '#a78bfa']}
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.header}
+        style={[styles.header, { paddingTop: insets.top + 20 }]}
       >
-        <View style={styles.headerTop}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.greeting}>შეკვეთები</Text>
-            <Text style={styles.headerSubtitle}>{allOrders.length} შეკვეთა სულ</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerSubtitle}>თქვენი</Text>
+          <Text style={styles.headerTitle}>შეკვეთები</Text>
+        </View>
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>{allOrders.length}</Text>
+            <Text style={styles.statText}>სულ</Text>
           </View>
-          <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
-            <Search size={22} color="#fff" strokeWidth={2} />
-          </TouchableOpacity>
+          <View style={styles.statDividerVertical} />
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>{filteredOrders.length}</Text>
+            <Text style={styles.statText}>ფილტრი</Text>
+          </View>
         </View>
 
         <ScrollView
@@ -382,68 +387,83 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f7',
   },
   header: {
-    paddingTop: 60,
-    paddingBottom: 24,
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    shadowColor: '#6e39ea',
+    paddingBottom: 28,
+    paddingHorizontal: 24,
+    shadowColor: '#7c3aed',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
-    shadowRadius: 20,
+    shadowRadius: 16,
     elevation: 12,
   },
-  headerTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  greeting: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#fff',
-    marginBottom: 4,
-    letterSpacing: -0.5,
+  titleContainer: {
+    gap: 4,
+    marginBottom: 20,
   },
   headerSubtitle: {
-    fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontWeight: '600',
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.75)',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
-  searchButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  headerTitle: {
+    fontSize: 42,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -2,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    marginBottom: 20,
+  },
+  statBox: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 4,
+  },
+  statNumber: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    fontFamily: 'MarkGEOCAPS-Regular',
+  },
+  statDividerVertical: {
+    width: 1,
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
-  },
-  loadingSpinner: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
+    gap: 16,
   },
   loadingText: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#6b7280',
+    fontWeight: '600',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
   },
   authContainer: {
     flex: 1,
@@ -485,6 +505,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: '#111827',
     marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
@@ -492,6 +513,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
   },
   authButton: {
     width: '100%',
@@ -514,6 +536,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '800',
     color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
   },
   filterScroll: {
     marginHorizontal: -20,
@@ -523,17 +546,17 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   filterCard: {
-    minWidth: 120,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 16,
+    minWidth: 110,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 14,
     padding: 12,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   filterCardActive: {
     backgroundColor: '#fff',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: '#fff',
   },
   filterIconBg: {
     width: 36,
@@ -552,9 +575,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.9)',
     marginBottom: 6,
+    fontFamily: 'MarkGEO-Regular',
   },
   filterLabelActive: {
-    color: '#111827',
+    color: '#1a1a1a',
   },
   filterBadge: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
@@ -565,12 +589,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   filterBadgeActive: {
-    backgroundColor: '#6e39ea',
+    backgroundColor: '#7c3aed',
   },
   filterCount: {
     fontSize: 13,
     fontWeight: '900',
     color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
   },
   filterCountActive: {
     color: '#fff',
@@ -579,8 +604,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
-    paddingTop: 24,
+    padding: 16,
   },
   emptyState: {
     alignItems: 'center',
@@ -601,6 +625,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: '#111827',
     marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
@@ -608,6 +633,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
   },
   shopNowButton: {
     borderRadius: 20,
@@ -630,18 +656,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
     color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
   },
   orderCard: {
     backgroundColor: '#fff',
-    borderRadius: 24,
-    padding: 20,
+    borderRadius: 18,
+    padding: 18,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowRadius: 8,
+    elevation: 3,
     borderWidth: 1,
-    borderColor: '#f3f4f6',
+    borderColor: '#f0f0f0',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -662,12 +689,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   orderNumber: {
     fontSize: 20,
     fontWeight: '900',
     color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   statusPill: {
     flexDirection: 'row',
@@ -680,6 +709,7 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 12,
     fontWeight: '800',
+    fontFamily: 'MarkGEO-Regular',
   },
   itemsContainer: {
     marginBottom: 16,
@@ -718,6 +748,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111827',
     marginBottom: 6,
+    fontFamily: 'MarkGEO-Regular',
   },
   itemBottom: {
     flexDirection: 'row',
@@ -728,11 +759,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
   },
   itemPrice: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#6e39ea',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   moreItems: {
     paddingVertical: 8,
@@ -744,7 +777,8 @@ const styles = StyleSheet.create({
   moreItemsText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#6e39ea',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   orderFooter: {
     flexDirection: 'row',
@@ -768,6 +802,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
   },
   totalWrapper: {
     alignItems: 'flex-end',
@@ -779,12 +814,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   totalPrice: {
     fontSize: 26,
     fontWeight: '900',
     color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   viewMoreButton: {
     flexDirection: 'row',
@@ -798,7 +835,8 @@ const styles = StyleSheet.create({
   viewMoreText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#6e39ea',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {
     height: 100,
