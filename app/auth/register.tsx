@@ -11,6 +11,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,7 +21,7 @@ export default function RegisterScreen() {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   const handleRegister = async () => {
-    if (!username || !email || !password || !confirmPassword || !phone) {
+    if (!username || !email || !password || !confirmPassword || !fullName || !phone) {
       setError('გთხოვთ შეავსოთ ყველა ველი');
       return;
     }
@@ -49,13 +50,18 @@ export default function RegisterScreen() {
     setError('');
 
     try {
-      const response = await authService.register(username.trim(), email.trim(), password, phone);
+      const response = await authService.register(
+        username.trim(),
+        email.trim(),
+        password,
+        confirmPassword,
+        fullName.trim(),
+        phone,
+        agreeToTerms
+      );
       setShowSuccess(true);
       setTimeout(() => {
-        router.push({
-          pathname: '/auth/verify-otp',
-          params: { userId: response.userId.toString() },
-        });
+        router.push('/auth/verify-otp');
       }, 1500);
     } catch (err: any) {
       setError(err.message || 'რეგისტრაცია ვერ მოხერხდა');
@@ -96,6 +102,18 @@ export default function RegisterScreen() {
           ) : null}
 
           <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>სახელი და გვარი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="გიორგი შენგელია"
+                placeholderTextColor="#a1a1aa"
+                value={fullName}
+                onChangeText={setFullName}
+                editable={!loading}
+              />
+            </View>
+
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>მომხმარებელი</Text>
               <TextInput

@@ -1,17 +1,26 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { authService } from '@/services/auth';
 import { Shield, ArrowRight } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function VerifyOTPScreen() {
-  const params = useLocalSearchParams();
-  const userId = params.userId ? parseInt(params.userId as string) : 0;
-
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [maskedPhone, setMaskedPhone] = useState('');
+
+  useEffect(() => {
+    const loadPhone = async () => {
+      const phone = await AsyncStorage.getItem('registrationPhone');
+      if (phone) {
+        setMaskedPhone(phone);
+      }
+    };
+    loadPhone();
+  }, []);
 
   const handleVerify = async () => {
     if (!otp || otp.length !== 6) {
@@ -23,7 +32,7 @@ export default function VerifyOTPScreen() {
     setError('');
 
     try {
-      await authService.verifyOTP(userId, otp);
+      await authService.verifyOTP(otp);
       router.replace('/(tabs)');
     } catch (err: any) {
       setError(err.message || 'ვერიფიკაცია ვერ მოხერხდა');
@@ -64,7 +73,9 @@ export default function VerifyOTPScreen() {
                   <Shield size={24} color="#8b5cf6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.cardTitle}>ვერიფიკაცია</Text>
-                <Text style={styles.cardSubtitle}>შეიყვანეთ SMS-ით მიღებული კოდი</Text>
+                <Text style={styles.cardSubtitle}>
+                  შეიყვანეთ SMS-ით მიღებული კოდი{maskedPhone ? ` (${maskedPhone})` : ''}
+                </Text>
               </View>
 
               {error ? (

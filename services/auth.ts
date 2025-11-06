@@ -46,7 +46,7 @@ export interface LoginResponse {
 export interface RegisterResponse {
   success: boolean;
   message: string;
-  userId: number;
+  phone: string;
 }
 
 export interface VerifyOTPResponse {
@@ -95,8 +95,10 @@ export const authService = {
     }
   },
 
-  async register(username: string, email: string, password: string, phone: string): Promise<RegisterResponse> {
+  async register(username: string, email: string, password: string, confirmPassword: string, full_name: string, phone: string, terms: boolean): Promise<RegisterResponse> {
     try {
+      console.log('📝 Attempting registration for:', username);
+
       const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: {
@@ -107,25 +109,37 @@ export const authService = {
           username,
           email,
           password,
+          confirmPassword,
+          full_name,
           phone,
+          terms,
         }),
       });
 
       const data = await response.json();
+      console.log('📡 Registration response status:', response.status);
 
       if (!response.ok) {
+        console.error('❌ Registration failed:', data.message);
         throw new Error(data.message || 'რეგისტრაცია ვერ მოხერხდა');
       }
 
+      console.log('✅ Registration successful');
+      console.log('📱 Masked phone:', data.phone);
+
+      await AsyncStorage.setItem('registrationPhone', data.phone);
+
       return data;
     } catch (error: any) {
-      console.error('Register error:', error);
+      console.error('❌ Register error:', error);
       throw error;
     }
   },
 
-  async verifyOTP(userId: number, otp: string): Promise<VerifyOTPResponse> {
+  async verifyOTP(otp: string): Promise<VerifyOTPResponse> {
     try {
+      console.log('🔐 Verifying OTP');
+
       const response = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: 'POST',
         headers: {
@@ -133,23 +147,29 @@ export const authService = {
           'Accept': 'application/json',
         },
         body: JSON.stringify({
-          userId,
           otp,
         }),
       });
 
       const data = await response.json();
+      console.log('📡 Verify OTP response status:', response.status);
 
       if (!response.ok) {
+        console.error('❌ Verification failed:', data.message);
         throw new Error(data.message || 'ვერიფიკაცია ვერ მოხერხდა');
       }
 
+      console.log('✅ Verification successful, token received');
+
       await AsyncStorage.setItem('authToken', data.token);
       await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.removeItem('registrationPhone');
+
+      console.log('💾 Token and user saved to AsyncStorage');
 
       return data;
     } catch (error: any) {
-      console.error('Verify OTP error:', error);
+      console.error('❌ Verify OTP error:', error);
       throw error;
     }
   },
