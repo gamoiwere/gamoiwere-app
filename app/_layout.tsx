@@ -45,12 +45,12 @@ export default function RootLayout() {
     const inOnboarding = segments[0] === 'onboarding';
     const inSplash = segments[0] === 'splash';
 
-    if (!inSplash && !inOnboarding && !inAuthGroup && segments.length === 0) {
+    if (segments.length === 0) {
       router.replace('/splash');
-    } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash) {
-      router.replace('/auth/login');
-    } else if (isAuthenticated && inAuthGroup) {
+    } else if (isAuthenticated && (inAuthGroup || inOnboarding || inSplash)) {
       router.replace('/(tabs)');
+    } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash) {
+      router.replace('/splash');
     }
   }, [isAuthenticated, segments]);
 

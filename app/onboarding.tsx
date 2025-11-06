@@ -3,25 +3,26 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ImageBackground, Dimen
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
 const onboardingData = [
   {
     id: 1,
-    image: require('@/assets/images/2.png'),
+    image: require('@/assets/images/1.png'),
     title: 'აღმოაჩინე უნიკალური სტილი',
     subtitle: 'იპოვე შენთვის შესაფერისი ფეშენ პროდუქტები მთელი მსოფლიოდან',
   },
   {
     id: 2,
-    image: require('@/assets/images/3.png'),
+    image: require('@/assets/images/2.png'),
     title: 'განსაკუთრებული კოლექციები',
     subtitle: 'ექსკლუზიური სეზონური კოლექციები და ახალი ტრენდები ყოველ კვირას',
   },
   {
     id: 3,
-    image: require('@/assets/images/4.png'),
+    image: require('@/assets/images/3.png'),
     title: 'მარტივი და სწრაფი შეკვეთა',
     subtitle: 'შეუკვეთე საყვარელი პროდუქტები და მიიღე სწრაფი მიწოდებით',
   },
@@ -30,15 +31,17 @@ const onboardingData = [
 export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentIndex < onboardingData.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
+      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
       router.replace('/auth/login');
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    await AsyncStorage.setItem('hasSeenOnboarding', 'true');
     router.replace('/auth/login');
   };
 
