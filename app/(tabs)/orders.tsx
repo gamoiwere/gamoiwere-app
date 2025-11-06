@@ -30,7 +30,10 @@ export default function OrdersScreen() {
       setUser(currentUser);
 
       if (currentUser) {
-        await loadOrders();
+        const token = await authService.getToken();
+        if (token) {
+          await loadOrders('ALL');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -43,6 +46,8 @@ export default function OrdersScreen() {
     try {
       const token = await authService.getToken();
       if (!token) throw new Error('არ ხართ ავტორიზებული');
+
+      console.log('📦 Loading orders with status:', status);
 
       let response;
       if (status && status !== 'ALL') {
@@ -66,6 +71,8 @@ export default function OrdersScreen() {
       }
 
       const data = await response.json();
+      console.log('📦 API Response:', { success: data.success, total: data.total, ordersCount: data.orders?.length });
+
       if (!response.ok) {
         throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
       }
@@ -79,19 +86,20 @@ export default function OrdersScreen() {
     } catch (error) {
       console.error('Error loading orders:', error);
       setOrders([]);
+      setTotalCount(0);
     }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await loadOrders(selectedFilter === 'ALL' ? undefined : selectedFilter);
+    await loadOrders(selectedFilter);
     setRefreshing(false);
   };
 
   const handleFilterChange = async (filter: string) => {
     setSelectedFilter(filter);
     setLoading(true);
-    await loadOrders(filter === 'ALL' ? undefined : filter);
+    await loadOrders(filter);
     setLoading(false);
   };
 
