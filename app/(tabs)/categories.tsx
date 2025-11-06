@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Platform } from 'react-native';
 import {
   ChevronRight,
   ChevronDown,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   header: {
-    paddingTop: 60,
+    paddingTop: Platform.OS === 'ios' ? 60 : 50,
     paddingBottom: 32,
     paddingHorizontal: 24,
     shadowColor: '#7c3aed',
