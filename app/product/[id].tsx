@@ -418,14 +418,14 @@ export default function ProductDetailScreen() {
 
           <View style={styles.deliveryPromoBanner}>
             <LinearGradient
-              colors={['#f0f9ff', '#e0f2fe', '#bae6fd']}
+              colors={['#f5f3ff', '#ede9fe', '#ddd6fe']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.promoGradient}
             >
               <View style={styles.promoIconContainer}>
                 <View style={styles.promoIconCircle}>
-                  <Truck size={28} color="#0284c7" strokeWidth={2.5} />
+                  <Truck size={28} color="#6e39ea" strokeWidth={2.5} />
                 </View>
               </View>
 
@@ -436,7 +436,7 @@ export default function ProductDetailScreen() {
                 <View style={styles.promoDetailsContainer}>
                   <View style={styles.promoDetailItem}>
                     <View style={styles.promoDetailIcon}>
-                      <Calendar size={18} color="#0284c7" strokeWidth={2} />
+                      <Calendar size={18} color="#6e39ea" strokeWidth={2} />
                     </View>
                     <View style={styles.promoDetailText}>
                       <Text style={styles.promoDetailLabel}>მიწოდების ვადა</Text>
@@ -448,7 +448,7 @@ export default function ProductDetailScreen() {
 
                   <View style={styles.promoDetailItem}>
                     <View style={styles.promoDetailIcon}>
-                      <Shield size={18} color="#0284c7" strokeWidth={2} />
+                      <Shield size={18} color="#6e39ea" strokeWidth={2} />
                     </View>
                     <View style={styles.promoDetailText}>
                       <Text style={styles.promoDetailLabel}>დაზღვეული მიწოდება</Text>
@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#0284c7',
+    shadowColor: '#6e39ea',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -902,7 +902,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#0284c7',
+    shadowColor: '#6e39ea',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
@@ -914,7 +914,7 @@ const styles = StyleSheet.create({
   promoTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0c4a6e',
+    color: '#4c1d95',
     marginBottom: 4,
     textAlign: 'center',
     letterSpacing: 0.3,
@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
   promoSubtitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#0369a1',
+    color: '#6d28d9',
     marginBottom: 18,
     textAlign: 'center',
   },
@@ -944,7 +944,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#e0f2fe',
+    backgroundColor: '#f5f3ff',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -962,7 +962,7 @@ const styles = StyleSheet.create({
   promoDetailValue: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#0c4a6e',
+    color: '#4c1d95',
   },
   promoDivider: {
     width: 1,
@@ -977,7 +977,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(2, 132, 199, 0.2)',
+    borderColor: 'rgba(110, 57, 234, 0.2)',
   },
   deliveryDateLabel: {
     fontSize: 12,
@@ -989,7 +989,7 @@ const styles = StyleSheet.create({
   deliveryDateValue: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#0284c7',
+    color: '#6e39ea',
     letterSpacing: 0.3,
   },
   section: {
