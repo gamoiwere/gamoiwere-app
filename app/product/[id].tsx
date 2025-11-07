@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
 import { cartService } from '@/services/cart';
 import { authService } from '@/services/auth';
+import CartNotification from '@/components/CartNotification';
 
 const { width } = Dimensions.get('window');
 
@@ -85,6 +86,8 @@ export default function ProductDetailScreen() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isAttributesExpanded, setIsAttributesExpanded] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
 
   const pan = useRef(new Animated.ValueXY()).current;
   const touchStartX = useRef(0);
@@ -228,7 +231,7 @@ export default function ProductDetailScreen() {
 
       const price = selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price;
 
-      await cartService.addToCart({
+      console.log('Adding to cart:', {
         productId: product.id,
         name: product.title,
         price: price,
@@ -237,13 +240,23 @@ export default function ProductDetailScreen() {
         quantity: quantity,
       });
 
-      Alert.alert('წარმატება', 'პროდუქტი წარმატებით დაემატა კალათაში', [
-        { text: 'გაგრძელება', style: 'cancel' },
-        { text: 'კალათის ნახვა', onPress: () => router.push('/cart') },
-      ]);
-    } catch (error) {
+      const result = await cartService.addToCart({
+        productId: product.id,
+        name: product.title,
+        price: price,
+        imageUrl: currentMainImage || product.mainImage,
+        variations: variations,
+        quantity: quantity,
+      });
+
+      console.log('Add to cart result:', result);
+
+      setNotificationMessage('პროდუქტი დაემატა კალათაში');
+      setShowNotification(true);
+    } catch (error: any) {
       console.error('Error adding to cart:', error);
-      Alert.alert('შეცდომა', 'პროდუქტის კალათაში დამატება ვერ მოხერხდა');
+      console.error('Error details:', error.message);
+      Alert.alert('შეცდომა', error.message || 'პროდუქტის კალათაში დამატება ვერ მოხერხდა');
     } finally {
       setIsAddingToCart(false);
     }
@@ -277,6 +290,12 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={styles.container}>
+      <CartNotification
+        visible={showNotification}
+        message={notificationMessage}
+        onHide={() => setShowNotification(false)}
+        onViewCart={() => router.push('/cart')}
+      />
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerButton} onPress={() => router.back()}>
           <ArrowLeft size={24} color="#1a1a1a" strokeWidth={2} />
