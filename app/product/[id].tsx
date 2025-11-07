@@ -200,12 +200,17 @@ export default function ProductDetailScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <View style={styles.floatingHeader}>
-          <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -216,12 +221,17 @@ export default function ProductDetailScreen() {
   if (!product) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
-        <View style={styles.floatingHeader}>
-          <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
         <View style={styles.errorContainer}>
           <Package size={64} color="#d1d5db" strokeWidth={1.5} />
           <Text style={styles.errorText}>პროდუქტი ვერ მოიძებნა</Text>
@@ -232,7 +242,7 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       <CartNotification
         visible={showNotification}
         message={notificationMessage}
@@ -240,27 +250,32 @@ export default function ProductDetailScreen() {
         onViewCart={() => router.push('/(tabs)/cart')}
       />
 
-      <View style={styles.floatingHeader}>
-        <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
-          <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
         </TouchableOpacity>
-        <View style={styles.floatingActions}>
-          <TouchableOpacity style={styles.floatingButton}>
-            <Share2 size={20} color="#111827" strokeWidth={2.5} />
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerButton}>
+            <Share2 size={20} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.floatingButton}
+            style={styles.headerButton}
             onPress={() => setIsFavorite(!isFavorite)}
           >
             <Heart
               size={20}
-              color={isFavorite ? '#ef4444' : '#111827'}
+              color={isFavorite ? '#fbbf24' : '#fff'}
               strokeWidth={2.5}
-              fill={isFavorite ? '#ef4444' : 'transparent'}
+              fill={isFavorite ? '#fbbf24' : 'transparent'}
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageSection}>
@@ -610,46 +625,42 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
-  floatingHeader: {
-    position: 'absolute',
-    top: 50,
-    left: 0,
-    right: 0,
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    zIndex: 1000,
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 16,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
-  floatingBackButton: {
+  backButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  floatingActions: {
+  headerActions: {
     flexDirection: 'row',
     gap: 10,
   },
-  floatingButton: {
+  headerButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   scrollView: {
     flex: 1,
@@ -701,9 +712,9 @@ const styles = StyleSheet.create({
   },
   imageCounter: {
     position: 'absolute',
-    bottom: 56,
+    top: 16,
     right: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
