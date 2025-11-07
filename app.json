@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.gamoiwere.app"
+      "bundleIdentifier": "com.gamoiwere.app",
+      "icon": "./assets/images/icon.png"
     },
     "android": {
       "package": "com.gamoiwere.app",
