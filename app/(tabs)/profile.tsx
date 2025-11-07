@@ -222,6 +222,20 @@ export default function ProfileScreen() {
           <View style={styles.menuSection}>
             <TouchableOpacity
               style={styles.menuItem}
+              onPress={() => router.push('/(tabs)/orders')}
+              activeOpacity={0.7}
+            >
+              <View style={styles.menuItemLeft}>
+                <View style={[styles.menuIcon, { backgroundColor: '#dbeafe' }]}>
+                  <Package size={20} color="#3b82f6" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.menuItemText}>შეკვეთები</Text>
+              </View>
+              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuItem}
               onPress={() => router.push('/profile/edit')}
               activeOpacity={0.7}
             >
@@ -240,8 +254,8 @@ export default function ProfileScreen() {
               activeOpacity={0.7}
             >
               <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#dbeafe' }]}>
-                  <MapPin size={20} color="#3b82f6" strokeWidth={2.5} />
+                <View style={[styles.menuIcon, { backgroundColor: '#fef3c7' }]}>
+                  <MapPin size={20} color="#f59e0b" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.menuItemText}>მისამართები</Text>
               </View>
