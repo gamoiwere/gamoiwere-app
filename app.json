@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GAMOIWERE",
-    "slug": "gamoiwere",
+    "slug": "bolt-expo-nativewind",
     "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
@@ -41,7 +41,10 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {}
+      "router": {},
+      "eas": {
+        "projectId": "24d6f790-9fe4-40fc-b537-5500c6acb7f7"
+      }
     },
     "owner": "gamoiwere"
   }
