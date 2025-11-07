@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, Modal, Alert, RefreshControl, StatusBar } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService, Address } from '@/services/auth';
 import { MapPin, Plus, X, Check, ArrowLeft, Edit2, Trash2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function AddressesScreen() {
+  const insets = useSafeAreaInsets();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -150,113 +152,160 @@ export default function AddressesScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <ArrowLeft size={24} color="#1a1a1a" strokeWidth={2} />
-          </TouchableOpacity>
-          <Text style={styles.title}>მისამართები</Text>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 12 }]}
+        >
+          <View style={styles.headerContent}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+            </TouchableOpacity>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerTitle}>მისამართები</Text>
+            </View>
+            <View style={styles.statsCompact}>
+              <View style={styles.statBoxCompact}>
+                <Text style={styles.statNumberCompact}>0</Text>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+        <View style={styles.loadingContainer}>
+          <MapPin size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
         </View>
-        <Text style={styles.loadingText}>იტვირთება...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ArrowLeft size={24} color="#1a1a1a" strokeWidth={2} />
-        </TouchableOpacity>
-        <Text style={styles.title}>მისამართები</Text>
-      </View>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, { paddingTop: insets.top + 12 }]}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+          </TouchableOpacity>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerTitle}>მისამართები</Text>
+          </View>
+          <View style={styles.statsCompact}>
+            <View style={styles.statBoxCompact}>
+              <Text style={styles.statNumberCompact}>{addresses.length}</Text>
+            </View>
+          </View>
+        </View>
+      </LinearGradient>
 
       <ScrollView
-        style={styles.content}
+        style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor="#6e39ea" />
         }
       >
-        {error ? (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        ) : null}
-        {addresses.length === 0 ? (
-          <View style={styles.emptyState}>
-            <View style={styles.emptyIcon}>
-              <MapPin size={48} color="#ccc" strokeWidth={2} />
+        <View style={styles.content}>
+          {error ? (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorText}>{error}</Text>
             </View>
-            <Text style={styles.emptyTitle}>არ გაქვთ შენახული მისამართი</Text>
-            <Text style={styles.emptySubtitle}>დაამატეთ მისამართი სწრაფი შეკვეთისთვის</Text>
-          </View>
-        ) : (
-          <View style={styles.addressList}>
-            {addresses.map((addr) => (
-              <View key={addr.id} style={styles.addressCard}>
-                <View style={styles.addressHeader}>
-                  <View style={styles.addressIcon}>
-                    <MapPin size={20} color="#007AFF" strokeWidth={2} />
-                  </View>
-                  {addr.is_default && (
-                    <View style={styles.defaultBadge}>
-                      <Check size={12} color="#10b981" strokeWidth={3} />
-                      <Text style={styles.defaultText}>ძირითადი</Text>
+          ) : null}
+          {addresses.length === 0 ? (
+            <View style={styles.emptyState}>
+              <View style={styles.emptyIconCircle}>
+                <MapPin size={64} color="#d1d5db" strokeWidth={1.5} />
+              </View>
+              <Text style={styles.emptyTitle}>არ გაქვთ შენახული მისამართი</Text>
+              <Text style={styles.emptySubtitle}>დაამატეთ მისამართი სწრაფი შეკვეთისთვის</Text>
+            </View>
+          ) : (
+            <>
+              {addresses.map((addr, index) => (
+                <View key={addr.id} style={[styles.addressCard, { marginTop: index === 0 ? 0 : 16 }]}>
+                  <View style={styles.addressHeader}>
+                    <View style={styles.addressHeaderLeft}>
+                      {addr.title && <Text style={styles.addressLabel}>მისამართი</Text>}
+                      {addr.title && <Text style={styles.addressTitle}>{addr.title}</Text>}
                     </View>
-                  )}
-                </View>
-                {addr.title && <Text style={styles.addressTitle}>{addr.title}</Text>}
-                {addr.recipient_name && <Text style={styles.addressName}>{addr.recipient_name}</Text>}
-                {addr.recipient_phone && <Text style={styles.addressPhone}>{addr.recipient_phone}</Text>}
-                <Text style={styles.addressText}>{addr.street_address}</Text>
-                <Text style={styles.addressSubtext}>{addr.city}{addr.region ? `, ${addr.region}` : ''}</Text>
-                {addr.postal_code && <Text style={styles.addressSubtext}>საფოსტო ინდექსი: {addr.postal_code}</Text>}
+                    {addr.is_default && (
+                      <View style={styles.defaultBadge}>
+                        <Check size={14} color="#10b981" strokeWidth={2.5} />
+                        <Text style={styles.defaultText}>ძირითადი</Text>
+                      </View>
+                    )}
+                  </View>
+                  <View style={styles.addressBody}>
+                    {addr.recipient_name && (
+                      <View style={styles.infoRow}>
+                        <MapPin size={16} color="#9ca3af" strokeWidth={2} />
+                        <Text style={styles.infoText}>{addr.recipient_name}</Text>
+                      </View>
+                    )}
+                    <Text style={styles.addressText}>{addr.street_address}</Text>
+                    <Text style={styles.addressSubtext}>{addr.city}{addr.region ? `, ${addr.region}` : ''}</Text>
+                    {addr.postal_code && <Text style={styles.addressSubtext}>საფოსტო ინდექსი: {addr.postal_code}</Text>}
+                    {addr.recipient_phone && <Text style={styles.addressPhone}>{addr.recipient_phone}</Text>}
+                  </View>
 
-                <View style={styles.cardActions}>
-                  {!addr.is_default && (
+                  <View style={styles.cardActions}>
+                    {!addr.is_default && (
+                      <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => handleSetDefault(addr)}
+                        activeOpacity={0.7}
+                      >
+                        <Check size={16} color="#10b981" strokeWidth={2.5} />
+                        <Text style={[styles.actionButtonText, { color: '#10b981' }]}>ძირითადი</Text>
+                      </TouchableOpacity>
+                    )}
                     <TouchableOpacity
                       style={styles.actionButton}
-                      onPress={() => handleSetDefault(addr)}
+                      onPress={() => openEditModal(addr)}
+                      activeOpacity={0.7}
                     >
-                      <Check size={18} color="#10b981" strokeWidth={2} />
-                      <Text style={styles.actionButtonText}>ძირითადი</Text>
+                      <Edit2 size={16} color="#7c3aed" strokeWidth={2.5} />
+                      <Text style={[styles.actionButtonText, { color: '#7c3aed' }]}>რედაქტირება</Text>
                     </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => openEditModal(addr)}
-                  >
-                    <Edit2 size={18} color="#007AFF" strokeWidth={2} />
-                    <Text style={styles.actionButtonText}>რედაქტირება</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => handleDeleteAddress(addr)}
-                  >
-                    <Trash2 size={18} color="#ef4444" strokeWidth={2} />
-                    <Text style={[styles.actionButtonText, styles.deleteText]}>წაშლა</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.actionButton}
+                      onPress={() => handleDeleteAddress(addr)}
+                      activeOpacity={0.7}
+                    >
+                      <Trash2 size={16} color="#dc2626" strokeWidth={2.5} />
+                      <Text style={[styles.actionButtonText, { color: '#dc2626' }]}>წაშლა</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </View>
-        )}
+              ))}
+            </>
+          )}
+        </View>
 
-        <View style={styles.bottomSpacer} />
+        <View style={styles.bottomSpace} />
       </ScrollView>
 
-      <View style={styles.fab}>
-        <TouchableOpacity onPress={openAddModal} activeOpacity={0.9}>
-          <LinearGradient
-            colors={['#007AFF', '#0056CC']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.fabGradient}
-          >
-            <Plus size={28} color="#fff" strokeWidth={2.5} />
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={openAddModal}
+        activeOpacity={0.9}
+      >
+        <LinearGradient
+          colors={['#6e39ea', '#8b5cf6']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.fabGradient}
+        >
+          <Plus size={28} color="#fff" strokeWidth={2.5} />
+        </LinearGradient>
+      </TouchableOpacity>
 
       <Modal
         visible={showModal}
@@ -405,176 +454,244 @@ export default function AddressesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f5f5f7',
   },
   header: {
+    paddingBottom: 16,
+    paddingHorizontal: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  headerContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    backgroundColor: '#fff',
-    gap: 16,
+    justifyContent: 'space-between',
   },
   backButton: {
-    padding: 4,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  title: {
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerTitle: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statsCompact: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  statBoxCompact: {
+    alignItems: 'center',
+  },
+  statNumberCompact: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    gap: 16,
   },
   loadingText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    paddingVertical: 40,
+    fontWeight: '600',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  scrollView: {
+    flex: 1,
   },
   content: {
-    flex: 1,
+    padding: 16,
   },
   errorBanner: {
     backgroundColor: '#fee2e2',
-    borderLeftWidth: 4,
-    borderLeftColor: '#ef4444',
-    padding: 16,
-    margin: 20,
-    marginBottom: 0,
     borderRadius: 12,
+    padding: 14,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#fecaca',
   },
   errorText: {
     color: '#dc2626',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
+    fontFamily: 'MarkGEO-Regular',
   },
   emptyState: {
     alignItems: 'center',
-    paddingTop: 80,
-    paddingHorizontal: 40,
+    paddingVertical: 60,
+    paddingHorizontal: 24,
   },
-  emptyIcon: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#f0f0f0',
+  emptyIconCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
   },
   emptyTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
-    color: '#666',
+    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
-  },
-  addressList: {
-    padding: 20,
-    gap: 16,
+    fontFamily: 'MarkGEO-Regular',
   },
   addressCard: {
     backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 16,
+    borderRadius: 18,
+    padding: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   addressHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  addressIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#007AFF10',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
+  },
+  addressHeaderLeft: {
+    flex: 1,
+  },
+  addressLabel: {
+    fontSize: 11,
+    color: '#9ca3af',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
+  },
+  addressTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   defaultBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#10b98110',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    gap: 6,
+    backgroundColor: '#d1fae5',
   },
   defaultText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#10b981',
+    fontFamily: 'MarkGEO-Regular',
   },
-  addressTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#007AFF',
-    marginBottom: 6,
-    textTransform: 'uppercase',
+  addressBody: {
+    marginBottom: 16,
   },
-  addressName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  addressPhone: {
-    fontSize: 15,
-    color: '#666',
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     marginBottom: 8,
   },
+  infoText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#111827',
+    fontFamily: 'MarkGEO-Regular',
+  },
   addressText: {
-    fontSize: 16,
-    color: '#1a1a1a',
-    fontWeight: '500',
+    fontSize: 15,
+    color: '#111827',
+    fontWeight: '600',
     marginBottom: 4,
+    fontFamily: 'MarkGEO-Regular',
   },
   addressSubtext: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6b7280',
     marginBottom: 2,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  addressPhone: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6b7280',
+    marginTop: 4,
+    fontFamily: 'MarkGEO-Regular',
   },
   cardActions: {
     flexDirection: 'row',
-    marginTop: 16,
     gap: 8,
-    flexWrap: 'wrap',
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f3f4f6',
   },
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#f8f9fa',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
+    flex: 1,
   },
   actionButtonText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#007AFF',
+    fontSize: 12,
+    fontWeight: '800',
+    fontFamily: 'MarkGEO-Regular',
   },
-  deleteText: {
-    color: '#ef4444',
-  },
-  bottomSpacer: {
+  bottomSpace: {
     height: 100,
   },
   fab: {
     position: 'absolute',
     bottom: 30,
     right: 20,
-    shadowColor: '#007AFF',
+    borderRadius: 32,
+    overflow: 'hidden',
+    shadowColor: '#6e39ea',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 16,
@@ -583,7 +700,6 @@ const styles = StyleSheet.create({
   fabGradient: {
     width: 64,
     height: 64,
-    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
