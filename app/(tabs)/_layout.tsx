@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
-import { Home, ShoppingBag, Heart, User, LayoutGrid } from 'lucide-react-native';
+import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -62,20 +62,26 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="orders"
+        name="cart"
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={[
               styles.iconContainer,
               focused && styles.iconContainerActiveCenter
             ]}>
-              <ShoppingBag
+              <ShoppingCart
                 size={28}
                 color={focused ? '#fff' : '#8b5cf6'}
                 strokeWidth={2.5}
               />
             </View>
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="orders"
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen
