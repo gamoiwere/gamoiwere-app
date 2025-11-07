@@ -197,18 +197,6 @@ export default function ProductDetailScreen() {
 
   const handleAddToCart = async () => {
     try {
-      const user = await authService.getUser();
-      if (!user) {
-        Alert.alert(
-          'ავტორიზაცია საჭიროა',
-          'კალათაში დასამატებლად გთხოვთ გაიაროთ ავტორიზაცია',
-          [
-            { text: 'გაუქმება', style: 'cancel' },
-            { text: 'შესვლა', onPress: () => router.push('/auth/login') },
-          ]
-        );
-        return;
-      }
 
       if (!product) return;
 

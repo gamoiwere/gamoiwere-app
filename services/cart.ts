@@ -1,4 +1,7 @@
-import { supabase } from './supabase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authService } from './auth';
+
+const GUEST_CART_KEY = 'guest_cart';
 
 export interface CartItem {
   id: string;
@@ -37,244 +40,144 @@ export interface AddToCartRequest {
 
 export const cartService = {
   async getCart(): Promise<CartResponse> {
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      const cartStr = await AsyncStorage.getItem(GUEST_CART_KEY);
+      const items: CartItem[] = cartStr ? JSON.parse(cartStr) : [];
 
-    if (!user) {
-      throw new Error('არ ხართ ავტორიზებული');
-    }
-
-    const { data, error } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Cart fetch error:', error);
-      throw new Error('კალათის ჩატვირთვა ვერ მოხერხდა');
-    }
-
-    const items: CartItem[] = (data || []).map((item: any) => ({
-      id: item.id,
-      userId: item.user_id,
-      productId: item.product_id,
-      name: item.name,
-      price: parseFloat(item.price),
-      imageUrl: item.image_url,
-      variations: item.variations || {},
-      variationId: item.variation_id || '',
-      quantity: item.quantity,
-      createdAt: item.created_at,
-      updatedAt: item.updated_at,
-    }));
-
-    const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-    return {
-      success: true,
-      items,
-      summary: {
-        totalItems,
-        totalPrice,
-        count: items.length,
-      },
-    };
-  },
-
-  async addToCart(item: AddToCartRequest): Promise<{ success: boolean; item: CartItem; message: string }> {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new Error('არ ხართ ავტორიზებული');
-    }
-
-    const variationId = item.variations
-      ? Object.values(item.variations).join('-')
-      : item.productId;
-
-    const { data: existingItems, error: fetchError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('product_id', item.productId)
-      .eq('variation_id', variationId);
-
-    if (fetchError) {
-      console.error('Cart check error:', fetchError);
-      console.error('Error details:', JSON.stringify(fetchError, null, 2));
-      throw new Error(`პროდუქტის დამატება ვერ მოხერხდა: ${fetchError.message}`);
-    }
-
-    if (existingItems && existingItems.length > 0) {
-      const existingItem = existingItems[0];
-      const newQuantity = existingItem.quantity + item.quantity;
-
-      const { data: updatedData, error: updateError } = await supabase
-        .from('cart_items')
-        .update({
-          quantity: newQuantity,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', existingItem.id)
-        .select()
-        .single();
-
-      if (updateError) {
-        console.error('Cart update error:', updateError);
-        console.error('Error details:', JSON.stringify(updateError, null, 2));
-        throw new Error(`პროდუქტის დამატება ვერ მოხერხდა: ${updateError.message}`);
-      }
+      const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+      const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
       return {
         success: true,
-        item: {
-          id: updatedData.id,
-          userId: updatedData.user_id,
-          productId: updatedData.product_id,
-          name: updatedData.name,
-          price: parseFloat(updatedData.price),
-          imageUrl: updatedData.image_url,
-          variations: updatedData.variations || {},
-          variationId: updatedData.variation_id,
-          quantity: updatedData.quantity,
-          createdAt: updatedData.created_at,
-          updatedAt: updatedData.updated_at,
+        items,
+        summary: {
+          totalItems,
+          totalPrice,
+          count: items.length,
         },
-        message: 'პროდუქტი წარმატებით დაემატა კალათაში',
+      };
+    } catch (error) {
+      console.error('Cart fetch error:', error);
+      return {
+        success: true,
+        items: [],
+        summary: {
+          totalItems: 0,
+          totalPrice: 0,
+          count: 0,
+        },
       };
     }
+  },
 
-    const { data: newData, error: insertError } = await supabase
-      .from('cart_items')
-      .insert({
-        user_id: user.id,
-        product_id: item.productId,
-        name: item.name,
-        price: item.price,
-        image_url: item.imageUrl,
-        variations: item.variations || {},
-        variation_id: variationId,
-        quantity: item.quantity,
-      })
-      .select()
-      .single();
+  async addToCart(item: AddToCartRequest): Promise<{ success: boolean; item: CartItem; message: string }> {
+    try {
+      const variationId = item.variations
+        ? Object.values(item.variations).join('-')
+        : item.productId;
 
-    if (insertError) {
-      console.error('Cart insert error:', insertError);
-      console.error('Error details:', JSON.stringify(insertError, null, 2));
-      throw new Error(`პროდუქტის დამატება ვერ მოხერხდა: ${insertError.message}`);
+      const cartStr = await AsyncStorage.getItem(GUEST_CART_KEY);
+      const items: CartItem[] = cartStr ? JSON.parse(cartStr) : [];
+
+      const existingItemIndex = items.findIndex(
+        (i) => i.productId === item.productId && i.variationId === variationId
+      );
+
+      let updatedItem: CartItem;
+
+      if (existingItemIndex >= 0) {
+        items[existingItemIndex].quantity += item.quantity;
+        items[existingItemIndex].updatedAt = new Date().toISOString();
+        updatedItem = items[existingItemIndex];
+      } else {
+        updatedItem = {
+          id: `cart-${Date.now()}-${Math.random()}`,
+          userId: 'guest',
+          productId: item.productId,
+          name: item.name,
+          price: item.price,
+          imageUrl: item.imageUrl,
+          variations: item.variations || {},
+          variationId,
+          quantity: item.quantity,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        items.push(updatedItem);
+      }
+
+      await AsyncStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+
+      return {
+        success: true,
+        item: updatedItem,
+        message: 'პროდუქტი წარმატებით დაემატა კალათაში',
+      };
+    } catch (error) {
+      console.error('Cart insert error:', error);
+      throw new Error('პროდუქტის დამატება ვერ მოხერხდა');
     }
-
-    return {
-      success: true,
-      item: {
-        id: newData.id,
-        userId: newData.user_id,
-        productId: newData.product_id,
-        name: newData.name,
-        price: parseFloat(newData.price),
-        imageUrl: newData.image_url,
-        variations: newData.variations || {},
-        variationId: newData.variation_id,
-        quantity: newData.quantity,
-        createdAt: newData.created_at,
-        updatedAt: newData.updated_at,
-      },
-      message: 'პროდუქტი წარმატებით დაემატა კალათაში',
-    };
   },
 
   async updateQuantity(id: string, quantity: number): Promise<{ success: boolean; item: CartItem; message: string }> {
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      if (quantity <= 0) {
+        return this.removeItem(id);
+      }
 
-    if (!user) {
-      throw new Error('არ ხართ ავტორიზებული');
-    }
+      const cartStr = await AsyncStorage.getItem(GUEST_CART_KEY);
+      const items: CartItem[] = cartStr ? JSON.parse(cartStr) : [];
 
-    if (quantity <= 0) {
-      return this.removeItem(id);
-    }
+      const itemIndex = items.findIndex((i) => i.id === id);
+      if (itemIndex === -1) {
+        throw new Error('პროდუქტი ვერ მოიძებნა');
+      }
 
-    const { data, error } = await supabase
-      .from('cart_items')
-      .update({
-        quantity,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .select()
-      .single();
+      items[itemIndex].quantity = quantity;
+      items[itemIndex].updatedAt = new Date().toISOString();
 
-    if (error) {
+      await AsyncStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+
+      return {
+        success: true,
+        item: items[itemIndex],
+        message: 'რაოდენობა განახლდა',
+      };
+    } catch (error) {
       console.error('Quantity update error:', error);
       throw new Error('რაოდენობის განახლება ვერ მოხერხდა');
     }
-
-    return {
-      success: true,
-      item: {
-        id: data.id,
-        userId: data.user_id,
-        productId: data.product_id,
-        name: data.name,
-        price: parseFloat(data.price),
-        imageUrl: data.image_url,
-        variations: data.variations || {},
-        variationId: data.variation_id,
-        quantity: data.quantity,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-      },
-      message: 'რაოდენობა განახლდა',
-    };
   },
 
   async removeItem(id: string): Promise<{ success: boolean; message: string }> {
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      const cartStr = await AsyncStorage.getItem(GUEST_CART_KEY);
+      const items: CartItem[] = cartStr ? JSON.parse(cartStr) : [];
 
-    if (!user) {
-      throw new Error('არ ხართ ავტორიზებული');
-    }
+      const filteredItems = items.filter((i) => i.id !== id);
+      await AsyncStorage.setItem(GUEST_CART_KEY, JSON.stringify(filteredItems));
 
-    const { error } = await supabase
-      .from('cart_items')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id);
-
-    if (error) {
+      return {
+        success: true,
+        message: 'პროდუქტი წაიშალა კალათიდან',
+      };
+    } catch (error) {
       console.error('Remove item error:', error);
       throw new Error('პროდუქტის წაშლა ვერ მოხერხდა');
     }
-
-    return {
-      success: true,
-      message: 'პროდუქტი წაიშალა კალათიდან',
-    };
   },
 
   async clearCart(): Promise<{ success: boolean; message: string }> {
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      await AsyncStorage.removeItem(GUEST_CART_KEY);
 
-    if (!user) {
-      throw new Error('არ ხართ ავტორიზებული');
-    }
-
-    const { error } = await supabase
-      .from('cart_items')
-      .delete()
-      .eq('user_id', user.id);
-
-    if (error) {
+      return {
+        success: true,
+        message: 'კალათა გაიწმინდა',
+      };
+    } catch (error) {
       console.error('Clear cart error:', error);
       throw new Error('კალათის გაწმენდა ვერ მოხერხდა');
     }
-
-    return {
-      success: true,
-      message: 'კალათა გაიწმინდა',
-    };
   },
 };

@@ -24,9 +24,7 @@ export default function CartScreen() {
     try {
       const user = await authService.getUser();
       setIsAuthenticated(!!user);
-      if (user) {
-        await loadCart();
-      }
+      await loadCart();
     } catch (error) {
       console.error('Error checking auth:', error);
       setIsAuthenticated(false);
