@@ -5,12 +5,16 @@ import { router } from 'expo-router';
 import { authService, User as AuthUser } from '@/services/auth';
 import { ArrowLeft, Save, User, Mail, Phone, AtSign, ShieldCheck, Wallet, CreditCard } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Loader from '@/components/Loader';
+import AuthNotification from '@/components/AuthNotification';
 
 export default function EditProfileScreen() {
   const insets = useSafeAreaInsets();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showAuthNotification, setShowAuthNotification] = useState(false);
+  const [authMessage, setAuthMessage] = useState('');
 
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
@@ -24,6 +28,12 @@ export default function EditProfileScreen() {
   const loadUser = async () => {
     try {
       const profile = await authService.getProfile();
+      if (!profile) {
+        setAuthMessage('პროფილის რედაქტირებისთვის საჭიროა ავტორიზაცია');
+        setShowAuthNotification(true);
+        setLoading(false);
+        return;
+      }
       setUser(profile);
       setFullName(profile.full_name || '');
       setUsername(profile.username || '');
@@ -31,7 +41,8 @@ export default function EditProfileScreen() {
       setPhone(profile.phone || '');
     } catch (error) {
       console.error('Error loading user:', error);
-      Alert.alert('შეცდომა', 'პროფილის ჩატვირთვა ვერ მოხერხდა');
+      setAuthMessage('პროფილის ჩატვირთვა ვერ მოხერხდა');
+      setShowAuthNotification(true);
     } finally {
       setLoading(false);
     }
@@ -94,8 +105,7 @@ export default function EditProfileScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <User size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );
@@ -104,6 +114,12 @@ export default function EditProfileScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <AuthNotification
+        visible={showAuthNotification}
+        message={authMessage}
+        onHide={() => setShowAuthNotification(false)}
+        onLogin={() => router.push('/auth/login')}
+      />
       <LinearGradient
         colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}

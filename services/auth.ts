@@ -256,7 +256,10 @@ export const authService = {
   async getProfile(): Promise<User | null> {
     try {
       const token = await this.getToken();
-      if (!token) throw new Error('არ ხართ ავტორიზებული');
+      if (!token) {
+        console.log('⚠️ No token found, user not authenticated');
+        return null;
+      }
 
       console.log('👤 Fetching user profile');
 
@@ -273,7 +276,7 @@ export const authService = {
 
       if (!response.ok) {
         console.error('❌ Get profile failed:', data.message);
-        throw new Error(data.message || 'პროფილის ჩატვირთვა ვერ მოხერხდა');
+        return null;
       }
 
       console.log('✅ Profile loaded successfully');
@@ -282,7 +285,7 @@ export const authService = {
       return data.user;
     } catch (error: any) {
       console.error('❌ Get profile error:', error);
-      throw error;
+      return null;
     }
   },
 

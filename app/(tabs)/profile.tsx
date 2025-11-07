@@ -6,11 +6,14 @@ import { authService, User as AuthUser } from '@/services/auth';
 import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck, Package } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Loader from '@/components/Loader';
+import AuthNotification from '@/components/AuthNotification';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAuthNotification, setShowAuthNotification] = useState(false);
+  const [authMessage, setAuthMessage] = useState('');
 
   useEffect(() => {
     loadUser();
@@ -19,7 +22,12 @@ export default function ProfileScreen() {
   const loadUser = async () => {
     try {
       const profile = await authService.getProfile();
-      setUser(profile);
+      if (!profile) {
+        const cachedUser = await authService.getUser();
+        setUser(cachedUser);
+      } else {
+        setUser(profile);
+      }
     } catch (error) {
       console.error('Error loading user:', error);
       const cachedUser = await authService.getUser();
@@ -126,6 +134,12 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <AuthNotification
+        visible={showAuthNotification}
+        message={authMessage}
+        onHide={() => setShowAuthNotification(false)}
+        onLogin={handleNavigateToAuth}
+      />
       <LinearGradient
         colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
