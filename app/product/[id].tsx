@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated, Alert } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, FlatList, StatusBar, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
+import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, ChevronDown, ChevronUp, Star, Check } from 'lucide-react-native';
 import { cartService } from '@/services/cart';
-import { authService } from '@/services/auth';
+import Loader from '@/components/Loader';
 import CartNotification from '@/components/CartNotification';
 
 const { width } = Dimensions.get('window');
@@ -89,57 +89,7 @@ export default function ProductDetailScreen() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState('');
 
-  const pan = useRef(new Animated.ValueXY()).current;
-  const touchStartX = useRef(0);
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onStartShouldSetPanResponderCapture: () => true,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 5;
-      },
-      onMoveShouldSetPanResponderCapture: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 5;
-      },
-      onPanResponderGrant: (evt) => {
-        touchStartX.current = evt.nativeEvent.pageX;
-        pan.setOffset({
-          x: (pan.x as any)._value,
-          y: 0,
-        });
-        pan.setValue({ x: 0, y: 0 });
-      },
-      onPanResponderMove: (_, gestureState) => {
-        pan.setValue({ x: gestureState.dx, y: 0 });
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        pan.flattenOffset();
-        const swipeThreshold = 50;
-
-        if (gestureState.dx < -swipeThreshold && gestureState.vx < -0.3 && product && selectedImageIndex < product.images.length - 1) {
-          setSelectedImageIndex(selectedImageIndex + 1);
-          setCurrentMainImage('');
-        } else if (gestureState.dx > swipeThreshold && gestureState.vx > 0.3 && selectedImageIndex > 0) {
-          setSelectedImageIndex(selectedImageIndex - 1);
-          setCurrentMainImage('');
-        }
-
-        Animated.spring(pan, {
-          toValue: { x: 0, y: 0 },
-          useNativeDriver: false,
-          friction: 7,
-          tension: 50,
-        }).start();
-      },
-      onPanResponderTerminate: () => {
-        Animated.spring(pan, {
-          toValue: { x: 0, y: 0 },
-          useNativeDriver: false,
-        }).start();
-      },
-    })
-  ).current;
+  const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
     if (id) {
@@ -197,7 +147,6 @@ export default function ProductDetailScreen() {
 
   const handleAddToCart = async () => {
     try {
-
       if (!product) return;
 
       setIsAddingToCart(true);
@@ -219,15 +168,6 @@ export default function ProductDetailScreen() {
 
       const price = selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price;
 
-      console.log('Adding to cart:', {
-        productId: product.id,
-        name: product.title,
-        price: price,
-        imageUrl: currentMainImage || product.mainImage,
-        variations: variations,
-        quantity: quantity,
-      });
-
       const result = await cartService.addToCart({
         productId: product.id,
         name: product.title,
@@ -237,25 +177,42 @@ export default function ProductDetailScreen() {
         quantity: quantity,
       });
 
-      console.log('Add to cart result:', result);
-
       setNotificationMessage('პროდუქტი დაემატა კალათაში');
       setShowNotification(true);
     } catch (error: any) {
       console.error('Error adding to cart:', error);
-      console.error('Error details:', error.message);
       Alert.alert('შეცდომა', error.message || 'პროდუქტის კალათაში დამატება ვერ მოხერხდა');
     } finally {
       setIsAddingToCart(false);
     }
   };
 
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      setSelectedImageIndex(viewableItems[0].index || 0);
+    }
+  }).current;
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+  }).current;
+
   if (loading) {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.loadingHeader}
+        >
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+          </TouchableOpacity>
+        </LinearGradient>
         <View style={styles.loadingContainer}>
-          <View style={styles.loadingSpinner} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );
@@ -264,12 +221,19 @@ export default function ProductDetailScreen() {
   if (!product) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.headerButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#1a1a1a" strokeWidth={2} />
+        <StatusBar barStyle="dark-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.loadingHeader}
+        >
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
-        </View>
+        </LinearGradient>
         <View style={styles.errorContainer}>
+          <Package size={64} color="#d1d5db" strokeWidth={1.5} />
           <Text style={styles.errorText}>პროდუქტი ვერ მოიძებნა</Text>
         </View>
       </View>
@@ -278,54 +242,65 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <CartNotification
         visible={showNotification}
         message={notificationMessage}
         onHide={() => setShowNotification(false)}
-        onViewCart={() => router.push('/cart')}
+        onViewCart={() => router.push('/(tabs)/cart')}
       />
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton} onPress={() => router.back()}>
-          <ArrowLeft size={24} color="#1a1a1a" strokeWidth={2} />
+
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
         </TouchableOpacity>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerButton}>
-            <Share2 size={22} color="#1a1a1a" strokeWidth={2} />
+            <Share2 size={20} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.headerButton}
             onPress={() => setIsFavorite(!isFavorite)}
           >
             <Heart
-              size={22}
-              color={isFavorite ? '#ef4444' : '#1a1a1a'}
-              strokeWidth={2}
-              fill={isFavorite ? '#ef4444' : 'transparent'}
+              size={20}
+              color={isFavorite ? '#fbbf24' : '#fff'}
+              strokeWidth={2.5}
+              fill={isFavorite ? '#fbbf24' : 'transparent'}
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </LinearGradient>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageSection}>
-          <Animated.View
-            style={[
-              styles.mainImageContainer,
-              {
-                transform: [{ translateX: pan.x }],
-              },
-            ]}
-            {...panResponder.panHandlers}
-          >
-            <Image
-              source={{ uri: currentMainImage || product.images[selectedImageIndex] || product.mainImage }}
-              style={styles.mainImage}
-              resizeMode="contain"
-            />
-          </Animated.View>
+          <FlatList
+            ref={flatListRef}
+            data={product.images.length > 0 ? product.images : [product.mainImage]}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.imageSlide}>
+                <Image
+                  source={{ uri: item }}
+                  style={styles.mainImage}
+                  resizeMode="contain"
+                />
+              </View>
+            )}
+          />
 
           {product.images.length > 1 && (
-            <>
+            <View style={styles.paginationContainer}>
               <View style={styles.paginationDots}>
                 {product.images.map((_, index) => (
                   <View
@@ -337,37 +312,20 @@ export default function ProductDetailScreen() {
                   />
                 ))}
               </View>
-
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={styles.thumbnailScroll}
-                contentContainerStyle={styles.thumbnailContent}
-              >
-                {product.images.map((img, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => {
-                      setSelectedImageIndex(index);
-                      setCurrentMainImage('');
-                    }}
-                    style={[
-                      styles.thumbnail,
-                      selectedImageIndex === index && styles.thumbnailSelected,
-                    ]}
-                  >
-                    <Image source={{ uri: img }} style={styles.thumbnailImage} resizeMode="cover" />
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </>
+            </View>
           )}
+
+          <View style={styles.imageCounter}>
+            <Text style={styles.imageCounterText}>
+              {selectedImageIndex + 1} / {product.images.length || 1}
+            </Text>
+          </View>
         </View>
 
         <View style={styles.contentSection}>
-          <View style={styles.brandRow}>
+          <View style={styles.topBadges}>
             <View style={styles.brandBadge}>
-              <Package size={14} color="#6e39ea" strokeWidth={2} />
+              <Package size={14} color="#7c3aed" strokeWidth={2.5} />
               <Text style={styles.brandText}>{product.brandName}</Text>
             </View>
             {product.inStock && (
@@ -380,17 +338,23 @@ export default function ProductDetailScreen() {
 
           <Text style={styles.productTitle}>{product.title}</Text>
 
-          <View style={styles.priceRow}>
-            <View>
+          <View style={styles.priceCard}>
+            <LinearGradient
+              colors={['#7c3aed', '#8b5cf6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.priceGradient}
+            >
               <Text style={styles.priceLabel}>ფასი</Text>
               <Text style={styles.priceValue}>
                 ₾{(selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price).toFixed(2)}
               </Text>
-            </View>
+            </LinearGradient>
           </View>
 
           {product.configurators.length > 0 && (
-            <View style={styles.configuratorsSection}>
+            <View style={styles.variationsSection}>
+              <Text style={styles.variationsSectionTitle}>ვარიანტები</Text>
               {(() => {
                 const groupedByPid: Record<string, Attribute[]> = {};
                 product.configurators.forEach((config) => {
@@ -401,18 +365,26 @@ export default function ProductDetailScreen() {
                 });
 
                 return Object.entries(groupedByPid).map(([pid, configs]) => {
-                  const propertyName = configs[0].OriginalPropertyName;
+                  const propertyName = configs[0].PropertyName;
                   const uniqueConfigs = configs.filter(
                     (config, index, self) =>
                       index === self.findIndex((c) => c.Vid === config.Vid)
                   );
 
                   const currentValue = selectedOptions[pid];
+                  const selectedConfig = uniqueConfigs.find(c => c.Vid === currentValue);
 
                   return (
-                    <View key={pid} style={styles.configuratorGroup}>
-                      <Text style={styles.configuratorLabel}>{propertyName}</Text>
-                      <View style={styles.configuratorOptions}>
+                    <View key={pid} style={styles.variationGroup}>
+                      <View style={styles.variationHeader}>
+                        <Text style={styles.variationLabel}>{propertyName}</Text>
+                        {selectedConfig && (
+                          <Text style={styles.variationSelected}>
+                            {selectedConfig.Value}
+                          </Text>
+                        )}
+                      </View>
+                      <View style={styles.variationOptions}>
                         {uniqueConfigs.map((config, vIndex) => {
                           const isSelected = config.Vid === currentValue;
                           const hasThumbnail = !!config.MiniImageUrl;
@@ -421,9 +393,8 @@ export default function ProductDetailScreen() {
                             <TouchableOpacity
                               key={vIndex}
                               style={[
-                                styles.configuratorOption,
-                                isSelected && styles.configuratorOptionSelected,
-                                hasThumbnail && styles.configuratorOptionWithImage,
+                                styles.variationOption,
+                                isSelected && styles.variationOptionSelected,
                               ]}
                               onPress={() => {
                                 const newOptions = { ...selectedOptions, [pid]: config.Vid };
@@ -445,32 +416,28 @@ export default function ProductDetailScreen() {
                                   setCurrentMainImage(config.ImageUrl);
                                 }
                               }}
+                              activeOpacity={0.7}
                             >
-                              {hasThumbnail ? (
-                                <View style={styles.imageOptionContent}>
-                                  <Image
-                                    source={{ uri: config.MiniImageUrl }}
-                                    style={styles.variationThumbnail}
-                                    resizeMode="cover"
-                                  />
-                                  <Text
-                                    style={[
-                                      styles.configuratorOptionText,
-                                      isSelected && styles.configuratorOptionTextSelected,
-                                    ]}
-                                  >
-                                    {config.OriginalValue}
-                                  </Text>
+                              {hasThumbnail && (
+                                <Image
+                                  source={{ uri: config.MiniImageUrl }}
+                                  style={styles.variationThumbnail}
+                                  resizeMode="cover"
+                                />
+                              )}
+                              <Text
+                                style={[
+                                  styles.variationOptionText,
+                                  isSelected && styles.variationOptionTextSelected,
+                                ]}
+                                numberOfLines={1}
+                              >
+                                {config.Value}
+                              </Text>
+                              {isSelected && (
+                                <View style={styles.checkmark}>
+                                  <Check size={14} color="#fff" strokeWidth={3} />
                                 </View>
-                              ) : (
-                                <Text
-                                  style={[
-                                    styles.configuratorOptionText,
-                                    isSelected && styles.configuratorOptionTextSelected,
-                                  ]}
-                                >
-                                  {config.OriginalValue}
-                                </Text>
                               )}
                             </TouchableOpacity>
                           );
@@ -483,128 +450,41 @@ export default function ProductDetailScreen() {
             </View>
           )}
 
-          <View style={styles.deliveryPromoBanner}>
-            <LinearGradient
-              colors={['#f5f3ff', '#ede9fe', '#ddd6fe']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.promoGradient}
-            >
-              <View style={styles.promoIconContainer}>
-                <View style={styles.promoIconCircle}>
-                  <Truck size={28} color="#6e39ea" strokeWidth={2.5} />
-                </View>
+          <View style={styles.deliveryCard}>
+            <View style={styles.deliveryHeader}>
+              <View style={styles.deliveryIconBg}>
+                <Truck size={24} color="#7c3aed" strokeWidth={2.5} />
               </View>
-
-              <View style={styles.promoContent}>
-                <Text style={styles.promoTitle}>სპეციალური შეთავაზება</Text>
-                <Text style={styles.promoSubtitle}>სწრაფი და უსაფრთხო მიწოდება</Text>
-
-                <View style={styles.promoDetailsContainer}>
-                  <View style={styles.promoDetailItem}>
-                    <View style={styles.promoDetailIcon}>
-                      <Calendar size={18} color="#6e39ea" strokeWidth={2} />
-                    </View>
-                    <View style={styles.promoDetailText}>
-                      <Text style={styles.promoDetailLabel}>მიწოდების ვადა</Text>
-                      <Text style={styles.promoDetailValue}>10-14 სამუშაო დღე</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.promoDivider} />
-
-                  <View style={styles.promoDetailItem}>
-                    <View style={styles.promoDetailIcon}>
-                      <Shield size={18} color="#6e39ea" strokeWidth={2} />
-                    </View>
-                    <View style={styles.promoDetailText}>
-                      <Text style={styles.promoDetailLabel}>დაზღვეული მიწოდება</Text>
-                      <Text style={styles.promoDetailValue}>100% გარანტია</Text>
-                    </View>
-                  </View>
-                </View>
-
-                <View style={styles.deliveryDateCard}>
-                  <Text style={styles.deliveryDateLabel}>მოსალოდნელი თარიღი:</Text>
-                  <Text style={styles.deliveryDateValue}>{getDeliveryDateRange()}</Text>
-                </View>
+              <View style={styles.deliveryHeaderText}>
+                <Text style={styles.deliveryTitle}>მიწოდება</Text>
+                <Text style={styles.deliverySubtitle}>ჩინეთიდან საქართველოში</Text>
               </View>
-            </LinearGradient>
-          </View>
-
-          <View style={styles.section}>
-            <TouchableOpacity
-              style={styles.collapsibleHeader}
-              onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.collapsibleHeaderContent}>
-                <Info size={20} color="#1a1a1a" strokeWidth={2} />
-                <Text style={styles.sectionTitle}>აღწერა</Text>
-              </View>
-              {isDescriptionExpanded ? (
-                <ChevronDown size={20} color="#666" strokeWidth={2} />
-              ) : (
-                <ChevronRight size={20} color="#666" strokeWidth={2} />
-              )}
-            </TouchableOpacity>
-            {isDescriptionExpanded && (
-              <Text style={styles.descriptionText}>
-                {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
-              </Text>
-            )}
-          </View>
-
-          {product.attributes.length > 0 && (
-            <View style={styles.section}>
-              <TouchableOpacity
-                style={styles.collapsibleHeader}
-                onPress={() => setIsAttributesExpanded(!isAttributesExpanded)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.collapsibleHeaderContent}>
-                  <Package size={20} color="#1a1a1a" strokeWidth={2} />
-                  <Text style={styles.sectionTitle}>მახასიათებლები</Text>
-                </View>
-                {isAttributesExpanded ? (
-                  <ChevronDown size={20} color="#666" strokeWidth={2} />
-                ) : (
-                  <ChevronRight size={20} color="#666" strokeWidth={2} />
-                )}
-              </TouchableOpacity>
-              {isAttributesExpanded && (
-                <View style={styles.attributesContainer}>
-                  {product.attributes.map((attr, index) => (
-                    <View key={index} style={styles.attributeRow}>
-                      <Text style={styles.attributeLabel}>{attr.PropertyName}</Text>
-                      <View style={styles.attributeDivider} />
-                      <Text style={styles.attributeValue}>{attr.Value}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
             </View>
-          )}
 
-          {product.vendorName && (
-            <TouchableOpacity style={styles.vendorCard}>
-              <View style={styles.vendorInfo}>
-                <Package size={18} color="#6e39ea" strokeWidth={2} />
-                <View style={styles.vendorTextContainer}>
-                  <Text style={styles.vendorLabel}>გამყიდველი</Text>
-                  <Text style={styles.vendorValue}>{product.vendorName}</Text>
-                </View>
+            <View style={styles.deliveryDetails}>
+              <View style={styles.deliveryDetailRow}>
+                <Shield size={16} color="#10b981" strokeWidth={2.5} />
+                <Text style={styles.deliveryDetailText}>100% უსაფრთხო და დაზღვეული</Text>
               </View>
-              <ChevronRight size={20} color="#ccc" strokeWidth={2} />
-            </TouchableOpacity>
-          )}
+              <View style={styles.deliveryDetailRow}>
+                <Package size={16} color="#7c3aed" strokeWidth={2.5} />
+                <Text style={styles.deliveryDetailText}>10-14 სამუშაო დღე</Text>
+              </View>
+            </View>
 
-          <View style={styles.quantitySection}>
+            <View style={styles.deliveryDateBadge}>
+              <Text style={styles.deliveryDateLabel}>მოსალოდნელი:</Text>
+              <Text style={styles.deliveryDateValue}>{getDeliveryDateRange()}</Text>
+            </View>
+          </View>
+
+          <View style={styles.quantityCard}>
             <Text style={styles.quantityLabel}>რაოდენობა</Text>
             <View style={styles.quantityControls}>
               <TouchableOpacity
                 style={styles.quantityButton}
                 onPress={() => setQuantity(Math.max(1, quantity - 1))}
+                activeOpacity={0.7}
               >
                 <Text style={styles.quantityButtonText}>−</Text>
               </TouchableOpacity>
@@ -612,42 +492,113 @@ export default function ProductDetailScreen() {
                 <Text style={styles.quantityText}>{quantity}</Text>
               </View>
               <TouchableOpacity
-                style={[styles.quantityButton, styles.quantityButtonPlus]}
+                style={[styles.quantityButton, styles.quantityButtonActive]}
                 onPress={() => setQuantity(quantity + 1)}
+                activeOpacity={0.7}
               >
-                <Text style={styles.quantityButtonTextPlus}>+</Text>
+                <LinearGradient
+                  colors={['#7c3aed', '#8b5cf6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.quantityButtonGradient}
+                >
+                  <Text style={styles.quantityButtonTextActive}>+</Text>
+                </LinearGradient>
               </TouchableOpacity>
             </View>
           </View>
+
+          <TouchableOpacity
+            style={styles.collapsibleCard}
+            onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+            activeOpacity={0.9}
+          >
+            <View style={styles.collapsibleHeader}>
+              <Text style={styles.collapsibleTitle}>აღწერა</Text>
+              {isDescriptionExpanded ? (
+                <ChevronUp size={20} color="#7c3aed" strokeWidth={2.5} />
+              ) : (
+                <ChevronDown size={20} color="#6b7280" strokeWidth={2.5} />
+              )}
+            </View>
+            {isDescriptionExpanded && (
+              <View style={styles.collapsibleContent}>
+                <Text style={styles.descriptionText}>
+                  {product.description || 'აღწერა არ არის ხელმისაწვდომი'}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+
+          {product.attributes.length > 0 && (
+            <TouchableOpacity
+              style={styles.collapsibleCard}
+              onPress={() => setIsAttributesExpanded(!isAttributesExpanded)}
+              activeOpacity={0.9}
+            >
+              <View style={styles.collapsibleHeader}>
+                <Text style={styles.collapsibleTitle}>მახასიათებლები</Text>
+                {isAttributesExpanded ? (
+                  <ChevronUp size={20} color="#7c3aed" strokeWidth={2.5} />
+                ) : (
+                  <ChevronDown size={20} color="#6b7280" strokeWidth={2.5} />
+                )}
+              </View>
+              {isAttributesExpanded && (
+                <View style={styles.collapsibleContent}>
+                  {product.attributes.map((attr, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.attributeRow,
+                        index === product.attributes.length - 1 && styles.attributeRowLast,
+                      ]}
+                    >
+                      <Text style={styles.attributeLabel}>{attr.PropertyName}</Text>
+                      <Text style={styles.attributeValue}>{attr.Value}</Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </TouchableOpacity>
+          )}
 
           <View style={styles.bottomSpacer} />
         </View>
       </ScrollView>
 
       <View style={styles.footer}>
-        <View style={styles.footerContent}>
-          <View style={styles.totalSection}>
-            <Text style={styles.totalLabel}>სულ</Text>
-            <Text style={styles.totalPrice}>₾{(product.price * quantity).toFixed(2)}</Text>
-          </View>
-          <TouchableOpacity
-            style={[styles.addToCartButton, (!product.inStock || isAddingToCart) && styles.addToCartButtonDisabled]}
-            disabled={!product.inStock || isAddingToCart}
-            onPress={handleAddToCart}
-          >
-            <LinearGradient
-              colors={product.inStock ? ['#6e39ea', '#8b5cf6'] : ['#999', '#777']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.addToCartGradient}
-            >
-              <ShoppingCart size={20} color="#fff" strokeWidth={2} />
-              <Text style={styles.addToCartText}>
-                {isAddingToCart ? 'დამატება...' : product.inStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
+        <LinearGradient
+          colors={['rgba(255,255,255,0.98)', 'rgba(255,255,255,1)']}
+          style={styles.footerGradient}
+        >
+          <View style={styles.footerContent}>
+            <View style={styles.totalSection}>
+              <Text style={styles.totalLabel}>სულ</Text>
+              <Text style={styles.totalPrice}>
+                ₾{((selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price) * quantity).toFixed(2)}
               </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+            </View>
+            <TouchableOpacity
+              style={[styles.addToCartButton, (!product.inStock || isAddingToCart) && styles.addToCartButtonDisabled]}
+              disabled={!product.inStock || isAddingToCart}
+              onPress={handleAddToCart}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={product.inStock ? ['#7c3aed', '#8b5cf6'] : ['#9ca3af', '#6b7280']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.addToCartGradient}
+              >
+                <ShoppingCart size={20} color="#fff" strokeWidth={2.5} />
+                <Text style={styles.addToCartText}>
+                  {isAddingToCart ? 'დამატება...' : product.inStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
       </View>
     </View>
   );
@@ -656,37 +607,35 @@ export default function ProductDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#fafafa',
+  },
+  loadingHeader: {
+    paddingTop: 50,
+    paddingBottom: 16,
+    paddingHorizontal: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 16,
-  },
-  loadingSpinner: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 3,
-    borderColor: '#f0f0f0',
-    borderTopColor: '#6e39ea',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: '500',
   },
   errorContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 16,
     padding: 20,
   },
   errorText: {
     fontSize: 16,
-    color: '#999',
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
   },
   header: {
     flexDirection: 'row',
@@ -695,12 +644,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 16,
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 10,
   },
   headerButton: {
     width: 44,
@@ -708,489 +670,348 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  headerActions: {
-    flexDirection: 'row',
-    gap: 8,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   scrollView: {
     flex: 1,
   },
   imageSection: {
-    backgroundColor: '#ffffff',
-    paddingBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 1,
+    backgroundColor: '#fff',
+    position: 'relative',
   },
-  mainImageContainer: {
+  imageSlide: {
     width: width,
-    height: width,
+    height: width * 1.1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fafafa',
   },
   mainImage: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: '90%',
+  },
+  paginationContainer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
   },
   paginationDots: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 16,
-    gap: 6,
+    gap: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#e5e7eb',
-    transition: 'all 0.3s',
+    backgroundColor: '#d1d5db',
   },
   dotActive: {
-    backgroundColor: '#6e39ea',
-    width: 28,
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 2,
+    width: 24,
+    backgroundColor: '#7c3aed',
   },
-  thumbnailScroll: {
-    marginTop: 12,
+  imageCounter: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
-  thumbnailContent: {
-    paddingHorizontal: 16,
-    gap: 8,
-  },
-  thumbnail: {
-    width: 70,
-    height: 70,
-    borderRadius: 12,
-    overflow: 'hidden',
-    borderWidth: 2.5,
-    borderColor: 'transparent',
-    backgroundColor: '#f8f9fa',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  thumbnailSelected: {
-    borderColor: '#6e39ea',
-    backgroundColor: '#fff',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  thumbnailImage: {
-    width: '100%',
-    height: '100%',
+  imageCounterText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
   },
   contentSection: {
     padding: 20,
-    backgroundColor: '#f8f9fa',
   },
-  brandRow: {
+  topBadges: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 8,
     marginBottom: 12,
   },
   brandBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#f5f3ff',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 24,
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: '#ede9fe',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
   brandText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6e39ea',
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   stockBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#ecfdf5',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 24,
-    shadowColor: '#10b981',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: '#d1fae5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
   stockDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: '#10b981',
-    shadowColor: '#10b981',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
   },
   stockText: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '800',
     color: '#10b981',
+    fontFamily: 'MarkGEO-Regular',
   },
   productTitle: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    lineHeight: 34,
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    lineHeight: 32,
     marginBottom: 16,
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
-  priceRow: {
+  priceCard: {
+    borderRadius: 18,
+    overflow: 'hidden',
     marginBottom: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  priceGradient: {
+    padding: 20,
+    alignItems: 'center',
   },
   priceLabel: {
     fontSize: 13,
-    fontWeight: '500',
-    color: '#999',
-    marginBottom: 4,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginBottom: 6,
+    fontFamily: 'MarkGEO-Regular',
   },
   priceValue: {
     fontSize: 36,
     fontWeight: '900',
-    color: '#1a1a1a',
-    letterSpacing: -1.5,
+    color: '#fff',
+    letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
   },
-  configuratorsSection: {
-    marginBottom: 20,
-    gap: 16,
-  },
-  configuratorGroup: {
-    gap: 10,
-  },
-  configuratorLabel: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  configuratorOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  configuratorOption: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 14,
-    backgroundColor: '#ffffff',
-    borderWidth: 2,
-    borderColor: '#e5e7eb',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  configuratorOptionWithImage: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  configuratorOptionSelected: {
-    backgroundColor: '#f5f3ff',
-    borderColor: '#6e39ea',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  configuratorOptionText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
-  },
-  configuratorOptionTextSelected: {
-    color: '#6e39ea',
-  },
-  imageOptionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  variationThumbnail: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
-    backgroundColor: '#f5f5f5',
-  },
-  deliveryPromoBanner: {
-    marginBottom: 24,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  promoGradient: {
-    padding: 20,
-    borderRadius: 20,
-  },
-  promoIconContainer: {
-    alignItems: 'center',
+  variationsSection: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 18,
     marginBottom: 16,
-  },
-  promoIconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#6e39ea',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
-    elevation: 4,
-  },
-  promoContent: {
-    alignItems: 'center',
-  },
-  promoTitle: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#4c1d95',
-    marginBottom: 4,
-    textAlign: 'center',
-    letterSpacing: 0.3,
-  },
-  promoSubtitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#6d28d9',
-    marginBottom: 18,
-    textAlign: 'center',
-  },
-  promoDetailsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    borderRadius: 14,
-    padding: 14,
-    marginBottom: 14,
-  },
-  promoDetailItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  promoDetailIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#f5f3ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  promoDetailText: {
-    flex: 1,
-  },
-  promoDetailLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#64748b',
-    marginBottom: 2,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  promoDetailValue: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#4c1d95',
-  },
-  promoDivider: {
-    width: 1,
-    backgroundColor: '#cbd5e1',
-    marginHorizontal: 10,
-  },
-  deliveryDateCard: {
-    width: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(110, 57, 234, 0.2)',
-  },
-  deliveryDateLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
-    marginBottom: 4,
-    letterSpacing: 0.5,
-  },
-  deliveryDateValue: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#6e39ea',
-    letterSpacing: 0.3,
-  },
-  section: {
-    marginBottom: 20,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  collapsibleHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#f8f9fa',
-    padding: 18,
-    borderRadius: 14,
-    marginBottom: 0,
-  },
-  collapsibleHeaderContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    letterSpacing: -0.3,
-  },
-  descriptionText: {
-    fontSize: 15,
-    lineHeight: 26,
-    color: '#4b5563',
-    fontWeight: '400',
-    padding: 16,
-    paddingTop: 12,
-  },
-  attributesContainer: {
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginTop: 12,
-  },
-  attributeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-  },
-  attributeLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6b7280',
-    flex: 1,
-  },
-  attributeDivider: {
-    width: 1,
-    height: 14,
-    backgroundColor: '#e5e5e5',
-    marginHorizontal: 12,
-  },
-  attributeValue: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    flex: 1,
-    textAlign: 'right',
-  },
-  vendorCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#ffffff',
-    padding: 18,
-    borderRadius: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 3,
-    elevation: 1,
+    elevation: 3,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
-  vendorInfo: {
+  variationsSectionTitle: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 16,
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  variationGroup: {
+    marginBottom: 16,
+  },
+  variationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  variationLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  variationSelected: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  variationOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  variationOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: '#f9fafb',
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    minWidth: 60,
+    position: 'relative',
+  },
+  variationOptionSelected: {
+    backgroundColor: '#ede9fe',
+    borderColor: '#7c3aed',
+  },
+  variationThumbnail: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#f3f4f6',
+  },
+  variationOptionText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  variationOptionTextSelected: {
+    color: '#7c3aed',
+  },
+  checkmark: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#7c3aed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  deliveryCard: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  deliveryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    marginBottom: 14,
+  },
+  deliveryIconBg: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#ede9fe',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  deliveryHeaderText: {
     flex: 1,
   },
-  vendorTextContainer: {
-    flex: 1,
-  },
-  vendorLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#999',
+  deliveryTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#111827',
     marginBottom: 2,
+    fontFamily: 'MarkGEO-Regular',
   },
-  vendorValue: {
-    fontSize: 15,
+  deliverySubtitle: {
+    fontSize: 12,
     fontWeight: '600',
-    color: '#1a1a1a',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
   },
-  quantitySection: {
-    marginBottom: 20,
-    backgroundColor: '#ffffff',
+  deliveryDetails: {
+    gap: 10,
+    marginBottom: 14,
+  },
+  deliveryDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  deliveryDetailText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  deliveryDateBadge: {
+    backgroundColor: '#ede9fe',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  deliveryDateLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  deliveryDateValue: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  quantityCard: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
     padding: 18,
-    borderRadius: 16,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.03,
-    shadowRadius: 3,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   quantityLabel: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 14,
-    letterSpacing: -0.2,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
   },
   quantityControls: {
     flexDirection: 'row',
@@ -1201,37 +1022,35 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: '#f3f4f6',
   },
-  quantityButtonPlus: {
-    backgroundColor: '#6e39ea',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
+  quantityButtonActive: {
+    backgroundColor: 'transparent',
+    overflow: 'hidden',
+  },
+  quantityButtonGradient: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   quantityButtonText: {
     fontSize: 24,
-    fontWeight: '600',
-    color: '#666',
+    fontWeight: '700',
+    color: '#6b7280',
   },
-  quantityButtonTextPlus: {
+  quantityButtonTextActive: {
     fontSize: 24,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#fff',
   },
   quantityDisplay: {
     flex: 1,
     height: 48,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#f9fafb',
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
@@ -1240,9 +1059,71 @@ const styles = StyleSheet.create({
   },
   quantityText: {
     fontSize: 20,
+    fontWeight: '900',
+    color: '#111827',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  collapsibleCard: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  collapsibleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  collapsibleTitle: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: '#111827',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  collapsibleContent: {
+    marginTop: 14,
+    paddingTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: '#f3f4f6',
+  },
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 22,
+    color: '#6b7280',
+    fontWeight: '500',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  attributeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
+  },
+  attributeRowLast: {
+    borderBottomWidth: 0,
+  },
+  attributeLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6b7280',
+    flex: 1,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  attributeValue: {
+    fontSize: 13,
     fontWeight: '800',
-    color: '#1a1a1a',
-    letterSpacing: -0.5,
+    color: '#111827',
+    flex: 1,
+    textAlign: 'right',
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpacer: {
     height: 120,
@@ -1252,15 +1133,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#ffffff',
+  },
+  footerGradient: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 34,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 8,
-    paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 34,
   },
   footerContent: {
     flexDirection: 'row',
@@ -1271,44 +1153,44 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   totalLabel: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '700',
     color: '#6b7280',
     marginBottom: 4,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   totalPrice: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '900',
-    color: '#1a1a1a',
-    letterSpacing: -1,
+    color: '#111827',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   addToCartButton: {
     borderRadius: 18,
     overflow: 'hidden',
-    shadowColor: '#6e39ea',
+    shadowColor: '#7c3aed',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
   },
   addToCartButtonDisabled: {
-    shadowColor: '#999',
-    shadowOpacity: 0.1,
+    shadowColor: '#9ca3af',
+    shadowOpacity: 0.2,
   },
   addToCartGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    paddingVertical: 18,
-    paddingHorizontal: 28,
+    gap: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
   },
   addToCartText: {
-    fontSize: 17,
-    fontWeight: '800',
+    fontSize: 15,
+    fontWeight: '900',
     color: '#fff',
-    letterSpacing: -0.3,
+    fontFamily: 'MarkGEO-Regular',
   },
 });
