@@ -73,7 +73,18 @@ export default function OrdersScreen() {
         });
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('📦 Raw Response:', responseText.substring(0, 200));
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('❌ JSON Parse Error:', parseError);
+        throw new Error('სერვერის პასუხი არასწორია');
+      }
+
+      console.log('📦 Parsed Data:', data);
       console.log('📦 API Response:', {
         status: response.status,
         success: data.success,
