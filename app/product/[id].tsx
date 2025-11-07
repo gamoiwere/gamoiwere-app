@@ -201,16 +201,11 @@ export default function ProductDetailScreen() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.loadingHeader}
-        >
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+        <View style={styles.floatingHeader}>
+          <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
           </TouchableOpacity>
-        </LinearGradient>
+        </View>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -222,16 +217,11 @@ export default function ProductDetailScreen() {
     return (
       <View style={styles.container}>
         <StatusBar barStyle="dark-content" />
-        <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.loadingHeader}
-        >
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+        <View style={styles.floatingHeader}>
+          <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
+            <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
           </TouchableOpacity>
-        </LinearGradient>
+        </View>
         <View style={styles.errorContainer}>
           <Package size={64} color="#d1d5db" strokeWidth={1.5} />
           <Text style={styles.errorText}>პროდუქტი ვერ მოიძებნა</Text>
@@ -242,7 +232,7 @@ export default function ProductDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <CartNotification
         visible={showNotification}
         message={notificationMessage}
@@ -250,32 +240,27 @@ export default function ProductDetailScreen() {
         onViewCart={() => router.push('/(tabs)/cart')}
       />
 
-      <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
+      <View style={styles.floatingHeader}>
+        <TouchableOpacity style={styles.floatingBackButton} onPress={() => router.back()}>
+          <ArrowLeft size={24} color="#111827" strokeWidth={2.5} />
         </TouchableOpacity>
-        <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton}>
-            <Share2 size={20} color="#fff" strokeWidth={2.5} />
+        <View style={styles.floatingActions}>
+          <TouchableOpacity style={styles.floatingButton}>
+            <Share2 size={20} color="#111827" strokeWidth={2.5} />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.headerButton}
+            style={styles.floatingButton}
             onPress={() => setIsFavorite(!isFavorite)}
           >
             <Heart
               size={20}
-              color={isFavorite ? '#fbbf24' : '#fff'}
+              color={isFavorite ? '#ef4444' : '#111827'}
               strokeWidth={2.5}
-              fill={isFavorite ? '#fbbf24' : 'transparent'}
+              fill={isFavorite ? '#ef4444' : 'transparent'}
             />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+      </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.imageSection}>
@@ -338,18 +323,16 @@ export default function ProductDetailScreen() {
 
           <Text style={styles.productTitle}>{product.title}</Text>
 
-          <View style={styles.priceCard}>
-            <LinearGradient
-              colors={['#7c3aed', '#8b5cf6']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.priceGradient}
-            >
+          <View style={styles.priceRow}>
+            <View>
               <Text style={styles.priceLabel}>ფასი</Text>
               <Text style={styles.priceValue}>
                 ₾{(selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price).toFixed(2)}
               </Text>
-            </LinearGradient>
+            </View>
+            <View style={styles.priceBadge}>
+              <Text style={styles.priceBadgeText}>საუკეთესო ფასი</Text>
+            </View>
           </View>
 
           {product.configurators.length > 0 && (
@@ -609,16 +592,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fafafa',
   },
-  loadingHeader: {
-    paddingTop: 50,
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
-  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
@@ -637,42 +610,46 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
-  header: {
+  floatingHeader: {
+    position: 'absolute',
+    top: 50,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 16,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
+    paddingHorizontal: 16,
+    zIndex: 1000,
   },
-  backButton: {
+  floatingBackButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  headerActions: {
+  floatingActions: {
     flexDirection: 'row',
     gap: 10,
   },
-  headerButton: {
+  floatingButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   scrollView: {
     flex: 1,
@@ -683,34 +660,34 @@ const styles = StyleSheet.create({
   },
   imageSlide: {
     width: width,
-    height: width * 1.1,
+    height: width,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fafafa',
+    backgroundColor: '#fff',
   },
   mainImage: {
-    width: '90%',
-    height: '90%',
+    width: '100%',
+    height: '100%',
   },
   paginationContainer: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 12,
     left: 0,
     right: 0,
     alignItems: 'center',
   },
   paginationDots: {
     flexDirection: 'row',
-    gap: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   dot: {
     width: 8,
@@ -724,12 +701,12 @@ const styles = StyleSheet.create({
   },
   imageCounter: {
     position: 'absolute',
-    top: 16,
+    bottom: 56,
     right: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
   },
   imageCounterText: {
     fontSize: 12,
@@ -791,32 +768,48 @@ const styles = StyleSheet.create({
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
-  priceCard: {
-    borderRadius: 18,
-    overflow: 'hidden',
-    marginBottom: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-  priceGradient: {
-    padding: 20,
+  priceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   priceLabel: {
     fontSize: 13,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.85)',
+    fontWeight: '600',
+    color: '#6b7280',
     marginBottom: 6,
     fontFamily: 'MarkGEO-Regular',
   },
   priceValue: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: '900',
-    color: '#fff',
+    color: '#111827',
     letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  priceBadge: {
+    backgroundColor: '#dcfce7',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+  },
+  priceBadgeText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#16a34a',
     fontFamily: 'MarkGEO-Regular',
   },
   variationsSection: {
