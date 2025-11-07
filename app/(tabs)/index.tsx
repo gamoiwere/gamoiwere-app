@@ -159,16 +159,76 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <View style={styles.heroSection}>
-          <TouchableOpacity activeOpacity={0.9}>
+          <TouchableOpacity activeOpacity={0.95}>
             <LinearGradient
-              colors={['#6e39ea', '#8b5cf6']}
+              colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.promoImage}
+              style={styles.heroCard}
             >
-              <Text style={styles.promoText}>სპეციალური შეთავაზება</Text>
+              <View style={styles.heroContent}>
+                <View style={styles.heroLeft}>
+                  <View style={styles.heroBadge}>
+                    <Sparkles size={14} color="#fbbf24" strokeWidth={2.5} />
+                    <Text style={styles.heroBadgeText}>სპეციალური</Text>
+                  </View>
+                  <Text style={styles.heroTitle}>800M+ პროდუქტი{'\n'}ჩინეთიდან</Text>
+                  <Text style={styles.heroSubtitle}>უსაფრთხო და სწრაფი მიწოდება</Text>
+                  <View style={styles.heroFeatures}>
+                    <View style={styles.heroFeature}>
+                      <View style={styles.heroFeatureDot} />
+                      <Text style={styles.heroFeatureText}>10-14 დღე</Text>
+                    </View>
+                    <View style={styles.heroFeature}>
+                      <View style={styles.heroFeatureDot} />
+                      <Text style={styles.heroFeatureText}>100% უსაფრთხო</Text>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.heroRight}>
+                  <View style={styles.heroIconBg}>
+                    <Package size={40} color="#fff" strokeWidth={2} />
+                  </View>
+                </View>
+              </View>
             </LinearGradient>
           </TouchableOpacity>
+
+          <View style={styles.quickStatsCompact}>
+            <View style={styles.statItemCompact}>
+              <View style={styles.statIconCompact}>
+                <Shield size={20} color="#7c3aed" strokeWidth={2.5} />
+              </View>
+              <View style={styles.statInfoCompact}>
+                <Text style={styles.statValueCompact}>100%</Text>
+                <Text style={styles.statLabelCompact}>გარანტია</Text>
+              </View>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statItemCompact}>
+              <View style={styles.statIconCompact}>
+                <Clock size={20} color="#7c3aed" strokeWidth={2.5} />
+              </View>
+              <View style={styles.statInfoCompact}>
+                <Text style={styles.statValueCompact}>24/7</Text>
+                <Text style={styles.statLabelCompact}>მხარდაჭერა</Text>
+              </View>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statItemCompact}>
+              <View style={styles.statIconCompact}>
+                <Truck size={20} color="#7c3aed" strokeWidth={2.5} />
+              </View>
+              <View style={styles.statInfoCompact}>
+                <Text style={styles.statValueCompact}>სწრაფი</Text>
+                <Text style={styles.statLabelCompact}>მიწოდება</Text>
+              </View>
+            </View>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -226,55 +286,6 @@ export default function HomeScreen() {
                 </View>
               ))
             )}
-          </View>
-        </View>
-
-        <View style={styles.quickStats}>
-          <Text style={styles.quickStatsTitle}>რატომ ჩვენ?</Text>
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <View style={styles.statIconContainer}>
-                <Package size={32} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>800M+</Text>
-              <Text style={styles.statLabel}>პროდუქტი ჩინეთიდან</Text>
-            </View>
-
-            <View style={styles.statCard}>
-              <View style={styles.statIconContainer}>
-                <Shield size={32} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>100%</Text>
-              <Text style={styles.statLabel}>უსაფრთხო გადახდა</Text>
-            </View>
-
-            <View style={styles.statCard}>
-              <View style={styles.statIconContainer}>
-                <Clock size={32} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>10-14</Text>
-              <Text style={styles.statLabel}>დღე მიწოდება</Text>
-            </View>
-
-            <View style={styles.statCard}>
-              <View style={styles.statIconContainer}>
-                <Truck size={32} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <Text style={styles.statValue}>24/7</Text>
-              <Text style={styles.statLabel}>მხარდაჭერა</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.locationBanner}>
-          <View style={styles.locationCard}>
-            <View style={styles.locationIconContainer}>
-              <MapPin size={24} color="#7c3aed" strokeWidth={2.5} />
-            </View>
-            <View style={styles.locationInfo}>
-              <Text style={styles.locationTitle}>მიწოდება ჩინეთიდან საქართველოში</Text>
-              <Text style={styles.locationSubtitle}>10-14 სამუშაო დღეში • სანდო და უსაფრთხო</Text>
-            </View>
           </View>
         </View>
 
@@ -360,30 +371,153 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     paddingHorizontal: 20,
-    paddingTop: 24,
+    paddingTop: 20,
+    gap: 12,
   },
-  promoImage: {
-    width: '100%',
-    height: 180,
+  heroCard: {
     borderRadius: 20,
+    padding: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  heroContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  heroLeft: {
+    flex: 1,
+    gap: 10,
+  },
+  heroBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  heroBadgeText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  heroTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -1,
+    lineHeight: 30,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  heroFeatures: {
+    flexDirection: 'row',
+    gap: 16,
+    marginTop: 4,
+  },
+  heroFeature: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  heroFeatureDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#fbbf24',
+  },
+  heroFeatureText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  heroRight: {
+    marginLeft: 16,
+  },
+  heroIconBg: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  quickStatsCompact: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  statItemCompact: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  statIconCompact: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#ede9fe',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  promoText: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#fff',
+  statInfoCompact: {
+    flex: 1,
+  },
+  statValueCompact: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statLabelCompact: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#e5e7eb',
+    marginHorizontal: 4,
   },
   section: {
     paddingHorizontal: 8,
-    marginTop: 12,
+    marginTop: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
     paddingHorizontal: 12,
   },
   sectionTitleContainer: {
@@ -392,24 +526,26 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#1a1a1a',
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
   seeAllBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(110, 57, 234, 0.1)',
-    paddingHorizontal: 14,
+    backgroundColor: '#ede9fe',
+    paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 12,
   },
   seeAllText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#6e39ea',
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   productsGrid: {
     flexDirection: 'row',
@@ -440,95 +576,5 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 120,
-  },
-  quickStats: {
-    padding: 20,
-    marginTop: 12,
-  },
-  quickStatsTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    marginBottom: 20,
-    letterSpacing: -0.5,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  statCard: {
-    width: (width - 56) / 2,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 24,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  statIconContainer: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#1a1a1a',
-    marginBottom: 6,
-    letterSpacing: -1,
-  },
-  statLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 18,
-  },
-  locationBanner: {
-    paddingHorizontal: 20,
-    marginTop: 12,
-  },
-  locationCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-    padding: 24,
-    borderRadius: 20,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  locationIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  locationInfo: {
-    flex: 1,
-  },
-  locationTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  locationSubtitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#666',
   },
 });
