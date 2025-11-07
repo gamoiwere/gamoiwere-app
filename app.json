@@ -8,6 +8,11 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/appicon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#7C3AED"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gamoiwere.app",
