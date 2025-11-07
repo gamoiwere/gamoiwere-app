@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator, Platform, StatusBar } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronRight, ChevronDown, LayoutGrid, User, Users, Baby, Hop as Home, ShoppingBag, Sparkles, Shirt, Mountain, Laptop, Scissors, Heart, Briefcase, BookOpen, Gift, Wrench, Car, Hammer, Gem, Palette, Download } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-
-const { width } = Dimensions.get('window');
 
 interface Category {
   Id: string;
@@ -19,6 +17,7 @@ export default function CategoriesScreen() {
   const insets = useSafeAreaInsets();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [expandedSubCategories, setExpandedSubCategories] = useState<Set<string>>(new Set());
 
@@ -41,7 +40,13 @@ export default function CategoriesScreen() {
       setCategories([]);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchCategories();
   };
 
   const toggleCategory = (categoryId: string) => {
@@ -103,9 +108,32 @@ export default function CategoriesScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#7c3aed" />
-        <Text style={styles.loadingText}>იტვირთება...</Text>
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 12 }]}
+        >
+          <View style={styles.headerContent}>
+            <View style={styles.titleRow}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.headerTitle}>კატეგორიები</Text>
+              </View>
+              <View style={styles.statsCompact}>
+                <View style={styles.statBoxCompact}>
+                  <Text style={styles.statNumberCompact}>0</Text>
+                  <Text style={styles.statTextCompact}>სულ</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+        <View style={styles.loadingContainer}>
+          <LayoutGrid size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
+        </View>
       </View>
     );
   }
@@ -113,161 +141,169 @@ export default function CategoriesScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, { paddingTop: insets.top + 12 }]}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.titleRow}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerTitle}>კატეგორიები</Text>
+            </View>
+            <View style={styles.statsCompact}>
+              <View style={styles.statBoxCompact}>
+                <Text style={styles.statNumberCompact}>{getTotalCategories()}</Text>
+                <Text style={styles.statTextCompact}>სულ</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </LinearGradient>
+
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[styles.content, { paddingTop: insets.top }]}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
+        }
       >
-        <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.header}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.headerSubtitle}>შეარჩიე შენთვის</Text>
-              <Text style={styles.headerTitle}>კატეგორიები</Text>
-            </View>
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statNumber}>{categories.length}</Text>
-                <Text style={styles.statText}>მთავარი</Text>
+        <View style={styles.content}>
+          {categories.length === 0 ? (
+            <View style={styles.emptyState}>
+              <View style={styles.emptyIconCircle}>
+                <LayoutGrid size={64} color="#d1d5db" strokeWidth={1.5} />
               </View>
-              <View style={styles.statDividerVertical} />
-              <View style={styles.statBox}>
-                <Text style={styles.statNumber}>{getTotalCategories()}</Text>
-                <Text style={styles.statText}>სულ</Text>
-              </View>
+              <Text style={styles.emptyTitle}>კატეგორიები არ მოიძებნა</Text>
+              <Text style={styles.emptySubtitle}>
+                გთხოვთ სცადოთ მოგვიანებით
+              </Text>
             </View>
-          </View>
-        </LinearGradient>
-        {categories.length === 0 && (
-          <View style={styles.emptyContainer}>
-            <LayoutGrid size={64} color="#e0e0e0" strokeWidth={1.5} />
-            <Text style={styles.emptyText}>კატეგორიები არ მოიძებნა</Text>
-          </View>
-        )}
-
-        <View style={styles.categoriesWrapper}>
-          {Array.isArray(categories) && categories.map((category, index) => (
-            <View key={category.Id} style={styles.mainCategoryWrapper}>
-              <TouchableOpacity
-                style={styles.mainCategoryCard}
-                onPress={() => {
-                  if (category.Children && category.Children.length > 0) {
-                    toggleCategory(category.Id);
-                  } else {
-                    router.push({
-                      pathname: '/category/[id]',
-                      params: { id: category.Id, name: category.Name }
-                    });
-                  }
-                }}
-                activeOpacity={0.7}
+          ) : (
+            Array.isArray(categories) && categories.map((category, index) => (
+              <View
+                key={category.Id}
+                style={[styles.categoryCard, { marginTop: index === 0 ? 0 : 12 }]}
               >
-                <View style={styles.mainCategoryContent}>
-                  <View style={styles.mainCategoryLeft}>
+                <TouchableOpacity
+                  style={styles.categoryHeader}
+                  onPress={() => {
+                    if (category.Children && category.Children.length > 0) {
+                      toggleCategory(category.Id);
+                    } else {
+                      router.push({
+                        pathname: '/category/[id]',
+                        params: { id: category.Id, name: category.Name }
+                      });
+                    }
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.categoryHeaderLeft}>
                     <LinearGradient
-                      colors={['#7c3aed', '#8b5cf6']}
+                      colors={['#6e39ea', '#8b5cf6']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
-                      style={styles.categoryIconBadge}
+                      style={styles.categoryIconBg}
                     >
                       {(() => {
                         const IconComponent = getCategoryIcon(category.Name);
-                        return <IconComponent size={26} color="#fff" strokeWidth={2.5} />;
+                        return <IconComponent size={24} color="#fff" strokeWidth={2.5} />;
                       })()}
                     </LinearGradient>
-                    <View style={styles.mainCategoryInfo}>
-                      <Text style={styles.mainCategoryName}>{category.Name}</Text>
-                      <Text style={styles.mainCategoryCount}>
-                        {category.Children?.length || 0} ქვეკატეგორია
-                      </Text>
+                    <View style={styles.categoryInfo}>
+                      <Text style={styles.categoryLabel}>კატეგორია</Text>
+                      <Text style={styles.categoryName}>{category.Name}</Text>
                     </View>
                   </View>
-                  <View style={styles.expandIconContainer}>
-                    {expandedCategories.has(category.Id) ? (
-                      <ChevronDown size={22} color="#7c3aed" strokeWidth={3} />
-                    ) : (
-                      <ChevronRight size={22} color="#7c3aed" strokeWidth={3} />
+                  <View style={styles.categoryHeaderRight}>
+                    {category.Children && category.Children.length > 0 && (
+                      <View style={styles.countBadge}>
+                        <Text style={styles.countText}>{category.Children.length}</Text>
+                      </View>
                     )}
+                    <View style={styles.expandIconBg}>
+                      {expandedCategories.has(category.Id) ? (
+                        <ChevronDown size={20} color="#7c3aed" strokeWidth={2.5} />
+                      ) : (
+                        <ChevronRight size={20} color="#7c3aed" strokeWidth={2.5} />
+                      )}
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
 
-              {expandedCategories.has(category.Id) && category.Children && (
-                <View style={styles.subCategoriesContainer}>
-                  {category.Children.map((subCategory, subIndex) => (
-                    <View key={subCategory.Id} style={styles.subCategoryWrapper}>
-                      <TouchableOpacity
-                        style={styles.subCategoryCard}
-                        onPress={() => {
-                          if (subCategory.Children && subCategory.Children.length > 0) {
-                            toggleSubCategory(subCategory.Id);
-                          } else {
-                            router.push({
-                              pathname: '/category/[id]',
-                              params: { id: subCategory.Id, name: subCategory.Name }
-                            });
-                          }
-                        }}
-                        activeOpacity={0.7}
-                      >
-                        <View style={styles.subCategoryContent}>
+                {expandedCategories.has(category.Id) && category.Children && (
+                  <View style={styles.subCategoriesContainer}>
+                    {category.Children.map((subCategory, subIndex) => (
+                      <View key={subCategory.Id} style={styles.subCategoryWrapper}>
+                        <TouchableOpacity
+                          style={styles.subCategoryCard}
+                          onPress={() => {
+                            if (subCategory.Children && subCategory.Children.length > 0) {
+                              toggleSubCategory(subCategory.Id);
+                            } else {
+                              router.push({
+                                pathname: '/category/[id]',
+                                params: { id: subCategory.Id, name: subCategory.Name }
+                              });
+                            }
+                          }}
+                          activeOpacity={0.7}
+                        >
                           <View style={styles.subCategoryLeft}>
                             <View style={styles.subCategoryDot} />
                             <Text style={styles.subCategoryName}>{subCategory.Name}</Text>
                           </View>
                           <View style={styles.subCategoryRight}>
                             {subCategory.Children && subCategory.Children.length > 0 && (
-                              <View style={styles.subCountBadge}>
-                                <Text style={styles.subCountText}>{subCategory.Children.length}</Text>
-                              </View>
-                            )}
-                            {subCategory.Children && subCategory.Children.length > 0 && (
-                              <View style={styles.subExpandIcon}>
-                                {expandedSubCategories.has(subCategory.Id) ? (
-                                  <ChevronDown size={18} color="#7c3aed" strokeWidth={2.5} />
-                                ) : (
-                                  <ChevronRight size={18} color="#7c3aed" strokeWidth={2.5} />
-                                )}
-                              </View>
+                              <>
+                                <View style={styles.subCountBadge}>
+                                  <Text style={styles.subCountText}>{subCategory.Children.length}</Text>
+                                </View>
+                                <View style={styles.subExpandIcon}>
+                                  {expandedSubCategories.has(subCategory.Id) ? (
+                                    <ChevronDown size={16} color="#7c3aed" strokeWidth={2.5} />
+                                  ) : (
+                                    <ChevronRight size={16} color="#7c3aed" strokeWidth={2.5} />
+                                  )}
+                                </View>
+                              </>
                             )}
                           </View>
-                        </View>
-                      </TouchableOpacity>
+                        </TouchableOpacity>
 
-                      {expandedSubCategories.has(subCategory.Id) && subCategory.Children && (
-                        <View style={styles.subSubCategoriesContainer}>
-                          {subCategory.Children.map((subSubCategory) => (
-                            <TouchableOpacity
-                              key={subSubCategory.Id}
-                              style={styles.subSubCategoryCard}
-                              activeOpacity={0.7}
-                              onPress={() => router.push({
-                                pathname: '/category/[id]',
-                                params: { id: subSubCategory.Id, name: subSubCategory.Name }
-                              })}
-                            >
-                              <View style={styles.subSubCategoryContent}>
-                                <View style={styles.subSubCategoryDot} />
-                                <Text style={styles.subSubCategoryName}>{subSubCategory.Name}</Text>
-                              </View>
-                              <ChevronRight size={16} color="#999" strokeWidth={2} />
-                            </TouchableOpacity>
-                          ))}
-                        </View>
-                      )}
-                    </View>
-                  ))}
-                </View>
-              )}
-            </View>
-          ))}
+                        {expandedSubCategories.has(subCategory.Id) && subCategory.Children && (
+                          <View style={styles.subSubCategoriesContainer}>
+                            {subCategory.Children.map((subSubCategory) => (
+                              <TouchableOpacity
+                                key={subSubCategory.Id}
+                                style={styles.subSubCategoryCard}
+                                activeOpacity={0.7}
+                                onPress={() => router.push({
+                                  pathname: '/category/[id]',
+                                  params: { id: subSubCategory.Id, name: subSubCategory.Name }
+                                })}
+                              >
+                                <View style={styles.subSubCategoryLeft}>
+                                  <View style={styles.subSubCategoryDot} />
+                                  <Text style={styles.subSubCategoryName}>{subSubCategory.Name}</Text>
+                                </View>
+                                <ChevronRight size={14} color="#9ca3af" strokeWidth={2.5} />
+                              </TouchableOpacity>
+                            ))}
+                          </View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ))
+          )}
         </View>
 
-        <View style={styles.bottomSpacer} />
+        <View style={styles.bottomSpace} />
       </ScrollView>
     </View>
   );
@@ -278,44 +314,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f7',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f7',
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#666',
-    fontFamily: 'MarkGEO-Regular',
-  },
   header: {
-    paddingVertical: 20,
+    paddingBottom: 16,
     paddingHorizontal: 20,
-    marginHorizontal: 16,
-    marginTop: 16,
-    borderRadius: 20,
     shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
   headerContent: {
-    gap: 20,
+    gap: 14,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   titleContainer: {
-    gap: 4,
-  },
-  headerSubtitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.75)',
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-    fontFamily: 'MarkGEOCAPS-Regular',
+    flex: 1,
   },
   headerTitle: {
     fontSize: 28,
@@ -324,145 +341,182 @@ const styles = StyleSheet.create({
     letterSpacing: -1,
     fontFamily: 'MarkGEO-Regular',
   },
-  statsRow: {
-    flexDirection: 'row',
+  statsCompact: {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 12,
-    padding: 12,
-    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  statBox: {
-    flex: 1,
+  statBoxCompact: {
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
   },
-  statNumber: {
-    fontSize: 22,
+  statNumberCompact: {
+    fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
-  statText: {
-    fontSize: 10,
+  statTextCompact: {
+    fontSize: 11,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.5,
-    textTransform: 'uppercase',
     fontFamily: 'MarkGEOCAPS-Regular',
   },
-  statDividerVertical: {
-    width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    paddingBottom: 16,
+    padding: 16,
   },
-  categoriesWrapper: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    gap: 10,
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 24,
   },
-  mainCategoryWrapper: {
-    marginBottom: 4,
+  emptyIconCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
   },
-  mainCategoryCard: {
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  emptySubtitle: {
+    fontSize: 15,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  categoryCard: {
     backgroundColor: '#fff',
-    borderRadius: 14,
-    overflow: 'hidden',
+    borderRadius: 18,
+    padding: 18,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
-  mainCategoryContent: {
+  categoryHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 14,
   },
-  mainCategoryLeft: {
+  categoryHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
     flex: 1,
   },
-  categoryIconBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+  categoryIconBg: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  mainCategoryInfo: {
+  categoryInfo: {
     flex: 1,
   },
-  mainCategoryName: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#1a1a1a',
-    marginBottom: 2,
+  categoryLabel: {
+    fontSize: 11,
+    color: '#9ca3af',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
+  },
+  categoryName: {
+    fontSize: 17,
+    fontWeight: '900',
+    color: '#111827',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  categoryHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  countBadge: {
+    backgroundColor: '#ede9fe',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  countText: {
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#7c3aed',
     letterSpacing: -0.2,
     fontFamily: 'MarkGEO-Regular',
   },
-  mainCategoryCount: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#999',
-    letterSpacing: 0.1,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  expandIconContainer: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: '#f5f3ff',
+  expandIconBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    backgroundColor: '#f9fafb',
     alignItems: 'center',
     justifyContent: 'center',
   },
   subCategoriesContainer: {
-    backgroundColor: '#fafafa',
-    borderRadius: 14,
-    marginTop: 8,
-    marginHorizontal: 8,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f3f4f6',
+    gap: 8,
   },
   subCategoryWrapper: {
-    marginBottom: 6,
+    gap: 8,
   },
   subCategoryCard: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  subCategoryContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 12,
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
   },
   subCategoryLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
     flex: 1,
   },
   subCategoryDot: {
@@ -474,7 +528,7 @@ const styles = StyleSheet.create({
   subCategoryName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#111827',
     letterSpacing: -0.1,
     flex: 1,
     fontFamily: 'MarkGEO-Regular',
@@ -485,17 +539,15 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   subCountBadge: {
-    backgroundColor: '#f5f3ff',
+    backgroundColor: '#f3f4f6',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e9d5ff',
   },
   subCountText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#7c3aed',
+    color: '#6b7280',
     letterSpacing: -0.2,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -506,8 +558,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   subSubCategoriesContainer: {
-    marginLeft: 20,
-    marginTop: 8,
+    marginLeft: 18,
     gap: 6,
   },
   subSubCategoryCard: {
@@ -516,15 +567,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: '#fafafa',
-    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
-  subSubCategoryContent: {
+  subSubCategoryLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
     flex: 1,
   },
   subSubCategoryDot: {
@@ -536,24 +587,11 @@ const styles = StyleSheet.create({
   subSubCategoryName: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#444',
+    color: '#6b7280',
     flex: 1,
-    letterSpacing: 0,
     fontFamily: 'MarkGEO-Regular',
   },
-  bottomSpacer: {
+  bottomSpace: {
     height: 100,
-  },
-  emptyContainer: {
-    paddingVertical: 80,
-    alignItems: 'center',
-    gap: 16,
-  },
-  emptyText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#bbb',
-    letterSpacing: 0.2,
-    fontFamily: 'MarkGEO-Regular',
   },
 });
