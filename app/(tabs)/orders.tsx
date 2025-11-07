@@ -7,6 +7,7 @@ import { ordersService } from '@/services/orders';
 import { Order } from '@/types';
 import { Package, Clock, Truck, CheckCircle, XCircle, CreditCard, MapPin, Calendar, ShoppingBag, ChevronRight, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Loader from '@/components/Loader';
 
 const { width } = Dimensions.get('window');
 
@@ -207,8 +208,7 @@ export default function OrdersScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <Package size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );

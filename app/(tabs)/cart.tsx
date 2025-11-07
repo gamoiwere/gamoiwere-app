@@ -6,6 +6,7 @@ import { authService } from '@/services/auth';
 import { cartService, CartItem } from '@/services/cart';
 import { ShoppingCart, Plus, Minus, Trash2, ChevronRight, ShoppingBag, Package } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Loader from '@/components/Loader';
 
 export default function CartScreen() {
   const insets = useSafeAreaInsets();
@@ -134,8 +135,7 @@ export default function CartScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <ShoppingCart size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );

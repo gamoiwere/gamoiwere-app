@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { authService, Address } from '@/services/auth';
 import { MapPin, Plus, X, Check, ArrowLeft, Edit2, Trash2 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Loader from '@/components/Loader';
 
 export default function AddressesScreen() {
   const insets = useSafeAreaInsets();
@@ -174,8 +175,7 @@ export default function AddressesScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <MapPin size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );

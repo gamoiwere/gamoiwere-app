@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { authService, User as AuthUser } from '@/services/auth';
 import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck, Package } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Loader from '@/components/Loader';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -60,8 +61,7 @@ export default function ProfileScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <User size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );

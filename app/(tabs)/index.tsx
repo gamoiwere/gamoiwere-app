@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Package, Clock, MapPin, Shield, Truck } from 'lucide-react-native';
 import ProductCard from '@/components/ProductCard';
+import Loader from '@/components/Loader';
 import { Product } from '@/types';
 import { authService } from '@/services/auth';
 
@@ -246,7 +247,7 @@ export default function HomeScreen() {
           <View style={styles.productsGrid}>
             {loading ? (
               <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>იტვირთება...</Text>
+                <Loader />
               </View>
             ) : recommendedProducts.length === 0 ? (
               <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>
@@ -275,7 +276,7 @@ export default function HomeScreen() {
           <View style={styles.productsGrid}>
             {loading ? (
               <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>იტვირთება...</Text>
+                <Loader />
               </View>
             ) : popularProducts.length === 0 ? (
               <Text style={styles.emptyText}>პროდუქტები არ მოიძებნა</Text>

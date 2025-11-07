@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ChevronRight, ChevronDown, LayoutGrid, User, Users, Baby, Hop as Home, ShoppingBag, Sparkles, Shirt, Mountain, Laptop, Scissors, Heart, Briefcase, BookOpen, Gift, Wrench, Car, Hammer, Gem, Palette, Download } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import Loader from '@/components/Loader';
 
 interface Category {
   Id: string;
@@ -131,8 +132,7 @@ export default function CategoriesScreen() {
           </View>
         </LinearGradient>
         <View style={styles.loadingContainer}>
-          <LayoutGrid size={64} color="#d1d5db" strokeWidth={1.5} />
-          <Text style={styles.loadingText}>იტვირთება...</Text>
+          <Loader />
         </View>
       </View>
     );
