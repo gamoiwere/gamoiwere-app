@@ -16,10 +16,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gamoiwere.app",
-      "icon": "./assets/images/appicon.png"
+      "icon": "./assets/images/appicon.png",
+      "buildNumber": "5"
     },
     "android": {
       "package": "com.gamoiwere.app",
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#7C3AED"
