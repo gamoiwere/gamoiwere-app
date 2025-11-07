@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, StatusBar 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService, User as AuthUser } from '@/services/auth';
-import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck } from 'lucide-react-native';
+import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck, Package } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ProfileScreen() {
@@ -214,6 +214,19 @@ export default function ProfileScreen() {
               <UserCircle size={20} color="#6e39ea" strokeWidth={2} />
             </View>
             <Text style={styles.menuItemText}>პროფილი</Text>
+          </View>
+          <ChevronRight size={20} color="#999" strokeWidth={2} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => router.push('/orders')}
+        >
+          <View style={styles.menuItemLeft}>
+            <View style={[styles.menuIcon, { backgroundColor: '#8b5cf620' }]}>
+              <Package size={20} color="#8b5cf6" strokeWidth={2} />
+            </View>
+            <Text style={styles.menuItemText}>შეკვეთები</Text>
           </View>
           <ChevronRight size={20} color="#999" strokeWidth={2} />
         </TouchableOpacity>
