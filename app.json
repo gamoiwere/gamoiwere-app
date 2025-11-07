@@ -41,10 +41,7 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "24d6f790-9fe4-40fc-b537-5500c6acb7f7"
-      }
+      "router": {}
     },
     "owner": "gamoiwere"
   }
