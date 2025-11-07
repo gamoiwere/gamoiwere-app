@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions, Platform, PanResponder, Animated, Alert } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, ShoppingCart, Heart, Share2, Package, Truck, Shield, Info, ChevronRight, ChevronDown, Calendar } from 'lucide-react-native';
+import { cartService } from '@/services/cart';
+import { authService } from '@/services/auth';
 
 const { width } = Dimensions.get('window');
 
@@ -82,6 +84,7 @@ export default function ProductDetailScreen() {
   const [currentMainImage, setCurrentMainImage] = useState<string>('');
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isAttributesExpanded, setIsAttributesExpanded] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const pan = useRef(new Animated.ValueXY()).current;
   const touchStartX = useRef(0);
@@ -186,6 +189,63 @@ export default function ProductDetailScreen() {
       console.error('Error loading product:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      const user = await authService.getUser();
+      if (!user) {
+        Alert.alert(
+          'ავტორიზაცია საჭიროა',
+          'კალათაში დასამატებლად გთხოვთ გაიაროთ ავტორიზაცია',
+          [
+            { text: 'გაუქმება', style: 'cancel' },
+            { text: 'შესვლა', onPress: () => router.push('/auth/login') },
+          ]
+        );
+        return;
+      }
+
+      if (!product) return;
+
+      setIsAddingToCart(true);
+
+      const variations: Record<string, string> = {};
+      if (product.configurators.length > 0 && Object.keys(selectedOptions).length > 0) {
+        product.configurators.forEach((config) => {
+          const selectedVid = selectedOptions[config.Pid];
+          if (selectedVid) {
+            const selectedConfig = product.configurators.find(
+              (c) => c.Pid === config.Pid && c.Vid === selectedVid
+            );
+            if (selectedConfig) {
+              variations[selectedConfig.OriginalPropertyName] = selectedConfig.OriginalValue;
+            }
+          }
+        });
+      }
+
+      const price = selectedVariation?.Price?.ConvertedPriceList?.Internal?.Price || product.price;
+
+      await cartService.addToCart({
+        productId: product.id,
+        name: product.title,
+        price: price,
+        imageUrl: currentMainImage || product.mainImage,
+        variations: variations,
+        quantity: quantity,
+      });
+
+      Alert.alert('წარმატება', 'პროდუქტი წარმატებით დაემატა კალათაში', [
+        { text: 'გაგრძელება', style: 'cancel' },
+        { text: 'კალათის ნახვა', onPress: () => router.push('/cart') },
+      ]);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      Alert.alert('შეცდომა', 'პროდუქტის კალათაში დამატება ვერ მოხერხდა');
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -564,8 +624,9 @@ export default function ProductDetailScreen() {
             <Text style={styles.totalPrice}>₾{(product.price * quantity).toFixed(2)}</Text>
           </View>
           <TouchableOpacity
-            style={[styles.addToCartButton, !product.inStock && styles.addToCartButtonDisabled]}
-            disabled={!product.inStock}
+            style={[styles.addToCartButton, (!product.inStock || isAddingToCart) && styles.addToCartButtonDisabled]}
+            disabled={!product.inStock || isAddingToCart}
+            onPress={handleAddToCart}
           >
             <LinearGradient
               colors={product.inStock ? ['#6e39ea', '#8b5cf6'] : ['#999', '#777']}
@@ -575,7 +636,7 @@ export default function ProductDetailScreen() {
             >
               <ShoppingCart size={20} color="#fff" strokeWidth={2} />
               <Text style={styles.addToCartText}>
-                {product.inStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
+                {isAddingToCart ? 'დამატება...' : product.inStock ? 'კალათაში დამატება' : 'არ არის მარაგში'}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
