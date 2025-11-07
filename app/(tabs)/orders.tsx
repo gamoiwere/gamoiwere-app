@@ -26,17 +26,20 @@ export default function OrdersScreen() {
 
   const checkUserAndLoadOrders = async () => {
     try {
+      console.log('👤 Checking user...');
       const currentUser = await authService.getUser();
+      console.log('👤 User:', currentUser ? 'Found' : 'Not found');
       setUser(currentUser);
 
       if (currentUser) {
         const token = await authService.getToken();
+        console.log('🔑 Token:', token ? 'Found' : 'Not found');
         if (token) {
           await loadOrders('ALL');
         }
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('❌ Error in checkUserAndLoadOrders:', error);
     } finally {
       setLoading(false);
     }
@@ -71,12 +74,20 @@ export default function OrdersScreen() {
       }
 
       const data = await response.json();
-      console.log('📦 API Response:', { success: data.success, total: data.total, ordersCount: data.orders?.length });
+      console.log('📦 API Response:', {
+        status: response.status,
+        success: data.success,
+        total: data.total,
+        ordersCount: data.orders?.length,
+        message: data.message
+      });
 
       if (!response.ok) {
+        console.error('❌ API Error:', data);
         throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
       }
 
+      console.log('✅ Setting orders:', data.orders?.length || 0);
       setOrders(data.orders || []);
 
       if (status === 'ALL' || !status) {

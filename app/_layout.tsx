@@ -14,10 +14,7 @@ export default function RootLayout() {
   const segments = useSegments();
   const router = useRouter();
 
-  const [fontsLoaded, fontError] = useFonts({
-    'MarkGEO-Regular': require('../assets/fonts/MarkGEO-Regular.ttf'),
-    'MarkGEOCAPS-Regular': require('../assets/fonts/MarkGEOCAPS-Regular.ttf'),
-  });
+  const [fontsLoaded, fontError] = useFonts({});
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
