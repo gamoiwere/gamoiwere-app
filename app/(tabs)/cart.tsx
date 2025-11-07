@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, StatusBar, Alert, Animated } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, StatusBar, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { cartService, CartItem } from '@/services/cart';
-import { ShoppingCart, Plus, Minus, Trash2, ArrowRight, Package, Sparkles, X } from 'lucide-react-native';
+import { ShoppingCart, Plus, Minus, Trash2, ChevronRight, ShoppingBag, Package } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BlurView } from 'expo-blur';
 
 export default function CartScreen() {
   const insets = useSafeAreaInsets();
@@ -54,7 +53,7 @@ export default function CartScreen() {
     setRefreshing(false);
   };
 
-  const handleUpdateQuantity = async (itemId: string, newQuantity: number) => {
+  const handleUpdateQuantity = async (itemId: number, newQuantity: number) => {
     if (newQuantity < 1) return;
 
     try {
@@ -66,20 +65,33 @@ export default function CartScreen() {
     }
   };
 
-  const handleRemoveItem = async (itemId: string) => {
-    try {
-      await cartService.removeItem(itemId);
-      await loadCart();
-    } catch (error) {
-      console.error('Error removing item:', error);
-      Alert.alert('შეცდომა', 'პროდუქტის წაშლა ვერ მოხერხდა');
-    }
+  const handleRemoveItem = async (itemId: number) => {
+    Alert.alert(
+      'წაშლის დადასტურება',
+      'დარწმუნებული ხართ, რომ გსურთ პროდუქტის კალათიდან წაშლა?',
+      [
+        { text: 'გაუქმება', style: 'cancel' },
+        {
+          text: 'წაშლა',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await cartService.removeItem(itemId);
+              await loadCart();
+            } catch (error) {
+              console.error('Error removing item:', error);
+              Alert.alert('შეცდომა', 'პროდუქტის წაშლა ვერ მოხერხდა');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleClearCart = async () => {
     Alert.alert(
       'კალათის გაწმენდა',
-      'დარწმუნებული ხართ?',
+      'დარწმუნებული ხართ, რომ გსურთ კალათის სრული გაწმენდა?',
       [
         { text: 'გაუქმება', style: 'cancel' },
         {
@@ -99,19 +111,87 @@ export default function CartScreen() {
     );
   };
 
+  const handleNavigateToAuth = () => {
+    router.push('/auth/login');
+  };
+
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-        <View style={[styles.modernHeader, { paddingTop: insets.top + 16 }]}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 12 }]}
+        >
           <View style={styles.headerContent}>
-            <Text style={styles.modernTitle}>კალათა</Text>
+            <View style={styles.titleRow}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.headerTitle}>კალათა</Text>
+              </View>
+            </View>
           </View>
-        </View>
+        </LinearGradient>
         <View style={styles.loadingContainer}>
-          <View style={styles.loadingBox}>
-            <ShoppingCart size={56} color="#e0e0e0" strokeWidth={1.5} />
-            <Text style={styles.loadingText}>იტვირთება...</Text>
+          <ShoppingCart size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 12 }]}
+        >
+          <View style={styles.headerContent}>
+            <View style={styles.titleRow}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.headerTitle}>კალათა</Text>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.authContainer}>
+          <View style={styles.authCard}>
+            <View style={styles.authIconWrapper}>
+              <LinearGradient
+                colors={['#7c3aed', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.authIcon}
+              >
+                <ShoppingCart size={48} color="#fff" strokeWidth={2} />
+              </LinearGradient>
+            </View>
+            <Text style={styles.authTitle}>შედით ანგარიშში</Text>
+            <Text style={styles.authDescription}>
+              კალათის სანახავად და პროდუქტების შესაძენად
+              გთხოვთ გაიარეთ ავტორიზაცია
+            </Text>
+            <TouchableOpacity
+              style={styles.authButton}
+              onPress={handleNavigateToAuth}
+              activeOpacity={0.9}
+            >
+              <LinearGradient
+                colors={['#6e39ea', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.authButtonGradient}
+              >
+                <Text style={styles.authButtonText}>შესვლა</Text>
+                <ChevronRight size={20} color="#fff" strokeWidth={3} />
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -120,161 +200,146 @@ export default function CartScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
-      <View style={[styles.modernHeader, { paddingTop: insets.top + 16 }]}>
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, { paddingTop: insets.top + 12 }]}
+      >
         <View style={styles.headerContent}>
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.modernTitle}>კალათა</Text>
-              {items.length > 0 && (
-                <Text style={styles.itemCount}>{totalItems} პროდუქტი</Text>
-              )}
+          <View style={styles.titleRow}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerTitle}>კალათა</Text>
             </View>
-            {items.length > 0 && (
-              <TouchableOpacity
-                onPress={handleClearCart}
-                style={styles.clearIconButton}
-              >
-                <Trash2 size={20} color="#ef4444" strokeWidth={2} />
-              </TouchableOpacity>
-            )}
+            <View style={styles.statsCompact}>
+              <View style={styles.statBoxCompact}>
+                <Text style={styles.statNumberCompact}>{totalItems}</Text>
+                <Text style={styles.statTextCompact}>ნივთი</Text>
+              </View>
+            </View>
           </View>
+
+          {items.length > 0 && (
+            <View style={styles.summaryCard}>
+              <View style={styles.summaryRow}>
+                <Text style={styles.summaryLabel}>ჯამური თანხა:</Text>
+                <Text style={styles.summaryAmount}>{totalPrice.toFixed(2)} ₾</Text>
+              </View>
+            </View>
+          )}
         </View>
-      </View>
+      </LinearGradient>
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
         }
       >
-        {items.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <View style={styles.emptyContent}>
-              <View style={styles.emptyIconBox}>
-                <ShoppingCart size={72} color="#d1d5db" strokeWidth={1.5} />
+        <View style={styles.content}>
+          {items.length === 0 ? (
+            <View style={styles.emptyState}>
+              <View style={styles.emptyIconCircle}>
+                <ShoppingCart size={60} color="#bbb" strokeWidth={1.5} />
               </View>
-              <Text style={styles.emptyTitle}>თქვენი კალათა ცარიელია</Text>
-              <Text style={styles.emptySubtitle}>
-                აირჩიეთ საინტერესო პროდუქტები და დაამატეთ კალათაში
+              <Text style={styles.emptyTitle}>კალათა ცარიელია</Text>
+              <Text style={styles.emptyDescription}>
+                დაამატეთ პროდუქტები კალათაში და განახორციელეთ შეკვეთა
               </Text>
               <TouchableOpacity
-                style={styles.startShoppingButton}
+                style={styles.emptyButton}
                 onPress={() => router.push('/')}
               >
                 <LinearGradient
-                  colors={['#000', '#1a1a1a']}
+                  colors={['#6e39ea', '#8b5cf6']}
                   start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.startShoppingGradient}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.emptyButtonGradient}
                 >
-                  <Text style={styles.startShoppingText}>დაიწყეთ შოპინგი</Text>
-                  <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
+                  <Package size={20} color="#fff" strokeWidth={2} />
+                  <Text style={styles.emptyButtonText}>პროდუქტების ნახვა</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-          </View>
-        ) : (
-          <View style={styles.content}>
-            <View style={styles.itemsList}>
-              {items.map((item, index) => (
-                <View key={item.id} style={[styles.cartCard, { marginTop: index === 0 ? 0 : 12 }]}>
-                  <View style={styles.cardImageContainer}>
-                    <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
-                    <TouchableOpacity
-                      style={styles.removeButton}
-                      onPress={() => handleRemoveItem(item.id)}
-                    >
-                      <X size={16} color="#fff" strokeWidth={3} />
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.cardDetails}>
-                    <Text style={styles.cardTitle} numberOfLines={2}>
+          ) : (
+            <>
+              {items.map((item) => (
+                <View key={item.id} style={styles.cartItem}>
+                  <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
+                  <View style={styles.itemContent}>
+                    <Text style={styles.itemName} numberOfLines={2}>
                       {item.name}
                     </Text>
-
                     {item.variations && Object.keys(item.variations).length > 0 && (
-                      <View style={styles.variantsList}>
+                      <View style={styles.variationsContainer}>
                         {Object.entries(item.variations).map(([key, value]) => (
-                          <View key={key} style={styles.variantChip}>
-                            <Text style={styles.variantText}>{value}</Text>
+                          <View key={key} style={styles.variationTag}>
+                            <Text style={styles.variationText}>
+                              {key}: {value}
+                            </Text>
                           </View>
                         ))}
                       </View>
                     )}
-
-                    <View style={styles.cardFooter}>
-                      <Text style={styles.cardPrice}>₾{item.price.toFixed(2)}</Text>
-
-                      <View style={styles.quantityContainer}>
+                    <View style={styles.itemFooter}>
+                      <Text style={styles.itemPrice}>{parseFloat(item.price).toFixed(2)} ₾</Text>
+                      <View style={styles.quantityControls}>
                         <TouchableOpacity
-                          style={styles.qtyButton}
+                          style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                         >
-                          <Minus size={16} color="#000" strokeWidth={2.5} />
+                          <Minus size={16} color="#666" strokeWidth={2.5} />
                         </TouchableOpacity>
-                        <Text style={styles.qtyValue}>{item.quantity}</Text>
+                        <Text style={styles.quantityText}>{item.quantity}</Text>
                         <TouchableOpacity
-                          style={styles.qtyButton}
+                          style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                         >
-                          <Plus size={16} color="#000" strokeWidth={2.5} />
+                          <Plus size={16} color="#666" strokeWidth={2.5} />
                         </TouchableOpacity>
                       </View>
                     </View>
                   </View>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleRemoveItem(item.id)}
+                  >
+                    <Trash2 size={18} color="#dc2626" strokeWidth={2} />
+                  </TouchableOpacity>
                 </View>
               ))}
-            </View>
 
-            <View style={styles.summarySection}>
-              <View style={styles.summaryCard}>
-                <View style={styles.summaryHeader}>
-                  <Sparkles size={20} color="#000" strokeWidth={2} />
-                  <Text style={styles.summaryTitle}>შეკვეთის დეტალები</Text>
-                </View>
-
-                <View style={styles.divider} />
-
-                <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>პროდუქტების რაოდენობა</Text>
-                  <Text style={styles.summaryValue}>{totalItems}</Text>
-                </View>
-
-                <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>პროდუქტების ღირებულება</Text>
-                  <Text style={styles.summaryValue}>₾{totalPrice.toFixed(2)}</Text>
-                </View>
-
-                <View style={[styles.divider, { marginVertical: 16 }]} />
-
-                <View style={styles.totalRow}>
-                  <Text style={styles.totalLabel}>სულ</Text>
-                  <Text style={styles.totalValue}>₾{totalPrice.toFixed(2)}</Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                style={styles.checkoutButton}
-                onPress={() => Alert.alert('შეკვეთა', 'შეკვეთის გაფორმება მალე დაემატება')}
-              >
-                <LinearGradient
-                  colors={['#000', '#1a1a1a']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.checkoutGradient}
+              <View style={styles.actionsContainer}>
+                <TouchableOpacity
+                  style={styles.clearButton}
+                  onPress={handleClearCart}
                 >
-                  <Text style={styles.checkoutText}>შეკვეთის გაფორმება</Text>
-                  <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
+                  <Trash2 size={18} color="#dc2626" strokeWidth={2} />
+                  <Text style={styles.clearButtonText}>კალათის გაწმენდა</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.checkoutButton}
+                  onPress={() => {
+                    Alert.alert('შეკვეთა', 'შეკვეთის გაფორმება მალე დაემატება');
+                  }}
+                >
+                  <LinearGradient
+                    colors={['#6e39ea', '#8b5cf6']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.checkoutButtonGradient}
+                  >
+                    <ShoppingBag size={20} color="#fff" strokeWidth={2} />
+                    <Text style={styles.checkoutButtonText}>შეკვეთის გაფორმება</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+        </View>
 
         <View style={styles.bottomSpace} />
       </ScrollView>
@@ -285,313 +350,367 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f5f5f7',
   },
-  modernHeader: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+  header: {
     paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingHorizontal: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
   headerContent: {
-    gap: 12,
+    gap: 14,
   },
-  headerTop: {
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  modernTitle: {
-    fontSize: 32,
+  titleContainer: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 28,
     fontWeight: '900',
-    color: '#000',
-    letterSpacing: -1.5,
-  },
-  itemCount: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
-    marginTop: 2,
-  },
-  clearIconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#fef2f2',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: 80,
-  },
-  loadingBox: {
-    alignItems: 'center',
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#999',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingBottom: 100,
-  },
-  emptyContent: {
-    alignItems: 'center',
-    maxWidth: 320,
-  },
-  emptyIconBox: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 32,
-  },
-  emptyTitle: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#000',
-    marginBottom: 12,
-    textAlign: 'center',
-    letterSpacing: -0.5,
-  },
-  emptySubtitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 32,
-  },
-  startShoppingButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  startShoppingGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 32,
-    gap: 10,
-  },
-  startShoppingText: {
-    fontSize: 16,
-    fontWeight: '800',
     color: '#fff',
-    letterSpacing: -0.3,
+    letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
   },
-  content: {
-    flex: 1,
-    padding: 16,
-  },
-  itemsList: {
-    marginBottom: 20,
-  },
-  cartCard: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  cardImageContainer: {
-    position: 'relative',
-    height: 200,
-  },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#f5f5f5',
-  },
-  removeButton: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardDetails: {
-    padding: 16,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#000',
-    marginBottom: 8,
-    lineHeight: 22,
-  },
-  variantsList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 12,
-  },
-  variantChip: {
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  variantText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#666',
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  cardPrice: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: '#000',
-    letterSpacing: -0.5,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+  statsCompact: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 12,
-    padding: 4,
-    gap: 2,
-  },
-  qtyButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
-  },
-  qtyValue: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#000',
     paddingHorizontal: 14,
-    minWidth: 40,
-    textAlign: 'center',
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  summarySection: {
-    gap: 16,
+  statBoxCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  statNumberCompact: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statTextCompact: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.5,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   summaryCard: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 14,
+    padding: 14,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
-  },
-  summaryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  summaryTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: '#000',
-    letterSpacing: -0.3,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 12,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   summaryRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
   },
   summaryLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontFamily: 'MarkGEO-Regular',
   },
-  summaryValue: {
+  summaryAmount: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  authContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    paddingBottom: 120,
+  },
+  authCard: {
+    backgroundColor: '#fff',
+    borderRadius: 32,
+    padding: 40,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+    elevation: 10,
+  },
+  authIconWrapper: {
+    marginBottom: 24,
+  },
+  authIcon: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  authTitle: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  authDescription: {
+    fontSize: 15,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  authButton: {
+    width: '100%',
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  authButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 18,
+    gap: 8,
+  },
+  authButtonText: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    padding: 16,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#1a1a1a',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  emptyDescription: {
+    fontSize: 15,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  emptyButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  emptyButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    gap: 8,
+  },
+  emptyButtonText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  cartItem: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  itemImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    backgroundColor: '#f3f4f6',
+  },
+  itemContent: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'space-between',
+  },
+  itemName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#000',
+    color: '#1a1a1a',
+    marginBottom: 6,
+    fontFamily: 'MarkGEO-Regular',
   },
-  totalRow: {
+  variationsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginBottom: 6,
+  },
+  variationTag: {
+    backgroundColor: '#f3f4f6',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  variationText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#666',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  itemFooter: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  totalLabel: {
+  itemPrice: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#000',
-  },
-  totalValue: {
-    fontSize: 26,
     fontWeight: '900',
-    color: '#000',
-    letterSpacing: -0.5,
+    color: '#6e39ea',
+    fontFamily: 'MarkGEO-Regular',
   },
-  checkoutButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
+    borderRadius: 10,
+    padding: 4,
   },
-  checkoutGradient: {
+  quantityButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quantityText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1a1a1a',
+    paddingHorizontal: 12,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  deleteButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#fee2e2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  actionsContainer: {
+    marginTop: 16,
+    gap: 12,
+  },
+  clearButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
+    backgroundColor: '#fff',
+    paddingVertical: 14,
+    borderRadius: 14,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#fee2e2',
+  },
+  clearButtonText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#dc2626',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  checkoutButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  checkoutButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 18,
     gap: 10,
   },
-  checkoutText: {
+  checkoutButtonText: {
     fontSize: 17,
     fontWeight: '800',
     color: '#fff',
-    letterSpacing: -0.3,
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {
-    height: 40,
+    height: 100,
   },
 });

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, StatusBar } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, RefreshControl, Image, Dimensions, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { ordersService } from '@/services/orders';
 import { Order } from '@/types';
-import { Package, Clock, Truck, CheckCircle, XCircle, CreditCard, MapPin, Calendar, ShoppingBag, ArrowRight, Sparkles } from 'lucide-react-native';
+import { Package, Clock, Truck, CheckCircle, XCircle, CreditCard, MapPin, Calendar, ShoppingBag, ChevronRight, Search } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 export default function OrdersScreen() {
   const insets = useSafeAreaInsets();
@@ -24,17 +26,20 @@ export default function OrdersScreen() {
 
   const checkUserAndLoadOrders = async () => {
     try {
+      console.log('👤 Checking user...');
       const currentUser = await authService.getUser();
+      console.log('👤 User:', currentUser ? 'Found' : 'Not found');
       setUser(currentUser);
 
       if (currentUser) {
         const token = await authService.getToken();
+        console.log('🔑 Token:', token ? 'Found' : 'Not found');
         if (token) {
           await loadOrders('ALL');
         }
       }
     } catch (error) {
-      console.error('Error checking user:', error);
+      console.error('❌ Error in checkUserAndLoadOrders:', error);
     } finally {
       setLoading(false);
     }
@@ -44,6 +49,8 @@ export default function OrdersScreen() {
     try {
       const token = await authService.getToken();
       if (!token) throw new Error('არ ხართ ავტორიზებული');
+
+      console.log('📦 Loading orders with status:', status);
 
       let response;
       if (status && status !== 'ALL') {
@@ -66,23 +73,39 @@ export default function OrdersScreen() {
         });
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('📦 Raw Response:', responseText.substring(0, 200));
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('❌ JSON Parse Error:', parseError);
+        throw new Error('სერვერის პასუხი არასწორია');
+      }
+
+      console.log('📦 Parsed Data:', data);
 
       if (!response.ok) {
+        console.error('❌ API Error:', data);
         throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
       }
 
+      // Check if response is an array (direct orders array) or object with orders property
       let orders = [];
       let total = 0;
 
       if (Array.isArray(data)) {
         orders = data;
         total = data.length;
+        console.log('📦 Direct array response:', { ordersCount: orders.length });
       } else {
         orders = data.orders || [];
         total = data.total || orders.length;
+        console.log('📦 Object response:', { success: data.success, total: data.total, ordersCount: orders.length });
       }
 
+      console.log('✅ Setting orders:', orders.length);
       setOrders(orders);
 
       if (status === 'ALL' || !status) {
@@ -114,7 +137,7 @@ export default function OrdersScreen() {
       PENDING: { icon: Clock, color: '#f59e0b', bgColor: '#fef3c7', text: 'მუშავდება' },
       PROCESSING: { icon: Package, color: '#3b82f6', bgColor: '#dbeafe', text: 'მზადდება' },
       PAID: { icon: CreditCard, color: '#10b981', bgColor: '#d1fae5', text: 'გადახდილია' },
-      SHIPPED: { icon: Truck, color: '#000', bgColor: '#f5f5f5', text: 'გზაშია' },
+      SHIPPED: { icon: Truck, color: '#6e39ea', bgColor: '#ede9fe', text: 'გზაშია' },
       DELIVERED: { icon: CheckCircle, color: '#10b981', bgColor: '#d1fae5', text: 'მიწოდებულია' },
       CANCELLED: { icon: XCircle, color: '#ef4444', bgColor: '#fee2e2', text: 'გაუქმებულია' },
     };
@@ -151,6 +174,7 @@ export default function OrdersScreen() {
               counts[status] = data.total || 0;
             }
           } catch (error) {
+            console.error(`Error loading count for ${status}:`, error);
             counts[status] = 0;
           }
         })
@@ -170,15 +194,21 @@ export default function OrdersScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-        <View style={[styles.modernHeader, { paddingTop: insets.top + 16 }]}>
-          <Text style={styles.modernTitle}>შეკვეთები</Text>
-        </View>
-        <View style={styles.loadingContainer}>
-          <View style={styles.loadingBox}>
-            <Package size={56} color="#e0e0e0" strokeWidth={1.5} />
-            <Text style={styles.loadingText}>იტვირთება...</Text>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 20 }]}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>შეკვეთები</Text>
           </View>
+        </LinearGradient>
+        <View style={styles.loadingContainer}>
+          <Package size={64} color="#d1d5db" strokeWidth={1.5} />
+          <Text style={styles.loadingText}>იტვირთება...</Text>
         </View>
       </View>
     );
@@ -187,32 +217,50 @@ export default function OrdersScreen() {
   if (!user) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-        <View style={[styles.modernHeader, { paddingTop: insets.top + 16 }]}>
-          <Text style={styles.modernTitle}>შეკვეთები</Text>
-        </View>
+        <StatusBar barStyle="light-content" />
+        <LinearGradient
+          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.header, { paddingTop: insets.top + 20 }]}
+        >
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerSubtitle}>თქვენი</Text>
+            <Text style={styles.headerTitle}>შეკვეთები</Text>
+          </View>
+        </LinearGradient>
 
         <View style={styles.authContainer}>
-          <View style={styles.authContent}>
-            <View style={styles.authIconBox}>
-              <ShoppingBag size={72} color="#d1d5db" strokeWidth={1.5} />
+          <View style={styles.authCard}>
+            <View style={styles.authIconWrapper}>
+              <LinearGradient
+                colors={['#6e39ea', '#8b5cf6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.authIcon}
+              >
+                <ShoppingBag size={48} color="#fff" strokeWidth={2} />
+              </LinearGradient>
             </View>
+
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
-            <Text style={styles.authSubtitle}>
-              თქვენი შეკვეთების სანახავად{'\n'}გაიარეთ ავტორიზაცია
+            <Text style={styles.authDescription}>
+              თქვენი შეკვეთების სანახავად და მართვისთვის{'\n'}გთხოვთ გაიაროთ ავტორიზაცია
             </Text>
+
             <TouchableOpacity
               style={styles.authButton}
               onPress={() => router.push('/auth/login')}
+              activeOpacity={0.9}
             >
               <LinearGradient
-                colors={['#000', '#1a1a1a']}
+                colors={['#6e39ea', '#8b5cf6']}
                 start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.authGradient}
+                end={{ x: 1, y: 0 }}
+                style={styles.authButtonGradient}
               >
                 <Text style={styles.authButtonText}>შესვლა</Text>
-                <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
+                <ChevronRight size={20} color="#fff" strokeWidth={3} />
               </LinearGradient>
             </TouchableOpacity>
           </View>
@@ -231,173 +279,193 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-
-      <View style={[styles.modernHeader, { paddingTop: insets.top + 16 }]}>
-        <View style={styles.headerTop}>
-          <View>
-            <Text style={styles.modernTitle}>შეკვეთები</Text>
-            {totalCount > 0 && (
-              <Text style={styles.orderCount}>{totalCount} შეკვეთა</Text>
-            )}
+      <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, { paddingTop: insets.top + 12 }]}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.titleRow}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerTitle}>შეკვეთები</Text>
+            </View>
+            <View style={styles.statsCompact}>
+              <View style={styles.statBoxCompact}>
+                <Text style={styles.statNumberCompact}>{totalCount}</Text>
+                <Text style={styles.statTextCompact}>სულ</Text>
+              </View>
+            </View>
           </View>
-        </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filtersScroll}
-          contentContainerStyle={styles.filtersContent}
-        >
-          {filters.map((filter) => {
-            const Icon = filter.icon;
-            const isActive = selectedFilter === filter.key;
-            const count = getFilteredOrdersCount(filter.key);
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.filterScroll}
+            contentContainerStyle={styles.filterContainer}
+          >
+            {filters.map((filter) => {
+              const Icon = filter.icon;
+              const isActive = selectedFilter === filter.key;
+              const count = getFilteredOrdersCount(filter.key);
 
-            return (
-              <TouchableOpacity
-                key={filter.key}
-                style={[styles.filterChip, isActive && styles.filterChipActive]}
-                onPress={() => handleFilterChange(filter.key)}
-              >
-                <Icon
-                  size={16}
-                  color={isActive ? '#fff' : '#666'}
-                  strokeWidth={2.5}
-                />
-                <Text style={[styles.filterText, isActive && styles.filterTextActive]}>
-                  {filter.label}
-                </Text>
-                <View style={[styles.filterBadge, isActive && styles.filterBadgeActive]}>
-                  <Text style={[styles.filterBadgeText, isActive && styles.filterBadgeTextActive]}>
-                    {count}
+              return (
+                <TouchableOpacity
+                  key={filter.key}
+                  style={[styles.filterCard, isActive && styles.filterCardActive]}
+                  onPress={() => handleFilterChange(filter.key)}
+                  activeOpacity={0.8}
+                >
+                  <View style={[styles.filterIconBg, isActive && styles.filterIconBgActive]}>
+                    <Icon
+                      size={16}
+                      color={isActive ? '#6e39ea' : '#9ca3af'}
+                      strokeWidth={2.5}
+                    />
+                  </View>
+                  <Text style={[styles.filterLabel, isActive && styles.filterLabelActive]}>
+                    {filter.label}
                   </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+                  <View style={[styles.filterBadge, isActive && styles.filterBadgeActive]}>
+                    <Text style={[styles.filterCount, isActive && styles.filterCountActive]}>
+                      {count}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </LinearGradient>
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#000" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
         }
       >
-        {orders.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <View style={styles.emptyContent}>
-              <View style={styles.emptyIconBox}>
-                <Package size={72} color="#d1d5db" strokeWidth={1.5} />
+        <View style={styles.content}>
+          {orders.length === 0 ? (
+            <View style={styles.emptyState}>
+              <View style={styles.emptyIconCircle}>
+                <Package size={64} color="#d1d5db" strokeWidth={1.5} />
               </View>
               <Text style={styles.emptyTitle}>შეკვეთები არ მოიძებნა</Text>
               <Text style={styles.emptySubtitle}>
                 {selectedFilter === 'ALL'
-                  ? 'ჯერ არ გაქვთ არცერთი შეკვეთა'
+                  ? 'თქვენ ჯერ არ გაქვთ არცერთი შეკვეთა'
                   : `"${filters.find(f => f.key === selectedFilter)?.label}" სტატუსით შეკვეთები არ მოიძებნა`}
               </Text>
+
               {selectedFilter === 'ALL' && (
                 <TouchableOpacity
-                  style={styles.startShoppingButton}
+                  style={styles.shopNowButton}
                   onPress={() => router.push('/(tabs)')}
+                  activeOpacity={0.9}
                 >
                   <LinearGradient
-                    colors={['#000', '#1a1a1a']}
+                    colors={['#6e39ea', '#8b5cf6']}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={styles.startShoppingGradient}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.shopNowGradient}
                   >
-                    <Text style={styles.startShoppingText}>დაიწყეთ შოპინგი</Text>
-                    <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
+                    <ShoppingBag size={20} color="#fff" strokeWidth={2.5} />
+                    <Text style={styles.shopNowText}>დაიწყე შოპინგი</Text>
                   </LinearGradient>
                 </TouchableOpacity>
               )}
             </View>
-          </View>
-        ) : (
-          <View style={styles.content}>
-            {orders.map((order, index) => {
+          ) : (
+            orders.map((order, index) => {
               const statusInfo = getStatusInfo(order.status);
               const StatusIcon = statusInfo.icon;
 
               return (
-                <TouchableOpacity
+                <View
                   key={order.id}
-                  style={[styles.orderCard, { marginTop: index === 0 ? 0 : 12 }]}
-                  onPress={() => router.push(`/order/${order.id}`)}
-                  activeOpacity={0.95}
+                  style={[styles.orderCard, { marginTop: index === 0 ? 0 : 16 }]}
                 >
                   <View style={styles.orderHeader}>
-                    <View style={styles.orderMeta}>
+                    <View style={styles.orderLeft}>
                       <Text style={styles.orderLabel}>შეკვეთა</Text>
                       <Text style={styles.orderNumber}>#{order.orderNumber}</Text>
                     </View>
-                    <View style={[styles.statusBadge, { backgroundColor: statusInfo.bgColor }]}>
+                    <View style={[styles.statusPill, { backgroundColor: statusInfo.bgColor }]}>
                       <StatusIcon size={14} color={statusInfo.color} strokeWidth={2.5} />
-                      <Text style={[styles.statusText, { color: statusInfo.color }]}>
+                      <Text style={[styles.statusLabel, { color: statusInfo.color }]}>
                         {statusInfo.text}
                       </Text>
                     </View>
                   </View>
 
                   {order.items && order.items.length > 0 && (
-                    <View style={styles.itemsSection}>
-                      <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.itemsScroll}
-                      >
-                        {order.items.slice(0, 4).map((item, idx) => (
-                          <View key={idx} style={styles.itemCard}>
+                    <View style={styles.itemsContainer}>
+                      {order.items.slice(0, 3).map((item, idx) => (
+                        <View key={idx} style={styles.itemRow}>
+                          <View style={styles.itemImageWrapper}>
                             {item.imageUrl ? (
-                              <Image source={{ uri: item.imageUrl }} style={styles.itemImg} />
+                              <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
                             ) : (
-                              <View style={styles.itemImgPlaceholder}>
-                                <Package size={20} color="#999" strokeWidth={2} />
+                              <View style={styles.itemImagePlaceholder}>
+                                <Package size={16} color="#9ca3af" strokeWidth={2} />
                               </View>
                             )}
-                            <Text style={styles.itemQtyBadge}>×{item.quantity}</Text>
                           </View>
-                        ))}
-                        {order.items.length > 4 && (
-                          <View style={styles.moreItemsCard}>
-                            <Text style={styles.moreItemsText}>+{order.items.length - 4}</Text>
+                          <View style={styles.itemInfo}>
+                            <Text style={styles.itemName} numberOfLines={1}>
+                              {item.name}
+                            </Text>
+                            <View style={styles.itemBottom}>
+                              <Text style={styles.itemQty}>რაოდენობა: {item.quantity}</Text>
+                              <Text style={styles.itemPrice}>{item.price.toFixed(2)} ₾</Text>
+                            </View>
                           </View>
-                        )}
-                      </ScrollView>
+                        </View>
+                      ))}
+                      {order.items.length > 3 && (
+                        <View style={styles.moreItems}>
+                          <Text style={styles.moreItemsText}>
+                            +{order.items.length - 3} პროდუქტი
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   )}
 
                   <View style={styles.orderFooter}>
-                    <View style={styles.orderInfo}>
-                      <View style={styles.infoRow}>
-                        <MapPin size={14} color="#999" strokeWidth={2} />
-                        <Text style={styles.infoText}>{order.shippingCity}</Text>
+                    <View style={styles.orderDetails}>
+                      <View style={styles.detailRow}>
+                        <MapPin size={16} color="#9ca3af" strokeWidth={2} />
+                        <Text style={styles.detailText}>{order.shippingCity}</Text>
                       </View>
-                      <View style={styles.infoRow}>
-                        <Calendar size={14} color="#999" strokeWidth={2} />
-                        <Text style={styles.infoText}>{formatDate(order.createdAt)}</Text>
+                      <View style={styles.detailRow}>
+                        <Calendar size={16} color="#9ca3af" strokeWidth={2} />
+                        <Text style={styles.detailText}>{formatDate(order.createdAt)}</Text>
                       </View>
                     </View>
-
-                    <View style={styles.orderTotal}>
+                    <View style={styles.totalWrapper}>
                       <Text style={styles.totalLabel}>სულ</Text>
-                      <Text style={styles.totalAmount}>₾{order.totalAmount.toFixed(2)}</Text>
+                      <Text style={styles.totalPrice}>{order.totalAmount.toFixed(2)} ₾</Text>
                     </View>
                   </View>
 
-                  <View style={styles.viewDetailsBar}>
-                    <Text style={styles.viewDetailsText}>დეტალების ნახვა</Text>
-                    <ArrowRight size={16} color="#000" strokeWidth={2.5} />
-                  </View>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.viewMoreButton}
+                    onPress={() => {
+                      router.push(`/order/${order.id}`);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.viewMoreText}>დეტალები</Text>
+                    <ChevronRight size={16} color="#6e39ea" strokeWidth={2.5} />
+                  </TouchableOpacity>
+                </View>
               );
-            })}
-          </View>
-        )}
+            })
+          )}
+        </View>
 
         <View style={styles.bottomSpace} />
       </ScrollView>
@@ -408,376 +476,449 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f5f5f7',
   },
-  modernHeader: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+  header: {
     paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingHorizontal: 20,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
   },
-  headerTop: {
+  headerContent: {
+    gap: 14,
+  },
+  titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
   },
-  modernTitle: {
-    fontSize: 32,
+  titleContainer: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 28,
     fontWeight: '900',
-    color: '#000',
-    letterSpacing: -1.5,
+    color: '#fff',
+    letterSpacing: -1,
+    fontFamily: 'MarkGEO-Regular',
   },
-  orderCount: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#666',
-    marginTop: 2,
+  statsCompact: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
-  filtersScroll: {
-    marginHorizontal: -20,
-  },
-  filtersContent: {
-    paddingHorizontal: 20,
-    gap: 8,
-  },
-  filterChip: {
+  statBoxCompact: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
     gap: 6,
   },
-  filterChipActive: {
-    backgroundColor: '#000',
-  },
-  filterText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#666',
-  },
-  filterTextActive: {
+  statNumberCompact: {
+    fontSize: 18,
+    fontWeight: '900',
     color: '#fff',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
-  filterBadge: {
-    backgroundColor: '#e5e5e5',
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 8,
-    minWidth: 22,
-    alignItems: 'center',
-  },
-  filterBadgeActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  filterBadgeText: {
+  statTextCompact: {
     fontSize: 11,
-    fontWeight: '800',
-    color: '#666',
-  },
-  filterBadgeTextActive: {
-    color: '#fff',
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.5,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 80,
-  },
-  loadingBox: {
-    alignItems: 'center',
+    paddingBottom: 100,
     gap: 16,
   },
   loadingText: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
-    color: '#999',
+    color: '#bbb',
+    fontFamily: 'MarkGEO-Regular',
   },
   authContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingBottom: 100,
+    padding: 24,
+    paddingBottom: 120,
   },
-  authContent: {
+  authCard: {
+    backgroundColor: '#fff',
+    borderRadius: 32,
+    padding: 40,
     alignItems: 'center',
-    maxWidth: 320,
+    width: '100%',
+    maxWidth: 400,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+    elevation: 10,
   },
-  authIconBox: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: '#f5f5f5',
+  authIconWrapper: {
+    marginBottom: 24,
+  },
+  authIcon: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 32,
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   authTitle: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '900',
-    color: '#000',
+    color: '#111827',
     marginBottom: 12,
-    textAlign: 'center',
-    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
-  authSubtitle: {
+  authDescription: {
     fontSize: 15,
-    fontWeight: '500',
-    color: '#666',
+    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
   },
   authButton: {
-    borderRadius: 16,
+    width: '100%',
+    borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
     shadowRadius: 12,
-    elevation: 6,
+    elevation: 8,
   },
-  authGradient: {
+  authButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 18,
-    paddingHorizontal: 32,
-    gap: 10,
+    gap: 8,
   },
   authButtonText: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
     color: '#fff',
-    letterSpacing: -0.3,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  filterScroll: {
+    marginHorizontal: -20,
+  },
+  filterContainer: {
+    paddingHorizontal: 20,
+    gap: 12,
+  },
+  filterCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderRadius: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    gap: 8,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  filterCardActive: {
+    backgroundColor: '#fff',
+    borderColor: '#fff',
+  },
+  filterIconBg: {
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterIconBgActive: {
+    backgroundColor: '#f3f4f6',
+  },
+  filterLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  filterLabelActive: {
+    color: '#1a1a1a',
+  },
+  filterBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    minWidth: 24,
+    alignItems: 'center',
+  },
+  filterBadgeActive: {
+    backgroundColor: '#7c3aed',
+  },
+  filterCount: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  filterCountActive: {
+    color: '#fff',
   },
   scrollView: {
     flex: 1,
   },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  emptyContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingBottom: 100,
-  },
-  emptyContent: {
-    alignItems: 'center',
-    maxWidth: 320,
-  },
-  emptyIconBox: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 32,
-  },
-  emptyTitle: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#000',
-    marginBottom: 12,
-    textAlign: 'center',
-    letterSpacing: -0.5,
-  },
-  emptySubtitle: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 32,
-  },
-  startShoppingButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  startShoppingGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 32,
-    gap: 10,
-  },
-  startShoppingText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#fff',
-    letterSpacing: -0.3,
-  },
   content: {
     padding: 16,
   },
-  orderCard: {
-    backgroundColor: '#fff',
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+    paddingHorizontal: 24,
+  },
+  emptyIconCircle: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#111827',
+    marginBottom: 12,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  emptySubtitle: {
+    fontSize: 15,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 32,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  shopNowButton: {
     borderRadius: 20,
     overflow: 'hidden',
+    shadowColor: '#6e39ea',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  shopNowGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    gap: 10,
+  },
+  shopNowText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#fff',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  orderCard: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 18,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
-    elevation: 2,
+    elevation: 3,
     borderWidth: 1,
     borderColor: '#f0f0f0',
   },
   orderHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    borderBottomColor: '#f3f4f6',
   },
-  orderMeta: {
+  orderLeft: {
     flex: 1,
   },
   orderLabel: {
     fontSize: 11,
+    color: '#9ca3af',
     fontWeight: '600',
-    color: '#999',
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
   orderNumber: {
     fontSize: 20,
     fontWeight: '900',
-    color: '#000',
+    color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
-  statusBadge: {
+  statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 12,
-    gap: 5,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    gap: 6,
   },
-  statusText: {
+  statusLabel: {
     fontSize: 12,
     fontWeight: '800',
+    fontFamily: 'MarkGEO-Regular',
   },
-  itemsSection: {
-    paddingVertical: 12,
-    paddingLeft: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+  itemsContainer: {
+    marginBottom: 16,
   },
-  itemsScroll: {
-    gap: 8,
-    paddingRight: 16,
+  itemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 12,
+    padding: 12,
+    backgroundColor: '#f9fafb',
+    borderRadius: 16,
   },
-  itemCard: {
-    position: 'relative',
-    width: 70,
-    height: 70,
+  itemImageWrapper: {
+    width: 56,
+    height: 56,
     borderRadius: 14,
     overflow: 'hidden',
-    backgroundColor: '#f5f5f5',
   },
-  itemImg: {
+  itemImage: {
     width: '100%',
     height: '100%',
   },
-  itemImgPlaceholder: {
+  itemImagePlaceholder: {
     width: '100%',
     height: '100%',
+    backgroundColor: '#e5e7eb',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
   },
-  itemQtyBadge: {
-    position: 'absolute',
-    bottom: 4,
-    right: 4,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#fff',
+  itemInfo: {
+    flex: 1,
   },
-  moreItemsCard: {
-    width: 70,
-    height: 70,
-    borderRadius: 14,
-    backgroundColor: '#f5f5f5',
+  itemName: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 6,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  itemBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  itemQty: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  itemPrice: {
+    fontSize: 15,
+    fontWeight: '900',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
+  },
+  moreItems: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 12,
+    alignSelf: 'flex-start',
   },
   moreItemsText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#666',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   orderFooter: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
     justifyContent: 'space-between',
-    padding: 16,
-    paddingBottom: 12,
+    alignItems: 'flex-end',
+    marginBottom: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#f3f4f6',
   },
-  orderInfo: {
+  orderDetails: {
     flex: 1,
     gap: 8,
   },
-  infoRow: {
+  detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
   },
-  infoText: {
+  detailText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#666',
+    color: '#6b7280',
+    fontFamily: 'MarkGEO-Regular',
   },
-  orderTotal: {
+  totalWrapper: {
     alignItems: 'flex-end',
   },
   totalLabel: {
     fontSize: 11,
+    color: '#9ca3af',
     fontWeight: '600',
-    color: '#999',
     textTransform: 'uppercase',
     letterSpacing: 1,
-    marginBottom: 2,
+    marginBottom: 4,
+    fontFamily: 'MarkGEOCAPS-Regular',
   },
-  totalAmount: {
-    fontSize: 24,
+  totalPrice: {
+    fontSize: 26,
     fontWeight: '900',
-    color: '#000',
+    color: '#111827',
     letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
   },
-  viewDetailsBar: {
+  viewMoreButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
-    backgroundColor: '#f9f9f9',
     gap: 6,
+    paddingVertical: 12,
+    backgroundColor: '#f9fafb',
+    borderRadius: 14,
   },
-  viewDetailsText: {
+  viewMoreText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#000',
+    color: '#7c3aed',
+    fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {
-    height: 40,
+    height: 100,
   },
 });
