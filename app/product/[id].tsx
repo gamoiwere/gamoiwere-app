@@ -293,7 +293,7 @@ export default function ProductDetailScreen() {
                 <Image
                   source={{ uri: item }}
                   style={styles.mainImage}
-                  resizeMode="contain"
+                  resizeMode="cover"
                 />
               </View>
             )}
@@ -672,13 +672,11 @@ const styles = StyleSheet.create({
   imageSlide: {
     width: width,
     height: width,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: '#fff',
   },
   mainImage: {
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: width,
   },
   paginationContainer: {
     position: 'absolute',
