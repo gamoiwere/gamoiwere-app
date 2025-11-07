@@ -284,61 +284,59 @@ export default function OrdersScreen() {
         colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 20 }]}
+        style={[styles.header, { paddingTop: insets.top + 12 }]}
       >
-        <View style={styles.titleContainer}>
-          <Text style={styles.headerSubtitle}>თქვენი</Text>
-          <Text style={styles.headerTitle}>შეკვეთები</Text>
-        </View>
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{totalCount}</Text>
-            <Text style={styles.statText}>სულ</Text>
+        <View style={styles.headerContent}>
+          <View style={styles.titleRow}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.headerTitle}>შეკვეთები</Text>
+            </View>
+            <View style={styles.statsCompact}>
+              <View style={styles.statBoxCompact}>
+                <Text style={styles.statNumberCompact}>{totalCount}</Text>
+                <Text style={styles.statTextCompact}>სულ</Text>
+              </View>
+            </View>
           </View>
-          <View style={styles.statDividerVertical} />
-          <View style={styles.statBox}>
-            <Text style={styles.statNumber}>{orders.length}</Text>
-            <Text style={styles.statText}>ფილტრი</Text>
-          </View>
-        </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterScroll}
-          contentContainerStyle={styles.filterContainer}
-        >
-          {filters.map((filter) => {
-            const Icon = filter.icon;
-            const isActive = selectedFilter === filter.key;
-            const count = getFilteredOrdersCount(filter.key);
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.filterScroll}
+            contentContainerStyle={styles.filterContainer}
+          >
+            {filters.map((filter) => {
+              const Icon = filter.icon;
+              const isActive = selectedFilter === filter.key;
+              const count = getFilteredOrdersCount(filter.key);
 
-            return (
-              <TouchableOpacity
-                key={filter.key}
-                style={[styles.filterCard, isActive && styles.filterCardActive]}
-                onPress={() => handleFilterChange(filter.key)}
-                activeOpacity={0.8}
-              >
-                <View style={[styles.filterIconBg, isActive && styles.filterIconBgActive]}>
-                  <Icon
-                    size={18}
-                    color={isActive ? '#6e39ea' : '#9ca3af'}
-                    strokeWidth={2.5}
-                  />
-                </View>
-                <Text style={[styles.filterLabel, isActive && styles.filterLabelActive]}>
-                  {filter.label}
-                </Text>
-                <View style={[styles.filterBadge, isActive && styles.filterBadgeActive]}>
-                  <Text style={[styles.filterCount, isActive && styles.filterCountActive]}>
-                    {count}
+              return (
+                <TouchableOpacity
+                  key={filter.key}
+                  style={[styles.filterCard, isActive && styles.filterCardActive]}
+                  onPress={() => handleFilterChange(filter.key)}
+                  activeOpacity={0.8}
+                >
+                  <View style={[styles.filterIconBg, isActive && styles.filterIconBgActive]}>
+                    <Icon
+                      size={16}
+                      color={isActive ? '#6e39ea' : '#9ca3af'}
+                      strokeWidth={2.5}
+                    />
+                  </View>
+                  <Text style={[styles.filterLabel, isActive && styles.filterLabelActive]}>
+                    {filter.label}
                   </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+                  <View style={[styles.filterBadge, isActive && styles.filterBadgeActive]}>
+                    <Text style={[styles.filterCount, isActive && styles.filterCountActive]}>
+                      {count}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
       </LinearGradient>
 
       <ScrollView
@@ -481,67 +479,58 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f7',
   },
   header: {
-    paddingBottom: 28,
-    paddingHorizontal: 24,
+    paddingBottom: 16,
+    paddingHorizontal: 20,
     shadowColor: '#7c3aed',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 16,
     elevation: 12,
   },
-  titleContainer: {
-    gap: 4,
-    marginBottom: 20,
+  headerContent: {
+    gap: 14,
   },
-  headerSubtitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.75)',
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-    fontFamily: 'MarkGEOCAPS-Regular',
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  titleContainer: {
+    flex: 1,
   },
   headerTitle: {
-    fontSize: 42,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -2,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    marginBottom: 20,
-  },
-  statBox: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 4,
-  },
-  statNumber: {
     fontSize: 28,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -1,
     fontFamily: 'MarkGEO-Regular',
   },
-  statText: {
+  statsCompact: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  statBoxCompact: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  statNumberCompact: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.5,
+    fontFamily: 'MarkGEO-Regular',
+  },
+  statTextCompact: {
     fontSize: 11,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.5,
-    textTransform: 'uppercase',
     fontFamily: 'MarkGEOCAPS-Regular',
-  },
-  statDividerVertical: {
-    width: 1,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
   loadingContainer: {
     flex: 1,
@@ -637,55 +626,55 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   filterCard: {
-    minWidth: 110,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 14,
-    padding: 12,
+    flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderRadius: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    gap: 8,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   filterCardActive: {
     backgroundColor: '#fff',
     borderColor: '#fff',
   },
   filterIconBg: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
   },
   filterIconBgActive: {
     backgroundColor: '#f3f4f6',
   },
   filterLabel: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.9)',
-    marginBottom: 6,
+    color: 'rgba(255, 255, 255, 0.85)',
     fontFamily: 'MarkGEO-Regular',
   },
   filterLabelActive: {
     color: '#1a1a1a',
   },
   filterBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    minWidth: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    minWidth: 24,
     alignItems: 'center',
   },
   filterBadgeActive: {
     backgroundColor: '#7c3aed',
   },
   filterCount: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: '#fff',
+    fontSize: 11,
+    fontWeight: '800',
+    color: 'rgba(255, 255, 255, 0.9)',
     fontFamily: 'MarkGEO-Regular',
   },
   filterCountActive: {
