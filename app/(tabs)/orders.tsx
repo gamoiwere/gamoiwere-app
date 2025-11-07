@@ -85,24 +85,31 @@ export default function OrdersScreen() {
       }
 
       console.log('📦 Parsed Data:', data);
-      console.log('📦 API Response:', {
-        status: response.status,
-        success: data.success,
-        total: data.total,
-        ordersCount: data.orders?.length,
-        message: data.message
-      });
 
       if (!response.ok) {
         console.error('❌ API Error:', data);
         throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
       }
 
-      console.log('✅ Setting orders:', data.orders?.length || 0);
-      setOrders(data.orders || []);
+      // Check if response is an array (direct orders array) or object with orders property
+      let orders = [];
+      let total = 0;
+
+      if (Array.isArray(data)) {
+        orders = data;
+        total = data.length;
+        console.log('📦 Direct array response:', { ordersCount: orders.length });
+      } else {
+        orders = data.orders || [];
+        total = data.total || orders.length;
+        console.log('📦 Object response:', { success: data.success, total: data.total, ordersCount: orders.length });
+      }
+
+      console.log('✅ Setting orders:', orders.length);
+      setOrders(orders);
 
       if (status === 'ALL' || !status) {
-        setTotalCount(data.total || 0);
+        setTotalCount(total);
         await loadStatusCounts(token);
       }
     } catch (error) {
