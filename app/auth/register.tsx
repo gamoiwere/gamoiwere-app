@@ -101,104 +101,116 @@ export default function RegisterScreen() {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>სახელი და გვარი</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="სახელი გვარი"
-                placeholderTextColor="#a1a1aa"
-                value={fullName}
-                onChangeText={setFullName}
-                editable={!loading}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>მომხმარებელი</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="მომხმარებელი"
-                placeholderTextColor="#a1a1aa"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-                editable={!loading}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="ელ-ფოსტა"
-                placeholderTextColor="#a1a1aa"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                editable={!loading}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>ტელეფონი</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="+995555123456"
-                placeholderTextColor="#a1a1aa"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                editable={!loading}
-              />
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>პაროლი</Text>
-              <View style={styles.passwordContainer}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>სახელი და გვარი</Text>
                 <TextInput
-                  style={styles.passwordInput}
-                  placeholder="მინიმუმ 6 სიმბოლო"
+                  style={styles.input}
+                  placeholder=""
                   placeholderTextColor="#a1a1aa"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
+                  value={fullName}
+                  onChangeText={setFullName}
                   editable={!loading}
                 />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeButton}
-                >
-                  {showPassword ? (
-                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
-                  ) : (
-                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
-                  )}
-                </TouchableOpacity>
               </View>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
-              <View style={styles.passwordContainer}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>მომხმარებელი</Text>
                 <TextInput
-                  style={styles.passwordInput}
-                  placeholder="••••••••"
+                  style={styles.input}
+                  placeholder=""
                   placeholderTextColor="#a1a1aa"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry={!showConfirmPassword}
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
                   editable={!loading}
                 />
-                <TouchableOpacity
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                  style={styles.eyeButton}
-                >
-                  {showConfirmPassword ? (
-                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
-                  ) : (
-                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
-                  )}
-                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>ელ-ფოსტა</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder=""
+                  placeholderTextColor="#a1a1aa"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  editable={!loading}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>ტელეფონი</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder=""
+                  placeholderTextColor="#a1a1aa"
+                  value={phone}
+                  onChangeText={setPhone}
+                  keyboardType="phone-pad"
+                  editable={!loading}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>პაროლი</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder=""
+                    placeholderTextColor="#a1a1aa"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    editable={!loading}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.eyeButton}
+                  >
+                    {showPassword ? (
+                      <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                    ) : (
+                      <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>გაიმეორეთ პაროლი</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder=""
+                    placeholderTextColor="#a1a1aa"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!showConfirmPassword}
+                    editable={!loading}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                    style={styles.eyeButton}
+                  >
+                    {showConfirmPassword ? (
+                      <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                    ) : (
+                      <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
@@ -326,17 +338,26 @@ const styles = StyleSheet.create({
   inputGroup: {
     gap: 8,
   },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: '400',
+  inputWrapper: {
+    position: 'relative',
+  },
+  floatingLabel: {
+    position: 'absolute',
+    left: 20,
+    top: 12,
+    fontSize: 12,
+    fontWeight: '500',
     color: '#71717a',
-    marginBottom: 4,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 4,
+    zIndex: 1,
   },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 32,
     paddingHorizontal: 20,
-    paddingVertical: 18,
+    paddingTop: 32,
+    paddingBottom: 14,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',
@@ -349,12 +370,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 32,
     paddingHorizontal: 20,
+    paddingTop: 32,
+    paddingBottom: 14,
     borderWidth: 1,
     borderColor: '#e5e5e5',
   },
   passwordInput: {
     flex: 1,
-    paddingVertical: 18,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',

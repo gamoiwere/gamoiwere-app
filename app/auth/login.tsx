@@ -78,41 +78,45 @@ export default function LoginScreen() {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>მომხმარებლის სახელი</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="მომხმარებლის სახელი"
-                placeholderTextColor="#a1a1aa"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                editable={!loading}
-              />
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>მომხმარებლის სახელი</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder=""
+                  placeholderTextColor="#a1a1aa"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  editable={!loading}
+                />
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>პაროლი</Text>
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.passwordInput}
-                  placeholder="••••••••••"
-                  placeholderTextColor="#a1a1aa"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={!showPassword}
-                  editable={!loading}
-                />
-                <TouchableOpacity
-                  onPress={() => setShowPassword(!showPassword)}
-                  style={styles.eyeButton}
-                >
-                  {showPassword ? (
-                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
-                  ) : (
-                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
-                  )}
-                </TouchableOpacity>
+              <View style={styles.inputWrapper}>
+                <Text style={styles.floatingLabel}>პაროლი</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder=""
+                    placeholderTextColor="#a1a1aa"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    editable={!loading}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setShowPassword(!showPassword)}
+                    style={styles.eyeButton}
+                  >
+                    {showPassword ? (
+                      <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                    ) : (
+                      <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
@@ -249,17 +253,26 @@ const styles = StyleSheet.create({
   inputGroup: {
     gap: 8,
   },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: '400',
+  inputWrapper: {
+    position: 'relative',
+  },
+  floatingLabel: {
+    position: 'absolute',
+    left: 20,
+    top: 12,
+    fontSize: 12,
+    fontWeight: '500',
     color: '#71717a',
-    marginBottom: 4,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 4,
+    zIndex: 1,
   },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 32,
     paddingHorizontal: 20,
-    paddingVertical: 18,
+    paddingTop: 32,
+    paddingBottom: 14,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',
@@ -272,12 +285,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 32,
     paddingHorizontal: 20,
+    paddingTop: 32,
+    paddingBottom: 14,
     borderWidth: 1,
     borderColor: '#e5e5e5',
   },
   passwordInput: {
     flex: 1,
-    paddingVertical: 18,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',
