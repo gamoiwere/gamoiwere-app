@@ -105,7 +105,7 @@ export default function RegisterScreen() {
               <Text style={styles.inputLabel}>სახელი და გვარი</Text>
               <TextInput
                 style={styles.input}
-                placeholder="გიორგი შენგელია"
+                placeholder="სახელი გვარი"
                 placeholderTextColor="#a1a1aa"
                 value={fullName}
                 onChangeText={setFullName}
@@ -117,7 +117,7 @@ export default function RegisterScreen() {
               <Text style={styles.inputLabel}>მომხმარებელი</Text>
               <TextInput
                 style={styles.input}
-                placeholder="username"
+                placeholder="მომხმარებელი"
                 placeholderTextColor="#a1a1aa"
                 value={username}
                 onChangeText={setUsername}
@@ -130,7 +130,7 @@ export default function RegisterScreen() {
               <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
               <TextInput
                 style={styles.input}
-                placeholder="example@mail.com"
+                placeholder="ელ-ფოსტა"
                 placeholderTextColor="#a1a1aa"
                 value={email}
                 onChangeText={setEmail}
