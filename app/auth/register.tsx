@@ -101,11 +101,14 @@ export default function RegisterScreen() {
 
           <View style={styles.form}>
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>სახელი და გვარი</Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>სახელი და გვარი</Text>
+                </View>
                 <TextInput
                   style={styles.input}
-                  placeholder=""
+                  placeholder="შეიყვანეთ თქვენი სახელი და გვარი"
                   placeholderTextColor="#a1a1aa"
                   value={fullName}
                   onChangeText={setFullName}
@@ -115,11 +118,14 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>მომხმარებელი</Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>მომხმარებელი</Text>
+                </View>
                 <TextInput
                   style={styles.input}
-                  placeholder=""
+                  placeholder="შეიყვანეთ მომხმარებლის სახელი"
                   placeholderTextColor="#a1a1aa"
                   value={username}
                   onChangeText={setUsername}
@@ -130,11 +136,14 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>ელ-ფოსტა</Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
+                </View>
                 <TextInput
                   style={styles.input}
-                  placeholder=""
+                  placeholder="შეიყვანეთ თქვენი ელ-ფოსტა"
                   placeholderTextColor="#a1a1aa"
                   value={email}
                   onChangeText={setEmail}
@@ -146,11 +155,14 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>ტელეფონი</Text>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>ტელეფონი</Text>
+                </View>
                 <TextInput
                   style={styles.input}
-                  placeholder=""
+                  placeholder="+995 555 123 456"
                   placeholderTextColor="#a1a1aa"
                   value={phone}
                   onChangeText={setPhone}
@@ -161,12 +173,15 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>პაროლი</Text>
-                <View style={styles.passwordContainer}>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>პაროლი</Text>
+                </View>
+                <View style={styles.passwordWrapper}>
                   <TextInput
                     style={styles.passwordInput}
-                    placeholder=""
+                    placeholder="შეიყვანეთ პაროლი (მინ. 6 სიმბოლო)"
                     placeholderTextColor="#a1a1aa"
                     value={password}
                     onChangeText={setPassword}
@@ -178,7 +193,7 @@ export default function RegisterScreen() {
                     style={styles.eyeButton}
                   >
                     {showPassword ? (
-                      <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                      <Eye size={20} color="#8b5cf6" strokeWidth={2} />
                     ) : (
                       <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
                     )}
@@ -188,12 +203,15 @@ export default function RegisterScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.inputWrapper}>
-                <Text style={styles.floatingLabel}>გაიმეორეთ პაროლი</Text>
-                <View style={styles.passwordContainer}>
+              <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                  <View style={styles.labelDot} />
+                  <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
+                </View>
+                <View style={styles.passwordWrapper}>
                   <TextInput
                     style={styles.passwordInput}
-                    placeholder=""
+                    placeholder="გაიმეორეთ თქვენი პაროლი"
                     placeholderTextColor="#a1a1aa"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
@@ -205,7 +223,7 @@ export default function RegisterScreen() {
                     style={styles.eyeButton}
                   >
                     {showConfirmPassword ? (
-                      <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                      <Eye size={20} color="#8b5cf6" strokeWidth={2} />
                     ) : (
                       <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
                     )}
@@ -333,53 +351,60 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   form: {
-    gap: 20,
+    gap: 24,
   },
   inputGroup: {
+    gap: 0,
+  },
+  inputContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+    borderWidth: 1.5,
+    borderColor: '#f3f4f6',
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
     gap: 8,
   },
-  inputWrapper: {
-    position: 'relative',
+  labelDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#8b5cf6',
   },
-  floatingLabel: {
-    position: 'absolute',
-    left: 20,
-    top: 12,
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#71717a',
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 4,
-    zIndex: 1,
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#18181b',
+    letterSpacing: 0.3,
   },
   input: {
-    backgroundColor: '#ffffff',
-    borderRadius: 32,
-    paddingHorizontal: 20,
-    paddingTop: 32,
-    paddingBottom: 14,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
+    padding: 0,
+    margin: 0,
   },
-  passwordContainer: {
+  passwordWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 32,
-    paddingHorizontal: 20,
-    paddingTop: 32,
-    paddingBottom: 14,
-    borderWidth: 1,
-    borderColor: '#e5e5e5',
+    gap: 8,
   },
   passwordInput: {
     flex: 1,
     fontSize: 15,
     color: '#18181b',
     fontWeight: '500',
+    padding: 0,
+    margin: 0,
   },
   eyeButton: {
     padding: 4,
