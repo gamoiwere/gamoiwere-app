@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, Apple } from 'lucide-react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
 
 export default function RegisterScreen() {
-  const insets = useSafeAreaInsets();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -75,232 +72,189 @@ export default function RegisterScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
       <SuccessNotification
         visible={showSuccess}
         message="ანგარიში წარმატებით შეიქმნა!"
         onHide={() => setShowSuccess(false)}
       />
 
-      <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <ArrowLeft size={24} color="#fff" strokeWidth={2.5} />
-          </TouchableOpacity>
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerTitle}>რეგისტრაცია</Text>
-          </View>
-          <View style={styles.headerSpacer} />
-        </View>
-      </LinearGradient>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <ScrollView
-          style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+              <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
+            </TouchableOpacity>
+            <Text style={styles.title}>ანგარიშის შექმნა</Text>
+          </View>
 
-          <View style={styles.content}>
-            <Text style={styles.welcomeTitle}>შექმენით ანგარიში</Text>
-            <Text style={styles.welcomeSubtitle}>შეავსეთ თქვენი მონაცემები ანგარიშის შესაქმნელად</Text>
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
 
-            {error ? (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
-              </View>
-            ) : null}
+          <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>სახელი და გვარი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="გიორგი შენგელია"
+                placeholderTextColor="#a1a1aa"
+                value={fullName}
+                onChangeText={setFullName}
+                editable={!loading}
+              />
+            </View>
 
-            <View style={styles.form}>
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <User size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>სახელი და გვარი</Text>
-                </View>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>მომხმარებელი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="username"
+                placeholderTextColor="#a1a1aa"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+                editable={!loading}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="example@mail.com"
+                placeholderTextColor="#a1a1aa"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                editable={!loading}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>ტელეფონი</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="+995555123456"
+                placeholderTextColor="#a1a1aa"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                editable={!loading}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>პაროლი</Text>
+              <View style={styles.passwordContainer}>
                 <TextInput
-                  style={styles.input}
-                  placeholder="გიორგი შენგელია"
-                  placeholderTextColor="#9ca3af"
-                  value={fullName}
-                  onChangeText={setFullName}
+                  style={styles.passwordInput}
+                  placeholder="მინიმუმ 6 სიმბოლო"
+                  placeholderTextColor="#a1a1aa"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
                   editable={!loading}
                 />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <User size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>მომხმარებელი</Text>
-                </View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="username"
-                  placeholderTextColor="#9ca3af"
-                  value={username}
-                  onChangeText={setUsername}
-                  autoCapitalize="none"
-                  editable={!loading}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Mail size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>ელ-ფოსტა</Text>
-                </View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="example@mail.com"
-                  placeholderTextColor="#9ca3af"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  editable={!loading}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Phone size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>ტელეფონი</Text>
-                </View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="+995555123456"
-                  placeholderTextColor="#9ca3af"
-                  value={phone}
-                  onChangeText={setPhone}
-                  keyboardType="phone-pad"
-                  editable={!loading}
-                />
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Lock size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>პაროლი</Text>
-                </View>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="მინიმუმ 6 სიმბოლო"
-                    placeholderTextColor="#9ca3af"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    editable={!loading}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.eyeButton}
-                  >
-                    {showPassword ? (
-                      <Eye size={20} color="#6b7280" strokeWidth={2} />
-                    ) : (
-                      <EyeOff size={20} color="#6b7280" strokeWidth={2} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Lock size={16} color="#6b7280" strokeWidth={2} />
-                  <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
-                </View>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="••••••••"
-                    placeholderTextColor="#9ca3af"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry={!showConfirmPassword}
-                    editable={!loading}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={styles.eyeButton}
-                  >
-                    {showConfirmPassword ? (
-                      <Eye size={20} color="#6b7280" strokeWidth={2} />
-                    ) : (
-                      <EyeOff size={20} color="#6b7280" strokeWidth={2} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.termsRow}>
                 <TouchableOpacity
-                  style={styles.checkboxRow}
-                  onPress={() => setAgreeToTerms(!agreeToTerms)}
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
                 >
-                  <View style={[styles.checkbox, agreeToTerms && styles.checkboxChecked]}>
-                    {agreeToTerms && <View style={styles.checkmark} />}
-                  </View>
-                  <Text style={styles.termsText}>
-                    ვეთანხმები{' '}
-                    <Text style={styles.termsLink}>წესებსა და პირობებს</Text>
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity
-                style={styles.button}
-                onPress={handleRegister}
-                disabled={loading}
-                activeOpacity={0.9}
-              >
-                <LinearGradient
-                  colors={loading ? ['#9ca3af', '#6b7280'] : ['#6e39ea', '#8b5cf6']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.buttonGradient}
-                >
-                  {loading ? (
-                    <Loader />
+                  {showPassword ? (
+                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
                   ) : (
-                    <Text style={styles.buttonText}>რეგისტრაცია</Text>
+                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
                   )}
-                </LinearGradient>
-              </TouchableOpacity>
-
-              <View style={styles.dividerContainer}>
-                <View style={styles.divider} />
-                <Text style={styles.dividerText}>ან შედით</Text>
-                <View style={styles.divider} />
-              </View>
-
-              <View style={styles.socialContainer}>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Apple size={20} color="#000000" strokeWidth={2} />
-                  <Text style={styles.socialText}>Apple</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.socialButton}>
-                  <Ionicons name="logo-google" size={20} color="#4285F4" />
-                  <Text style={styles.socialText}>Google</Text>
                 </TouchableOpacity>
               </View>
             </View>
 
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>უკვე გაქვთ ანგარიში? </Text>
-              <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                <Text style={styles.footerLink}>შესვლა</Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>გაიმეორეთ პაროლი</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  placeholder="••••••••"
+                  placeholderTextColor="#a1a1aa"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry={!showConfirmPassword}
+                  editable={!loading}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.eyeButton}
+                >
+                  {showConfirmPassword ? (
+                    <Eye size={20} color="#a1a1aa" strokeWidth={2} />
+                  ) : (
+                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.termsRow}>
+              <TouchableOpacity
+                style={styles.checkboxRow}
+                onPress={() => setAgreeToTerms(!agreeToTerms)}
+              >
+                <View style={[styles.checkbox, agreeToTerms && styles.checkboxChecked]}>
+                  {agreeToTerms && <View style={styles.checkmark} />}
+                </View>
+                <Text style={styles.termsText}>
+                  ვეთანხმები{' '}
+                  <Text style={styles.termsLink}>წესებსა და პირობებს</Text>
+                </Text>
               </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleRegister}
+              disabled={loading}
+              activeOpacity={0.9}
+            >
+              {loading ? (
+                <Loader />
+              ) : (
+                <Text style={styles.buttonText}>რეგისტრაცია</Text>
+              )}
+            </TouchableOpacity>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>ან შედით</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <View style={styles.socialContainer}>
+              <TouchableOpacity style={styles.socialButton}>
+                <Apple size={20} color="#000000" strokeWidth={2} />
+                <Text style={styles.socialText}>Apple</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.socialButton}>
+                <Ionicons name="logo-google" size={20} color="#4285F4" />
+                <Text style={styles.socialText}>Google</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>უკვე გაქვთ ანგარიში? </Text>
+            <TouchableOpacity onPress={() => router.push('/auth/login')}>
+              <Text style={styles.footerLink}>შესვლა</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -311,131 +265,95 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
-  },
-  header: {
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -1,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  headerSpacer: {
-    width: 40,
+    backgroundColor: '#f5f5f5',
   },
   keyboardView: {
     flex: 1,
   },
-  scrollView: {
-    flex: 1,
-  },
   scrollContent: {
     flexGrow: 1,
+    padding: 24,
+    paddingTop: 60,
   },
-  content: {
-    padding: 20,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 40,
+    gap: 12,
   },
-  welcomeTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#111827',
-    marginBottom: 8,
-    fontFamily: 'MarkGEO-Regular',
+  backButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  welcomeSubtitle: {
-    fontSize: 15,
-    color: '#6b7280',
-    marginBottom: 24,
-    fontFamily: 'MarkGEO-Regular',
+  title: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#18181b',
+    flex: 1,
   },
   errorContainer: {
     backgroundColor: '#fef2f2',
     borderWidth: 1,
     borderColor: '#fecaca',
-    padding: 14,
-    borderRadius: 14,
-    marginBottom: 16,
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 24,
   },
   errorText: {
     color: '#dc2626',
     fontSize: 14,
-    fontWeight: '600',
-    fontFamily: 'MarkGEO-Regular',
+    fontWeight: '500',
   },
   form: {
-    gap: 16,
+    gap: 20,
   },
   inputGroup: {
     gap: 8,
   },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
   inputLabel: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#6b7280',
-    fontFamily: 'MarkGEO-Regular',
+    fontWeight: '400',
+    color: '#71717a',
+    marginBottom: 4,
   },
   input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    backgroundColor: '#ffffff',
+    borderRadius: 32,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
-    fontFamily: 'MarkGEO-Regular',
+    color: '#18181b',
+    fontWeight: '500',
+    borderWidth: 1,
+    borderColor: '#e5e5e5',
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
+    borderRadius: 32,
+    paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 14,
-    paddingHorizontal: 16,
+    borderColor: '#e5e5e5',
   },
   passwordInput: {
     flex: 1,
-    paddingVertical: 14,
+    paddingVertical: 18,
     fontSize: 15,
-    fontWeight: '600',
-    color: '#111827',
-    fontFamily: 'MarkGEO-Regular',
+    color: '#18181b',
+    fontWeight: '500',
   },
   eyeButton: {
-    padding: 8,
+    padding: 4,
   },
   termsRow: {
     marginTop: 4,
@@ -455,8 +373,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxChecked: {
-    backgroundColor: '#7c3aed',
-    borderColor: '#7c3aed',
+    backgroundColor: '#8b5cf6',
+    borderColor: '#8b5cf6',
   },
   checkmark: {
     width: 10,
@@ -465,57 +383,52 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   termsText: {
-    fontSize: 13,
-    color: '#6b7280',
-    fontWeight: '600',
+    fontSize: 14,
+    color: '#71717a',
+    fontWeight: '400',
     flex: 1,
-    fontFamily: 'MarkGEO-Regular',
   },
   termsLink: {
-    color: '#7c3aed',
-    fontWeight: '800',
+    color: '#8b5cf6',
+    fontWeight: '600',
   },
   button: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginTop: 8,
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  buttonGradient: {
+    marginTop: 12,
+    backgroundColor: '#8b5cf6',
+    borderRadius: 32,
     paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
   buttonText: {
+    color: '#ffffff',
     fontSize: 16,
-    fontWeight: '800',
-    color: '#fff',
-    fontFamily: 'MarkGEO-Regular',
+    fontWeight: '600',
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginTop: 12,
+    marginBottom: 8,
   },
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#e5e5e5',
   },
   dividerText: {
-    fontSize: 13,
-    color: '#9ca3af',
+    fontSize: 14,
+    color: '#a1a1aa',
     marginHorizontal: 16,
-    fontWeight: '600',
-    fontFamily: 'MarkGEO-Regular',
+    fontWeight: '400',
   },
   socialContainer: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 16,
+    marginTop: 8,
   },
   socialButton: {
     flex: 1,
@@ -523,40 +436,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    paddingVertical: 14,
+    backgroundColor: '#ffffff',
+    borderRadius: 32,
+    paddingVertical: 16,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
+    borderColor: '#e5e5e5',
   },
   socialText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
-    fontFamily: 'MarkGEO-Regular',
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#18181b',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 32,
-    paddingBottom: 40,
+    marginTop: 40,
   },
   footerText: {
     fontSize: 14,
-    color: '#6b7280',
-    fontWeight: '500',
-    fontFamily: 'MarkGEO-Regular',
+    color: '#71717a',
+    fontWeight: '400',
   },
   footerLink: {
     fontSize: 14,
-    color: '#7c3aed',
-    fontWeight: '800',
-    fontFamily: 'MarkGEO-Regular',
+    color: '#8b5cf6',
+    fontWeight: '600',
   },
 });
