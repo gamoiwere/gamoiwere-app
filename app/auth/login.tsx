@@ -154,7 +154,7 @@ export default function LoginScreen() {
             <View style={styles.socialContainer}>
               <TouchableOpacity style={styles.socialButton}>
                 <Image
-                  source={require('@/assets/images/apple.png')}
+                  source={require('@/assets/images/apple copy.png')}
                   style={styles.socialIcon}
                   resizeMode="contain"
                 />
