@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { ArrowLeft, EyeOff, Eye, Apple } from 'lucide-react-native';
@@ -60,6 +60,14 @@ export default function LoginScreen() {
               <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
             </TouchableOpacity>
             <Text style={styles.title}>მოგესალმებით!</Text>
+          </View>
+
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
 
           {error ? (
@@ -179,13 +187,21 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 24,
-    justifyContent: 'center',
+    paddingTop: 60,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 32,
     gap: 12,
+  },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logo: {
+    width: 200,
+    height: 60,
   },
   backButton: {
     width: 48,
