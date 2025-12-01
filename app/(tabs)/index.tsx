@@ -160,125 +160,74 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <View style={styles.heroSection}>
-          <View style={styles.mainHeroCard}>
+          <TouchableOpacity activeOpacity={0.95}>
             <LinearGradient
-              colors={['#1e293b', '#334155', '#475569']}
+              colors={['#1e293b', '#334155']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.heroGradient}
+              style={styles.mainHeroCard}
             >
-              <View style={styles.heroOverlay}>
-                <View style={styles.heroBadgeContainer}>
+              <View style={styles.heroTopRow}>
+                <View>
                   <View style={styles.premiumBadge}>
-                    <Sparkles size={16} color="#fbbf24" strokeWidth={2.5} />
-                    <Text style={styles.premiumBadgeText}>პრემიუმ სერვისი</Text>
+                    <Sparkles size={12} color="#fbbf24" strokeWidth={2.5} />
+                    <Text style={styles.premiumText}>პრემიუმ</Text>
                   </View>
-                  <View style={styles.liveDot}>
-                    <View style={styles.livePulse} />
-                    <Text style={styles.liveText}>ლაივ</Text>
-                  </View>
+                  <Text style={styles.heroNumber}>800M+</Text>
+                  <Text style={styles.heroLabel}>პროდუქტი მთელი მსოფლიოდან</Text>
                 </View>
-
-                <Text style={styles.mainHeroTitle}>800M+</Text>
-                <Text style={styles.mainHeroSubtitle}>პროდუქტი მთელი მსოფლიოდან</Text>
-
-                <View style={styles.heroStats}>
-                  <View style={styles.heroStat}>
-                    <Text style={styles.heroStatNumber}>50K+</Text>
-                    <Text style={styles.heroStatLabel}>ბრენდი</Text>
-                  </View>
-                  <View style={styles.heroStatDivider} />
-                  <View style={styles.heroStat}>
-                    <Text style={styles.heroStatNumber}>200K+</Text>
-                    <Text style={styles.heroStatLabel}>მომხმარებელი</Text>
-                  </View>
-                  <View style={styles.heroStatDivider} />
-                  <View style={styles.heroStat}>
-                    <Text style={styles.heroStatNumber}>10-14</Text>
-                    <Text style={styles.heroStatLabel}>დღე მიწოდება</Text>
-                  </View>
+                <View style={styles.heroIconCircle}>
+                  <Package size={32} color="#fff" strokeWidth={2} />
                 </View>
+              </View>
 
-                <View style={styles.heroTrustSection}>
-                  <View style={styles.trustIconsRow}>
-                    <View style={styles.trustIcon}>
-                      <Shield size={18} color="#10b981" strokeWidth={2.5} />
-                    </View>
-                    <View style={styles.trustIcon}>
-                      <Award size={18} color="#10b981" strokeWidth={2.5} />
-                    </View>
-                    <View style={styles.trustIcon}>
-                      <Star size={18} color="#10b981" strokeWidth={2.5} />
-                    </View>
-                  </View>
-                  <Text style={styles.trustText}>100% უსაფრთხო და გარანტირებული</Text>
+              <View style={styles.heroStatsRow}>
+                <View style={styles.statBox}>
+                  <Text style={styles.statNum}>50K+</Text>
+                  <Text style={styles.statText}>ბრენდი</Text>
+                </View>
+                <View style={styles.statBox}>
+                  <Text style={styles.statNum}>200K+</Text>
+                  <Text style={styles.statText}>მომხმარებელი</Text>
+                </View>
+                <View style={styles.statBox}>
+                  <Text style={styles.statNum}>10-14</Text>
+                  <Text style={styles.statText}>დღე</Text>
                 </View>
               </View>
             </LinearGradient>
-          </View>
+          </TouchableOpacity>
 
-          <View style={styles.featuresGrid}>
-            <TouchableOpacity style={styles.featureCard} activeOpacity={0.85}>
+          <View style={styles.featuresRow}>
+            <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
               <LinearGradient
                 colors={['#3b82f6', '#2563eb']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.featureGradient}
+                style={styles.compactFeatureGradient}
               >
-                <View style={styles.featureIconContainer}>
-                  <Truck size={24} color="#fff" strokeWidth={2.5} />
+                <View style={styles.compactFeatureIcon}>
+                  <Truck size={20} color="#fff" strokeWidth={2.5} />
                 </View>
-                <Text style={styles.featureTitle}>სწრაფი{"\n"}მიწოდება</Text>
-                <Text style={styles.featureDesc}>10-14 სამუშაო დღე</Text>
+                <View style={styles.compactFeatureText}>
+                  <Text style={styles.compactFeatureTitle}>სწრაფი მიწოდება</Text>
+                  <Text style={styles.compactFeatureDesc}>10-14 დღე</Text>
+                </View>
               </LinearGradient>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.featureCard} activeOpacity={0.85}>
+            <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
               <LinearGradient
                 colors={['#10b981', '#059669']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.featureGradient}
+                style={styles.compactFeatureGradient}
               >
-                <View style={styles.featureIconContainer}>
-                  <Shield size={24} color="#fff" strokeWidth={2.5} />
+                <View style={styles.compactFeatureIcon}>
+                  <Shield size={20} color="#fff" strokeWidth={2.5} />
                 </View>
-                <Text style={styles.featureTitle}>სრული{"\n"}გარანტია</Text>
-                <Text style={styles.featureDesc}>100% დაცული</Text>
+                <View style={styles.compactFeatureText}>
+                  <Text style={styles.compactFeatureTitle}>100% გარანტია</Text>
+                  <Text style={styles.compactFeatureDesc}>დაცული</Text>
+                </View>
               </LinearGradient>
             </TouchableOpacity>
-          </View>
-
-          <View style={styles.servicesRow}>
-            <View style={styles.serviceItem}>
-              <View style={styles.serviceIconBg}>
-                <Clock size={18} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <View style={styles.serviceInfo}>
-                <Text style={styles.serviceValue}>24/7</Text>
-                <Text style={styles.serviceLabel}>მხარდაჭერა</Text>
-              </View>
-            </View>
-
-            <View style={styles.serviceItem}>
-              <View style={styles.serviceIconBg}>
-                <MapPin size={18} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <View style={styles.serviceInfo}>
-                <Text style={styles.serviceValue}>თბილისი</Text>
-                <Text style={styles.serviceLabel}>მიწოდება</Text>
-              </View>
-            </View>
-
-            <View style={styles.serviceItem}>
-              <View style={styles.serviceIconBg}>
-                <Package size={18} color="#7c3aed" strokeWidth={2.5} />
-              </View>
-              <View style={styles.serviceInfo}>
-                <Text style={styles.serviceValue}>უფასო</Text>
-                <Text style={styles.serviceLabel}>შეფუთვა</Text>
-              </View>
-            </View>
           </View>
         </View>
 
@@ -423,222 +372,131 @@ const styles = StyleSheet.create({
   heroSection: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    gap: 16,
+    gap: 12,
   },
   mainHeroCard: {
-    borderRadius: 24,
-    overflow: 'hidden',
+    borderRadius: 20,
+    padding: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  heroGradient: {
-    paddingTop: 32,
-    paddingBottom: 28,
-    paddingHorizontal: 24,
-  },
-  heroOverlay: {
-    gap: 16,
-  },
-  heroBadgeContainer: {
+  heroTopRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
+    alignItems: 'flex-start',
+    marginBottom: 16,
   },
   premiumBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
     backgroundColor: 'rgba(251, 191, 36, 0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 14,
-    borderWidth: 1.5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    borderWidth: 1,
     borderColor: 'rgba(251, 191, 36, 0.3)',
+    marginBottom: 12,
+    alignSelf: 'flex-start',
   },
-  premiumBadgeText: {
-    fontSize: 12,
+  premiumText: {
+    fontSize: 10,
     fontWeight: '800',
     color: '#fbbf24',
-    letterSpacing: 0.3,
-  },
-  liveDot: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  livePulse: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#ef4444',
-  },
-  liveText: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#ef4444',
     letterSpacing: 0.5,
   },
-  mainHeroTitle: {
-    fontSize: 56,
+  heroNumber: {
+    fontSize: 42,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -2,
-    lineHeight: 60,
   },
-  mainHeroSubtitle: {
-    fontSize: 18,
+  heroLabel: {
+    fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.85)',
-    marginTop: -8,
-  },
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    padding: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 4,
+  },
+  heroIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  heroStatsRow: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+    padding: 12,
+    gap: 12,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.15)',
   },
-  heroStat: {
+  statBox: {
     flex: 1,
     alignItems: 'center',
   },
-  heroStatNumber: {
-    fontSize: 22,
+  statNum: {
+    fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
   },
-  heroStatLabel: {
-    fontSize: 11,
+  statText: {
+    fontSize: 10,
     fontWeight: '600',
     color: 'rgba(255, 255, 255, 0.7)',
     marginTop: 2,
   },
-  heroStatDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginHorizontal: 8,
+  featuresRow: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  heroTrustSection: {
+  compactFeature: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  compactFeatureGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    marginTop: 8,
+    padding: 14,
+    gap: 10,
   },
-  trustIconsRow: {
-    flexDirection: 'row',
-    gap: 6,
-  },
-  trustIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+  compactFeatureIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: 'rgba(16, 185, 129, 0.3)',
-  },
-  trustText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.9)',
-    flex: 1,
-  },
-  featuresGrid: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  featureCard: {
-    flex: 1,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  featureGradient: {
-    padding: 20,
-    paddingTop: 24,
-    paddingBottom: 24,
-    gap: 12,
-  },
-  featureIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  featureTitle: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#fff',
-    lineHeight: 24,
-  },
-  featureDesc: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.85)',
-  },
-  servicesRow: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 16,
-    gap: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
-    borderWidth: 1,
-    borderColor: '#f3f4f6',
-  },
-  serviceItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  serviceIconBg: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
-    backgroundColor: '#f5f3ff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  serviceInfo: {
+  compactFeatureText: {
     flex: 1,
   },
-  serviceValue: {
+  compactFeatureTitle: {
     fontSize: 14,
-    fontWeight: '900',
-    color: '#111827',
-    letterSpacing: -0.3,
+    fontWeight: '800',
+    color: '#fff',
   },
-  serviceLabel: {
+  compactFeatureDesc: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 1,
   },
   section: {
