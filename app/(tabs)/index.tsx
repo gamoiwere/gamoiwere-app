@@ -160,73 +160,123 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
       >
         <View style={styles.heroSection}>
-          <TouchableOpacity activeOpacity={0.95}>
+          <View style={styles.mainHeroCard}>
             <LinearGradient
-              colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+              colors={['#1e293b', '#334155', '#475569']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.heroCard}
+              style={styles.heroGradient}
             >
-              <View style={styles.heroContent}>
-                <View style={styles.heroLeft}>
-                  <View style={styles.heroBadge}>
-                    <Sparkles size={14} color="#fbbf24" strokeWidth={2.5} />
-                    <Text style={styles.heroBadgeText}>სპეციალური</Text>
+              <View style={styles.heroOverlay}>
+                <View style={styles.heroBadgeContainer}>
+                  <View style={styles.premiumBadge}>
+                    <Sparkles size={16} color="#fbbf24" strokeWidth={2.5} />
+                    <Text style={styles.premiumBadgeText}>პრემიუმ სერვისი</Text>
                   </View>
-                  <Text style={styles.heroTitle}>800M+ პროდუქტი{'\n'}ჩინეთიდან</Text>
-                  <Text style={styles.heroSubtitle}>უსაფრთხო და სწრაფი მიწოდება</Text>
-                  <View style={styles.heroFeatures}>
-                    <View style={styles.heroFeature}>
-                      <View style={styles.heroFeatureDot} />
-                      <Text style={styles.heroFeatureText}>10-14 დღე</Text>
-                    </View>
-                    <View style={styles.heroFeature}>
-                      <View style={styles.heroFeatureDot} />
-                      <Text style={styles.heroFeatureText}>100% უსაფრთხო</Text>
-                    </View>
+                  <View style={styles.liveDot}>
+                    <View style={styles.livePulse} />
+                    <Text style={styles.liveText}>ლაივ</Text>
                   </View>
                 </View>
-                <View style={styles.heroRight}>
-                  <View style={styles.heroIconBg}>
-                    <Package size={40} color="#fff" strokeWidth={2} />
+
+                <Text style={styles.mainHeroTitle}>800M+</Text>
+                <Text style={styles.mainHeroSubtitle}>პროდუქტი მთელი მსოფლიოდან</Text>
+
+                <View style={styles.heroStats}>
+                  <View style={styles.heroStat}>
+                    <Text style={styles.heroStatNumber}>50K+</Text>
+                    <Text style={styles.heroStatLabel}>ბრენდი</Text>
                   </View>
+                  <View style={styles.heroStatDivider} />
+                  <View style={styles.heroStat}>
+                    <Text style={styles.heroStatNumber}>200K+</Text>
+                    <Text style={styles.heroStatLabel}>მომხმარებელი</Text>
+                  </View>
+                  <View style={styles.heroStatDivider} />
+                  <View style={styles.heroStat}>
+                    <Text style={styles.heroStatNumber}>10-14</Text>
+                    <Text style={styles.heroStatLabel}>დღე მიწოდება</Text>
+                  </View>
+                </View>
+
+                <View style={styles.heroTrustSection}>
+                  <View style={styles.trustIconsRow}>
+                    <View style={styles.trustIcon}>
+                      <Shield size={18} color="#10b981" strokeWidth={2.5} />
+                    </View>
+                    <View style={styles.trustIcon}>
+                      <Award size={18} color="#10b981" strokeWidth={2.5} />
+                    </View>
+                    <View style={styles.trustIcon}>
+                      <Star size={18} color="#10b981" strokeWidth={2.5} />
+                    </View>
+                  </View>
+                  <Text style={styles.trustText}>100% უსაფრთხო და გარანტირებული</Text>
                 </View>
               </View>
             </LinearGradient>
-          </TouchableOpacity>
+          </View>
 
-          <View style={styles.quickStatsCompact}>
-            <View style={styles.statItemCompact}>
-              <View style={styles.statIconCompact}>
-                <Shield size={20} color="#7c3aed" strokeWidth={2.5} />
+          <View style={styles.featuresGrid}>
+            <TouchableOpacity style={styles.featureCard} activeOpacity={0.85}>
+              <LinearGradient
+                colors={['#3b82f6', '#2563eb']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.featureGradient}
+              >
+                <View style={styles.featureIconContainer}>
+                  <Truck size={24} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.featureTitle}>სწრაფი{"\n"}მიწოდება</Text>
+                <Text style={styles.featureDesc}>10-14 სამუშაო დღე</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.featureCard} activeOpacity={0.85}>
+              <LinearGradient
+                colors={['#10b981', '#059669']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.featureGradient}
+              >
+                <View style={styles.featureIconContainer}>
+                  <Shield size={24} color="#fff" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.featureTitle}>სრული{"\n"}გარანტია</Text>
+                <Text style={styles.featureDesc}>100% დაცული</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.servicesRow}>
+            <View style={styles.serviceItem}>
+              <View style={styles.serviceIconBg}>
+                <Clock size={18} color="#7c3aed" strokeWidth={2.5} />
               </View>
-              <View style={styles.statInfoCompact}>
-                <Text style={styles.statValueCompact}>100%</Text>
-                <Text style={styles.statLabelCompact}>გარანტია</Text>
+              <View style={styles.serviceInfo}>
+                <Text style={styles.serviceValue}>24/7</Text>
+                <Text style={styles.serviceLabel}>მხარდაჭერა</Text>
               </View>
             </View>
 
-            <View style={styles.statDivider} />
-
-            <View style={styles.statItemCompact}>
-              <View style={styles.statIconCompact}>
-                <Clock size={20} color="#7c3aed" strokeWidth={2.5} />
+            <View style={styles.serviceItem}>
+              <View style={styles.serviceIconBg}>
+                <MapPin size={18} color="#7c3aed" strokeWidth={2.5} />
               </View>
-              <View style={styles.statInfoCompact}>
-                <Text style={styles.statValueCompact}>24/7</Text>
-                <Text style={styles.statLabelCompact}>მხარდაჭერა</Text>
+              <View style={styles.serviceInfo}>
+                <Text style={styles.serviceValue}>თბილისი</Text>
+                <Text style={styles.serviceLabel}>მიწოდება</Text>
               </View>
             </View>
 
-            <View style={styles.statDivider} />
-
-            <View style={styles.statItemCompact}>
-              <View style={styles.statIconCompact}>
-                <Truck size={20} color="#7c3aed" strokeWidth={2.5} />
+            <View style={styles.serviceItem}>
+              <View style={styles.serviceIconBg}>
+                <Package size={18} color="#7c3aed" strokeWidth={2.5} />
               </View>
-              <View style={styles.statInfoCompact}>
-                <Text style={styles.statValueCompact}>სწრაფი</Text>
-                <Text style={styles.statLabelCompact}>მიწოდება</Text>
+              <View style={styles.serviceInfo}>
+                <Text style={styles.serviceValue}>უფასო</Text>
+                <Text style={styles.serviceLabel}>შეფუთვა</Text>
               </View>
             </View>
           </View>
@@ -373,142 +423,223 @@ const styles = StyleSheet.create({
   heroSection: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    gap: 12,
+    gap: 16,
   },
-  heroCard: {
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 8,
+  mainHeroCard: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  heroContent: {
+  heroGradient: {
+    paddingTop: 32,
+    paddingBottom: 28,
+    paddingHorizontal: 24,
+  },
+  heroOverlay: {
+    gap: 16,
+  },
+  heroBadgeContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  heroLeft: {
-    flex: 1,
-    gap: 10,
-  },
-  heroBadge: {
+  premiumBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(251, 191, 36, 0.15)',
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    paddingVertical: 7,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
   },
-  heroBadgeText: {
+  premiumBadgeText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#fff',
-    fontFamily: 'MarkGEO-Regular',
+    color: '#fbbf24',
+    letterSpacing: 0.3,
   },
-  heroTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -1,
-    lineHeight: 30,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  heroSubtitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontFamily: 'MarkGEO-Regular',
-  },
-  heroFeatures: {
-    flexDirection: 'row',
-    gap: 16,
-    marginTop: 4,
-  },
-  heroFeature: {
+  liveDot: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
-  heroFeatureDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#fbbf24',
+  livePulse: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#ef4444',
   },
-  heroFeatureText: {
+  liveText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#ef4444',
+    letterSpacing: 0.5,
+  },
+  mainHeroTitle: {
+    fontSize: 56,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -2,
+    lineHeight: 60,
+  },
+  mainHeroSubtitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginTop: -8,
+  },
+  heroStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  heroStat: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  heroStatNumber: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: -0.5,
+  },
+  heroStatLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: 2,
+  },
+  heroStatDivider: {
+    width: 1,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    marginHorizontal: 8,
+  },
+  heroTrustSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 8,
+  },
+  trustIconsRow: {
+    flexDirection: 'row',
+    gap: 6,
+  },
+  trustIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(16, 185, 129, 0.3)',
+  },
+  trustText: {
     fontSize: 12,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'MarkGEO-Regular',
+    flex: 1,
   },
-  heroRight: {
-    marginLeft: 16,
+  featuresGrid: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  heroIconBg: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+  featureCard: {
+    flex: 1,
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  featureGradient: {
+    padding: 20,
+    paddingTop: 24,
+    paddingBottom: 24,
+    gap: 12,
+  },
+  featureIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  quickStatsCompact: {
+  featureTitle: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#fff',
+    lineHeight: 24,
+  },
+  featureDesc: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.85)',
+  },
+  servicesRow: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
-    alignItems: 'center',
+    gap: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowRadius: 12,
+    elevation: 4,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: '#f3f4f6',
   },
-  statItemCompact: {
+  serviceItem: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
-  statIconCompact: {
-    width: 40,
-    height: 40,
+  serviceIconBg: {
+    width: 42,
+    height: 42,
     borderRadius: 12,
-    backgroundColor: '#ede9fe',
+    backgroundColor: '#f5f3ff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  statInfoCompact: {
+  serviceInfo: {
     flex: 1,
   },
-  statValueCompact: {
-    fontSize: 15,
+  serviceValue: {
+    fontSize: 14,
     fontWeight: '900',
     color: '#111827',
-    letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
+    letterSpacing: -0.3,
   },
-  statLabelCompact: {
+  serviceLabel: {
     fontSize: 11,
     fontWeight: '600',
     color: '#6b7280',
-    fontFamily: 'MarkGEO-Regular',
-  },
-  statDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: '#e5e7eb',
-    marginHorizontal: 4,
+    marginTop: 1,
   },
   section: {
     paddingHorizontal: 8,
