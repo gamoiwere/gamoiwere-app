@@ -19,14 +19,16 @@ export default function TabLayout() {
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           height: 70,
-          paddingBottom: 5,
-          paddingTop: 5,
+          paddingBottom: 0,
+          paddingTop: 0,
           borderRadius: 35,
           shadowColor: '#8b5cf6',
           shadowOffset: { width: 0, height: 10 },
           shadowOpacity: 0.2,
           shadowRadius: 20,
           elevation: 15,
+          justifyContent: 'center',
+          alignItems: 'center',
         },
         tabBarBackground: () => (
           <View style={{
