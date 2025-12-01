@@ -29,15 +29,11 @@ export default function TabLayout() {
           shadowOpacity: 0.15,
           shadowRadius: 24,
           elevation: 10,
-          justifyContent: 'center',
-          alignItems: 'center',
         },
         tabBarItemStyle: {
           height: 72,
           paddingBottom: 0,
           paddingTop: 0,
-          justifyContent: 'center',
-          alignItems: 'center',
         },
         tabBarBackground: () => (
           <View style={styles.tabBarBackground}>
