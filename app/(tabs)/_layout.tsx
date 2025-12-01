@@ -13,44 +13,36 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: Platform.OS === 'ios' ? 'transparent' : 'rgba(255, 255, 255, 0.9)',
+          bottom: 20,
+          left: '10%',
+          right: '10%',
+          backgroundColor: 'transparent',
           borderTopWidth: 0,
-          height: 80,
-          paddingBottom: 0,
-          paddingTop: 0,
-          paddingHorizontal: 20,
-          marginHorizontal: 16,
-          marginBottom: 24,
-          left: 0,
-          right: 0,
-          borderRadius: 40,
+          height: 70,
+          borderRadius: 35,
           shadowColor: '#8b5cf6',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.15,
-          shadowRadius: 24,
-          elevation: 12,
-          justifyContent: 'center',
-          alignItems: 'center',
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.2,
+          shadowRadius: 20,
+          elevation: 15,
         },
         tabBarBackground: () => (
           <View style={{
             ...StyleSheet.absoluteFillObject,
-            borderRadius: 40,
+            borderRadius: 35,
             overflow: 'hidden',
           }}>
-            {Platform.OS === 'ios' ? (
-              <BlurView
-                intensity={95}
-                tint="light"
-                style={StyleSheet.absoluteFillObject}
-              />
-            ) : null}
+            <BlurView
+              intensity={100}
+              tint="light"
+              style={StyleSheet.absoluteFillObject}
+            />
             <View style={{
               ...StyleSheet.absoluteFillObject,
-              backgroundColor: Platform.OS === 'ios' ? 'rgba(255, 255, 255, 0.65)' : 'rgba(255, 255, 255, 0.92)',
-              borderWidth: 1.5,
-              borderColor: 'rgba(255, 255, 255, 0.4)',
-              borderRadius: 40,
+              backgroundColor: 'rgba(255, 255, 255, 0.5)',
+              borderWidth: 1,
+              borderColor: 'rgba(255, 255, 255, 0.6)',
+              borderRadius: 35,
             }} />
           </View>
         ),
@@ -152,9 +144,9 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -163,21 +155,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
     elevation: 6,
   },
   iconContainerActiveCenter: {
     backgroundColor: '#8b5cf6',
-    width: 66,
-    height: 66,
-    borderRadius: 33,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 14,
     elevation: 10,
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderWidth: 2.5,
+    borderColor: 'rgba(255, 255, 255, 1)',
   },
 });
