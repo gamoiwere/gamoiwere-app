@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
 
 export default function TabLayout() {
@@ -12,20 +13,50 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: '#fff',
+          backgroundColor: Platform.OS === 'ios' ? 'transparent' : 'rgba(255, 255, 255, 0.9)',
           borderTopWidth: 0,
-          height: 75,
-          paddingBottom: 12,
+          height: 90,
+          paddingBottom: 20,
           paddingTop: 12,
-          paddingHorizontal: 24,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -8 },
-          shadowOpacity: 0.1,
-          shadowRadius: 20,
+          paddingHorizontal: 16,
+          marginHorizontal: 16,
+          marginBottom: 24,
+          left: 0,
+          right: 0,
+          borderRadius: 40,
+          shadowColor: '#8b5cf6',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.15,
+          shadowRadius: 24,
           elevation: 12,
         },
+        tabBarBackground: () => (
+          Platform.OS === 'ios' ? (
+            <BlurView
+              intensity={80}
+              tint="light"
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                borderRadius: 40,
+                overflow: 'hidden',
+                backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                borderWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+              }}
+            />
+          ) : (
+            <View
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                borderRadius: 40,
+                overflow: 'hidden',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderWidth: 1,
+                borderColor: 'rgba(139, 92, 246, 0.1)',
+              }}
+            />
+          )
+        ),
       }}>
       <Tabs.Screen
         name="index"
@@ -124,30 +155,33 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   iconContainerActive: {
     backgroundColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 6,
   },
   iconContainerActiveCenter: {
-    backgroundColor: '#a78bfa',
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    marginTop: -8,
-    shadowColor: '#a78bfa',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    backgroundColor: '#8b5cf6',
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    marginTop: -16,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 10,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.8)',
   },
 });
