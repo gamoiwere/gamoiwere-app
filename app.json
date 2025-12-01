@@ -2,7 +2,7 @@
   "expo": {
     "name": "GAMOIWERE",
     "slug": "bolt-expo-nativewind",
-    "version": "1.0.5",
+    "version": "2.1.6",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
     "scheme": "myapp",
@@ -17,11 +17,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.gamoiwere.app",
       "icon": "./assets/images/appicon.png",
-      "buildNumber": "6"
+      "buildNumber": "11"
     },
     "android": {
       "package": "com.gamoiwere.app",
-      "versionCode": 6,
+      "versionCode": 216,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#7C3AED"
