@@ -34,6 +34,7 @@ export default function TabLayout() {
           height: 72,
           paddingBottom: 0,
           paddingTop: 0,
+          justifyContent: 'center',
         },
         tabBarBackground: () => (
           <View style={styles.tabBarBackground}>
