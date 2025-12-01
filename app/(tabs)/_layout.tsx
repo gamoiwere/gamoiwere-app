@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
 
 export default function TabLayout() {
@@ -8,56 +7,38 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#ffffff',
-        tabBarInactiveTintColor: '#94a3b8',
+        tabBarActiveTintColor: '#8b5cf6',
+        tabBarInactiveTintColor: '#64748b',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 30,
+          bottom: 20,
           left: 20,
           right: 20,
-          backgroundColor: 'transparent',
-          borderTopWidth: 0,
-          height: 72,
-          paddingBottom: 0,
-          paddingTop: 0,
-          paddingLeft: 0,
-          paddingRight: 0,
-          borderRadius: 24,
+          height: 70,
+          backgroundColor: '#ffffff',
+          borderRadius: 20,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.15,
-          shadowRadius: 24,
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.1,
+          shadowRadius: 20,
           elevation: 10,
+          borderTopWidth: 0,
+          paddingBottom: 0,
         },
         tabBarItemStyle: {
-          height: 72,
-          paddingBottom: 0,
-          paddingTop: 0,
-          paddingVertical: 0,
-          justifyContent: 'center',
-          alignItems: 'center',
+          height: 70,
         },
-        tabBarBackground: () => (
-          <View style={styles.tabBarBackground}>
-            <BlurView
-              intensity={80}
-              tint="dark"
-              style={StyleSheet.absoluteFillObject}
-            />
-            <View style={styles.glassOverlay} />
-          </View>
-        ),
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
               <Home
                 size={24}
-                color={focused ? '#ffffff' : '#94a3b8'}
-                strokeWidth={2.5}
+                color={focused ? '#8b5cf6' : '#64748b'}
+                strokeWidth={2}
               />
             </View>
           ),
@@ -66,12 +47,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
               <LayoutGrid
                 size={24}
-                color={focused ? '#ffffff' : '#94a3b8'}
-                strokeWidth={2.5}
+                color={focused ? '#8b5cf6' : '#64748b'}
+                strokeWidth={2}
               />
             </View>
           ),
@@ -81,11 +62,11 @@ export default function TabLayout() {
         name="cart"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[styles.centerIcon, focused && styles.centerIconActive]}>
+            <View style={styles.cartIconContainer}>
               <ShoppingCart
                 size={26}
                 color="#ffffff"
-                strokeWidth={2.5}
+                strokeWidth={2}
               />
             </View>
           ),
@@ -100,12 +81,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
               <Heart
                 size={24}
-                color={focused ? '#ffffff' : '#94a3b8'}
-                strokeWidth={2.5}
+                color={focused ? '#8b5cf6' : '#64748b'}
+                strokeWidth={2}
               />
             </View>
           ),
@@ -114,12 +95,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+          tabBarIcon: ({ focused, color }) => (
+            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
               <User
                 size={24}
-                color={focused ? '#ffffff' : '#94a3b8'}
-                strokeWidth={2.5}
+                color={focused ? '#8b5cf6' : '#64748b'}
+                strokeWidth={2}
               />
             </View>
           ),
@@ -130,45 +111,29 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarBackground: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 24,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(15, 23, 42, 0.85)',
-  },
-  glassOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  iconWrapper: {
-    width: 44,
-    height: 44,
+  iconContainer: {
+    width: 50,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 12,
     backgroundColor: 'transparent',
   },
-  iconWrapperActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+  activeIconContainer: {
+    backgroundColor: '#f3f0ff',
   },
-  centerIcon: {
-    width: 52,
-    height: 52,
+  cartIconContainer: {
+    width: 60,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 16,
     backgroundColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  centerIconActive: {
-    backgroundColor: '#7c3aed',
-    transform: [{ scale: 1.05 }],
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+    marginTop: -10,
   },
 });
