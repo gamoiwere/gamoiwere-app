@@ -8,46 +8,32 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#8b5cf6',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: '#ffffff',
+        tabBarInactiveTintColor: '#94a3b8',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 20,
+          bottom: 30,
           left: 20,
           right: 20,
           backgroundColor: 'transparent',
           borderTopWidth: 0,
-          height: 70,
-          paddingBottom: 0,
-          paddingTop: 0,
-          borderRadius: 35,
-          shadowColor: '#8b5cf6',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.2,
-          shadowRadius: 20,
-          elevation: 15,
-          justifyContent: 'center',
-          alignItems: 'center',
+          height: 72,
+          borderRadius: 24,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.15,
+          shadowRadius: 24,
+          elevation: 10,
         },
         tabBarBackground: () => (
-          <View style={{
-            ...StyleSheet.absoluteFillObject,
-            borderRadius: 35,
-            overflow: 'hidden',
-          }}>
+          <View style={styles.tabBarBackground}>
             <BlurView
-              intensity={100}
-              tint="light"
+              intensity={80}
+              tint="dark"
               style={StyleSheet.absoluteFillObject}
             />
-            <View style={{
-              ...StyleSheet.absoluteFillObject,
-              backgroundColor: 'rgba(255, 255, 255, 0.5)',
-              borderWidth: 1,
-              borderColor: 'rgba(255, 255, 255, 0.6)',
-              borderRadius: 35,
-            }} />
+            <View style={styles.glassOverlay} />
           </View>
         ),
       }}>
@@ -55,14 +41,11 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[
-              styles.iconContainer,
-              focused && styles.iconContainerActive
-            ]}>
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
               <Home
-                size={22}
-                color={focused ? '#fff' : '#9ca3af'}
-                strokeWidth={2}
+                size={24}
+                color={focused ? '#ffffff' : '#94a3b8'}
+                strokeWidth={2.5}
               />
             </View>
           ),
@@ -72,14 +55,11 @@ export default function TabLayout() {
         name="categories"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[
-              styles.iconContainer,
-              focused && styles.iconContainerActive
-            ]}>
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
               <LayoutGrid
-                size={22}
-                color={focused ? '#fff' : '#9ca3af'}
-                strokeWidth={2}
+                size={24}
+                color={focused ? '#ffffff' : '#94a3b8'}
+                strokeWidth={2.5}
               />
             </View>
           ),
@@ -89,13 +69,10 @@ export default function TabLayout() {
         name="cart"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[
-              styles.iconContainer,
-              focused && styles.iconContainerActiveCenter
-            ]}>
+            <View style={[styles.centerIcon, focused && styles.centerIconActive]}>
               <ShoppingCart
-                size={28}
-                color={focused ? '#fff' : '#8b5cf6'}
+                size={26}
+                color="#ffffff"
                 strokeWidth={2.5}
               />
             </View>
@@ -112,14 +89,11 @@ export default function TabLayout() {
         name="favorites"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[
-              styles.iconContainer,
-              focused && styles.iconContainerActive
-            ]}>
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
               <Heart
-                size={22}
-                color={focused ? '#fff' : '#9ca3af'}
-                strokeWidth={2}
+                size={24}
+                color={focused ? '#ffffff' : '#94a3b8'}
+                strokeWidth={2.5}
               />
             </View>
           ),
@@ -129,14 +103,11 @@ export default function TabLayout() {
         name="profile"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={[
-              styles.iconContainer,
-              focused && styles.iconContainerActive
-            ]}>
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
               <User
-                size={22}
-                color={focused ? '#fff' : '#9ca3af'}
-                strokeWidth={2}
+                size={24}
+                color={focused ? '#ffffff' : '#94a3b8'}
+                strokeWidth={2.5}
               />
             </View>
           ),
@@ -147,33 +118,45 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  tabBarBackground: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 24,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
+  },
+  glassOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  iconWrapper: {
+    width: 48,
+    height: 48,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 16,
     backgroundColor: 'transparent',
   },
-  iconContainerActive: {
+  iconWrapperActive: {
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+  },
+  centerIcon: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 18,
     backgroundColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  iconContainerActiveCenter: {
-    backgroundColor: '#8b5cf6',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 14,
-    elevation: 10,
-    borderWidth: 2.5,
-    borderColor: 'rgba(255, 255, 255, 1)',
+  centerIconActive: {
+    backgroundColor: '#7c3aed',
+    transform: [{ scale: 1.05 }],
   },
 });
