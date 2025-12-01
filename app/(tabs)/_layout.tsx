@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
 
 export default function TabLayout() {
@@ -8,36 +8,36 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#8b5cf6',
-        tabBarInactiveTintColor: '#64748b',
+        tabBarInactiveTintColor: '#9ca3af',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 20,
-          left: 20,
-          right: 20,
-          height: 70,
-          backgroundColor: '#ffffff',
-          borderRadius: 20,
+          backgroundColor: '#fff',
+          borderTopWidth: 0,
+          height: 75,
+          paddingBottom: 12,
+          paddingTop: 12,
+          paddingHorizontal: 24,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: 10 },
+          shadowOffset: { width: 0, height: -8 },
           shadowOpacity: 0.1,
           shadowRadius: 20,
-          elevation: 10,
-          borderTopWidth: 0,
-          paddingBottom: 0,
-        },
-        tabBarItemStyle: {
-          height: 70,
+          elevation: 12,
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused, color }) => (
-            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
+          tabBarIcon: ({ focused }) => (
+            <View style={[
+              styles.iconContainer,
+              focused && styles.iconContainerActive
+            ]}>
               <Home
-                size={24}
-                color={focused ? '#8b5cf6' : '#64748b'}
+                size={22}
+                color={focused ? '#fff' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -47,11 +47,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="categories"
         options={{
-          tabBarIcon: ({ focused, color }) => (
-            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
+          tabBarIcon: ({ focused }) => (
+            <View style={[
+              styles.iconContainer,
+              focused && styles.iconContainerActive
+            ]}>
               <LayoutGrid
-                size={24}
-                color={focused ? '#8b5cf6' : '#64748b'}
+                size={22}
+                color={focused ? '#fff' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -62,11 +65,14 @@ export default function TabLayout() {
         name="cart"
         options={{
           tabBarIcon: ({ focused }) => (
-            <View style={styles.cartIconContainer}>
+            <View style={[
+              styles.iconContainer,
+              focused && styles.iconContainerActiveCenter
+            ]}>
               <ShoppingCart
-                size={26}
-                color="#ffffff"
-                strokeWidth={2}
+                size={28}
+                color={focused ? '#fff' : '#8b5cf6'}
+                strokeWidth={2.5}
               />
             </View>
           ),
@@ -81,11 +87,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="favorites"
         options={{
-          tabBarIcon: ({ focused, color }) => (
-            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
+          tabBarIcon: ({ focused }) => (
+            <View style={[
+              styles.iconContainer,
+              focused && styles.iconContainerActive
+            ]}>
               <Heart
-                size={24}
-                color={focused ? '#8b5cf6' : '#64748b'}
+                size={22}
+                color={focused ? '#fff' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -95,11 +104,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ focused, color }) => (
-            <View style={[styles.iconContainer, focused && styles.activeIconContainer]}>
+          tabBarIcon: ({ focused }) => (
+            <View style={[
+              styles.iconContainer,
+              focused && styles.iconContainerActive
+            ]}>
               <User
-                size={24}
-                color={focused ? '#8b5cf6' : '#64748b'}
+                size={22}
+                color={focused ? '#fff' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -112,28 +124,30 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   iconContainer: {
-    width: 50,
-    height: 50,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 12,
-    backgroundColor: 'transparent',
   },
-  activeIconContainer: {
-    backgroundColor: '#f3f0ff',
-  },
-  cartIconContainer: {
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 16,
+  iconContainerActive: {
     backgroundColor: '#8b5cf6',
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  iconContainerActiveCenter: {
+    backgroundColor: '#a78bfa',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    marginTop: -8,
+    shadowColor: '#a78bfa',
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
-    marginTop: -10,
+    shadowRadius: 12,
+    elevation: 8,
   },
 });
