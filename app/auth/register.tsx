@@ -2,7 +2,7 @@ import { useState, ReactNode } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock, ShoppingBag, Check } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock, Check } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
@@ -153,20 +153,6 @@ export default function RegisterScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.logoSection}>
-            <View style={styles.logoContainer}>
-              <LinearGradient
-                colors={['#8b5cf6', '#a855f7', '#c084fc']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.logoGradient}
-              >
-                <ShoppingBag size={32} color="#ffffff" strokeWidth={1.8} />
-              </LinearGradient>
-            </View>
-            <Text style={styles.brandName}>GAMOIWERE</Text>
-          </View>
-
           <View style={styles.headerSection}>
             <Text style={styles.title}>შექმენი ანგარიში</Text>
             <Text style={styles.subtitle}>შეავსეთ ფორმა რეგისტრაციისთვის</Text>
@@ -288,15 +274,10 @@ export default function RegisterScreen() {
               <View style={styles.divider} />
             </View>
 
-            <View style={styles.socialContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <Apple size={24} color="#ffffff" strokeWidth={1.8} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.socialButton}>
-                <Mail size={24} color="#ea4335" strokeWidth={1.8} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.appleButton} activeOpacity={0.85}>
+              <Apple size={22} color="#ffffff" strokeWidth={2} />
+              <Text style={styles.appleButtonText}>Apple-ით რეგისტრაცია</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.footer}>
@@ -516,20 +497,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     fontWeight: '500',
   },
-  socialContainer: {
+  appleButton: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 20,
-  },
-  socialButton: {
-    width: 60,
-    height: 60,
-    borderRadius: 16,
-    backgroundColor: 'rgba(31, 41, 55, 0.8)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(75, 85, 99, 0.5)',
+    gap: 10,
+    backgroundColor: '#000000',
+    paddingVertical: 16,
+    borderRadius: 14,
+  },
+  appleButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
