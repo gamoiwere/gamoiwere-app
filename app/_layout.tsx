@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
@@ -13,6 +13,7 @@ export default function RootLayout() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const segments = useSegments();
   const router = useRouter();
+  const hasInitialized = useRef(false);
 
   const [fontsLoaded, fontError] = useFonts({});
 
@@ -42,11 +43,12 @@ export default function RootLayout() {
     const inOnboarding = segments[0] === 'onboarding';
     const inSplash = segments[0] === 'splash';
 
-    if (segments.length === 0) {
+    if (!hasInitialized.current && segments.length === 0) {
+      hasInitialized.current = true;
       router.replace('/splash');
     } else if (isAuthenticated && (inAuthGroup || inOnboarding || inSplash)) {
       router.replace('/(tabs)');
-    } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash) {
+    } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash && segments.length > 0) {
       router.replace('/splash');
     }
   }, [isAuthenticated, segments]);
