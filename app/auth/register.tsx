@@ -1,9 +1,10 @@
-import { useState, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock, Check } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, User, Mail, Phone, Lock, Check } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
 
@@ -23,6 +24,15 @@ export default function RegisterScreen() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
+
+  useEffect(() => {
+    const checkAppleAuth = async () => {
+      const isAvailable = await AppleAuthentication.isAvailableAsync();
+      setAppleAuthAvailable(isAvailable);
+    };
+    checkAppleAuth();
+  }, []);
 
   const handleRegister = async () => {
     if (!username || !email || !password || !confirmPassword || !fullName || !phone) {
@@ -70,6 +80,30 @@ export default function RegisterScreen() {
     } catch (err: any) {
       setError(err.message || 'რეგისტრაცია ვერ მოხერხდა');
       setLoading(false);
+    }
+  };
+
+  const handleAppleSignUp = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      
+      console.log('Apple Sign Up Success:', credential);
+      setShowSuccess(true);
+      setTimeout(() => {
+        router.replace('/(tabs)');
+      }, 1200);
+    } catch (e: any) {
+      if (e.code === 'ERR_REQUEST_CANCELED') {
+        console.log('User canceled Apple Sign Up');
+      } else {
+        setError('Apple-ით რეგისტრაცია ვერ მოხერხდა');
+        console.error('Apple Sign Up Error:', e);
+      }
     }
   };
 
@@ -274,10 +308,22 @@ export default function RegisterScreen() {
               <View style={styles.divider} />
             </View>
 
-            <TouchableOpacity style={styles.appleButton} activeOpacity={0.85}>
-              <Apple size={22} color="#ffffff" strokeWidth={2} />
-              <Text style={styles.appleButtonText}>Apple-ით რეგისტრაცია</Text>
-            </TouchableOpacity>
+            {appleAuthAvailable ? (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={14}
+                style={styles.appleAuthButton}
+                onPress={handleAppleSignUp}
+              />
+            ) : (
+              <TouchableOpacity style={styles.appleButton} onPress={handleAppleSignUp} activeOpacity={0.85}>
+                <View style={styles.appleIconContainer}>
+                  <Text style={styles.appleIcon}></Text>
+                </View>
+                <Text style={styles.appleButtonText}>Apple-ით რეგისტრაცია</Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View style={styles.footer}>
@@ -345,26 +391,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(139, 92, 246, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logoSection: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  logoContainer: {
-    marginBottom: 10,
-  },
-  logoGradient: {
-    width: 68,
-    height: 68,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandName: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#ffffff',
-    letterSpacing: 2.5,
   },
   headerSection: {
     marginBottom: 24,
@@ -497,6 +523,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     fontWeight: '500',
   },
+  appleAuthButton: {
+    width: '100%',
+    height: 52,
+  },
   appleButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -505,6 +535,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     paddingVertical: 16,
     borderRadius: 14,
+  },
+  appleIconContainer: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appleIcon: {
+    fontSize: 20,
+    color: '#ffffff',
   },
   appleButtonText: {
     color: '#ffffff',

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, EyeOff, Eye, Apple, User, Lock } from 'lucide-react-native';
+import { ArrowLeft, EyeOff, Eye, User, Lock } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
 
@@ -18,6 +19,15 @@ export default function LoginScreen() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
+
+  useEffect(() => {
+    const checkAppleAuth = async () => {
+      const isAvailable = await AppleAuthentication.isAvailableAsync();
+      setAppleAuthAvailable(isAvailable);
+    };
+    checkAppleAuth();
+  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -38,6 +48,30 @@ export default function LoginScreen() {
     } catch (err: any) {
       setError(err.message || 'შესვლა ვერ მოხერხდა');
       setLoading(false);
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+      
+      console.log('Apple Sign In Success:', credential);
+      setShowSuccess(true);
+      setTimeout(() => {
+        router.replace('/(tabs)');
+      }, 1200);
+    } catch (e: any) {
+      if (e.code === 'ERR_REQUEST_CANCELED') {
+        console.log('User canceled Apple Sign In');
+      } else {
+        setError('Apple-ით შესვლა ვერ მოხერხდა');
+        console.error('Apple Sign In Error:', e);
+      }
     }
   };
 
@@ -180,10 +214,22 @@ export default function LoginScreen() {
               <View style={styles.divider} />
             </View>
 
-            <TouchableOpacity style={styles.appleButton} activeOpacity={0.85}>
-              <Apple size={22} color="#ffffff" strokeWidth={2} />
-              <Text style={styles.appleButtonText}>Apple-ით შესვლა</Text>
-            </TouchableOpacity>
+            {appleAuthAvailable ? (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={14}
+                style={styles.appleAuthButton}
+                onPress={handleAppleSignIn}
+              />
+            ) : (
+              <TouchableOpacity style={styles.appleButton} onPress={handleAppleSignIn} activeOpacity={0.85}>
+                <View style={styles.appleIconContainer}>
+                  <Text style={styles.appleIcon}></Text>
+                </View>
+                <Text style={styles.appleButtonText}>Apple-ით შესვლა</Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View style={styles.footer}>
@@ -259,26 +305,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(139, 92, 246, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logoSection: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  logoContainer: {
-    marginBottom: 12,
-  },
-  logoGradient: {
-    width: 80,
-    height: 80,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandName: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#ffffff',
-    letterSpacing: 3,
   },
   headerSection: {
     marginBottom: 32,
@@ -421,6 +447,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     fontWeight: '500',
   },
+  appleAuthButton: {
+    width: '100%',
+    height: 54,
+  },
   appleButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -429,6 +459,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     paddingVertical: 16,
     borderRadius: 14,
+  },
+  appleIconContainer: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appleIcon: {
+    fontSize: 20,
+    color: '#ffffff',
   },
   appleButtonText: {
     color: '#ffffff',
