@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, EyeOff, Eye, Apple, Mail } from 'lucide-react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { ArrowLeft, EyeOff, Eye, Apple, Mail, User, Lock, Sparkles } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
+
+const { width, height } = Dimensions.get('window');
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<string | null>(null);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -40,6 +43,17 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
+      <LinearGradient
+        colors={['#7c3aed', '#a855f7', '#c084fc']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientBackground}
+      />
+      
+      <View style={styles.decorativeCircle1} />
+      <View style={styles.decorativeCircle2} />
+      <View style={styles.decorativeCircle3} />
+
       <SuccessNotification
         visible={showSuccess}
         message="წარმატებით შეხვედით სისტემაში!"
@@ -57,120 +71,133 @@ export default function LoginScreen() {
         >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/onboarding')}>
-              <ArrowLeft size={24} color="#18181b" strokeWidth={2} />
+              <ArrowLeft size={22} color="#7c3aed" strokeWidth={2.5} />
             </TouchableOpacity>
-            <Text style={styles.title}>მოგესალმებით!</Text>
           </View>
 
-          <View style={styles.logoContainer}>
-            <Image
-              source={require('@/assets/images/logo.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </View>
-
-          {error ? (
-            <View style={styles.errorContainer}>
-              <Text style={styles.errorText}>{error}</Text>
+          <View style={styles.welcomeSection}>
+            <View style={styles.iconContainer}>
+              <LinearGradient
+                colors={['#7c3aed', '#a855f7']}
+                style={styles.iconGradient}
+              >
+                <Sparkles size={32} color="#ffffff" strokeWidth={2} />
+              </LinearGradient>
             </View>
-          ) : null}
+            <Text style={styles.welcomeTitle}>მოგესალმებით!</Text>
+            <Text style={styles.welcomeSubtitle}>შედით თქვენს ანგარიშზე გასაგრძელებლად</Text>
+          </View>
 
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <View style={styles.inputContainer}>
-                <View style={styles.labelRow}>
-                  <View style={styles.labelDot} />
-                  <Text style={styles.inputLabel}>მომხმარებლის სახელი</Text>
+          <View style={styles.card}>
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
+
+            <View style={styles.form}>
+              <View style={[
+                styles.inputContainer,
+                focusedInput === 'email' && styles.inputContainerFocused
+              ]}>
+                <View style={styles.inputIconContainer}>
+                  <User size={20} color={focusedInput === 'email' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />
                 </View>
                 <TextInput
                   style={styles.input}
-                  placeholder="შეიყვანეთ თქვენი მომხმარებლის სახელი"
+                  placeholder="მომხმარებლის სახელი"
                   placeholderTextColor="#a1a1aa"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
                   keyboardType="email-address"
                   editable={!loading}
+                  onFocus={() => setFocusedInput('email')}
+                  onBlur={() => setFocusedInput(null)}
                 />
               </View>
-            </View>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.inputContainer}>
-                <View style={styles.labelRow}>
-                  <View style={styles.labelDot} />
-                  <Text style={styles.inputLabel}>პაროლი</Text>
+              <View style={[
+                styles.inputContainer,
+                focusedInput === 'password' && styles.inputContainerFocused
+              ]}>
+                <View style={styles.inputIconContainer}>
+                  <Lock size={20} color={focusedInput === 'password' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />
                 </View>
-                <View style={styles.passwordWrapper}>
-                  <TextInput
-                    style={styles.passwordInput}
-                    placeholder="შეიყვანეთ თქვენი პაროლი"
-                    placeholderTextColor="#a1a1aa"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    editable={!loading}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.eyeButton}
-                  >
-                    {showPassword ? (
-                      <Eye size={20} color="#8b5cf6" strokeWidth={2} />
-                    ) : (
-                      <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
-                    )}
-                  </TouchableOpacity>
-                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="პაროლი"
+                  placeholderTextColor="#a1a1aa"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  editable={!loading}
+                  onFocus={() => setFocusedInput('password')}
+                  onBlur={() => setFocusedInput(null)}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeButton}
+                >
+                  {showPassword ? (
+                    <Eye size={20} color="#7c3aed" strokeWidth={2} />
+                  ) : (
+                    <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
+                  )}
+                </TouchableOpacity>
               </View>
-            </View>
 
-            <View style={styles.rememberRow}>
+              <View style={styles.rememberRow}>
+                <TouchableOpacity
+                  style={styles.checkboxRow}
+                  onPress={() => setRememberMe(!rememberMe)}
+                >
+                  <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                    {rememberMe && <View style={styles.checkmark} />}
+                  </View>
+                  <Text style={styles.rememberText}>დამიმახსოვრე</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity>
+                  <Text style={styles.forgotText}>დაგავიწყდა პაროლი?</Text>
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity
-                style={styles.checkboxRow}
-                onPress={() => setRememberMe(!rememberMe)}
+                style={[styles.button, loading && styles.buttonDisabled]}
+                onPress={handleLogin}
+                disabled={loading}
+                activeOpacity={0.9}
               >
-                <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
-                  {rememberMe && <View style={styles.checkmark} />}
-                </View>
-                <Text style={styles.rememberText}>დამიმახსოვრე</Text>
+                <LinearGradient
+                  colors={loading ? ['#d4d4d8', '#d4d4d8'] : ['#7c3aed', '#a855f7']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.buttonGradient}
+                >
+                  {loading ? (
+                    <Loader />
+                  ) : (
+                    <Text style={styles.buttonText}>შესვლა</Text>
+                  )}
+                </LinearGradient>
               </TouchableOpacity>
 
-              <TouchableOpacity>
-                <Text style={styles.forgotText}>დაგავიწყდა პაროლი?</Text>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.dividerText}>ან</Text>
+                <View style={styles.divider} />
+              </View>
 
-            <TouchableOpacity
-              style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleLogin}
-              disabled={loading}
-              activeOpacity={0.9}
-            >
-              {loading ? (
-                <Loader />
-              ) : (
-                <Text style={styles.buttonText}>შესვლა</Text>
-              )}
-            </TouchableOpacity>
+              <View style={styles.socialContainer}>
+                <TouchableOpacity style={styles.socialButton}>
+                  <Apple size={22} color="#18181b" strokeWidth={2} />
+                </TouchableOpacity>
 
-            <View style={styles.dividerContainer}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>ან შედით</Text>
-              <View style={styles.divider} />
-            </View>
-
-            <View style={styles.socialContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <Apple size={20} color="#18181b" strokeWidth={2} />
-                <Text style={styles.socialText}>Apple</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.socialButton}>
-                <Mail size={20} color="#18181b" strokeWidth={2} />
-                <Text style={styles.socialText}>Google</Text>
-              </TouchableOpacity>
+                <TouchableOpacity style={styles.socialButton}>
+                  <Mail size={22} color="#ea4335" strokeWidth={2} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
 
@@ -189,7 +216,43 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f7ff',
+  },
+  gradientBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height * 0.45,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+  },
+  decorativeCircle1: {
+    position: 'absolute',
+    top: -50,
+    right: -50,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    top: 100,
+    left: -80,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  decorativeCircle3: {
+    position: 'absolute',
+    top: 200,
+    right: -30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   keyboardView: {
     flex: 1,
@@ -202,107 +265,114 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 32,
-    gap: 12,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logo: {
-    width: 200,
-    height: 60,
+    marginBottom: 24,
   },
   backButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  title: {
+  welcomeSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  iconContainer: {
+    marginBottom: 16,
+  },
+  iconGradient: {
+    width: 72,
+    height: 72,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  welcomeTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#ffffff',
+    marginBottom: 8,
+    letterSpacing: -0.5,
+  },
+  welcomeSubtitle: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#18181b',
-    flex: 1,
+    color: 'rgba(255, 255, 255, 0.85)',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.12,
+    shadowRadius: 24,
+    elevation: 8,
   },
   errorContainer: {
     backgroundColor: '#fef2f2',
     borderWidth: 1,
     borderColor: '#fecaca',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 24,
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 20,
   },
   errorText: {
     color: '#dc2626',
     fontSize: 14,
     fontWeight: '500',
+    textAlign: 'center',
   },
   form: {
-    gap: 24,
-  },
-  inputGroup: {
-    gap: 0,
+    gap: 16,
   },
   inputContainer: {
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
-    padding: 20,
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 3,
-    borderWidth: 1.5,
-    borderColor: '#f3f4f6',
-  },
-  labelRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    gap: 8,
+    backgroundColor: '#f8f7ff',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderWidth: 2,
+    borderColor: 'transparent',
   },
-  labelDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#8b5cf6',
+  inputContainerFocused: {
+    borderColor: '#7c3aed',
+    backgroundColor: '#ffffff',
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  inputLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#18181b',
-    letterSpacing: 0.3,
+  inputIconContainer: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
-    fontSize: 15,
-    color: '#18181b',
-    fontWeight: '500',
-    padding: 0,
-    margin: 0,
-  },
-  passwordWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  passwordInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 16,
     color: '#18181b',
     fontWeight: '500',
-    padding: 0,
-    margin: 0,
+    paddingVertical: 14,
   },
   eyeButton: {
-    padding: 4,
+    padding: 8,
   },
   rememberRow: {
     flexDirection: 'row',
@@ -313,58 +383,67 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
+    width: 22,
+    height: 22,
+    borderRadius: 7,
     borderWidth: 2,
     borderColor: '#d4d4d8',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#ffffff',
   },
   checkboxChecked: {
-    backgroundColor: '#8b5cf6',
-    borderColor: '#8b5cf6',
+    backgroundColor: '#7c3aed',
+    borderColor: '#7c3aed',
   },
   checkmark: {
     width: 10,
     height: 10,
     backgroundColor: '#ffffff',
-    borderRadius: 2,
+    borderRadius: 3,
   },
   rememberText: {
     fontSize: 14,
     color: '#71717a',
-    fontWeight: '400',
+    fontWeight: '500',
   },
   forgotText: {
     fontSize: 14,
-    color: '#71717a',
-    fontWeight: '400',
+    color: '#7c3aed',
+    fontWeight: '600',
   },
   button: {
-    marginTop: 12,
-    backgroundColor: '#8b5cf6',
-    borderRadius: 32,
+    marginTop: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#7c3aed',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  buttonDisabled: {
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  buttonGradient: {
     paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
   buttonText: {
     color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   dividerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
-    marginBottom: 8,
+    marginVertical: 8,
   },
   divider: {
     flex: 1,
@@ -375,44 +454,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#a1a1aa',
     marginHorizontal: 16,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   socialContainer: {
     flexDirection: 'row',
-    gap: 16,
-    marginTop: 8,
+    justifyContent: 'center',
+    gap: 20,
   },
   socialButton: {
-    flex: 1,
-    flexDirection: 'row',
+    width: 60,
+    height: 60,
+    borderRadius: 20,
+    backgroundColor: '#f8f7ff',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#ffffff',
-    borderRadius: 32,
-    paddingVertical: 16,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#e5e5e5',
-  },
-  socialText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#18181b',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 28,
+    paddingBottom: 20,
   },
   footerText: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#71717a',
-    fontWeight: '400',
+    fontWeight: '500',
   },
   footerLink: {
-    fontSize: 14,
-    color: '#8b5cf6',
-    fontWeight: '600',
+    fontSize: 15,
+    color: '#7c3aed',
+    fontWeight: '700',
   },
 });
