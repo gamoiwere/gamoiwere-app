@@ -4,7 +4,8 @@
   "version": "2.1.6",
   "private": true,
   "scripts": {
-    "dev": "EXPO_NO_TELEMETRY=1 expo start --web --port 5000 --host lan",
+    "predev": "mkdir -p ~/.expo && echo '{\"skipLoginPrompt\": true}' > ~/.expo/settings.json",
+    "dev": "CI=1 EXPO_NO_TELEMETRY=1 expo start --web --port 5000 --host lan",
     "build:web": "expo export --platform web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit"
