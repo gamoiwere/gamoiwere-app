@@ -5,12 +5,13 @@
   "private": true,
   "scripts": {
     "predev": "mkdir -p ~/.expo && echo '{\"skipLoginPrompt\": true}' > ~/.expo/settings.json",
-    "dev": "CI=1 EXPO_NO_TELEMETRY=1 expo start --web --port 5000",
+    "dev": "CI=1 EXPO_NO_TELEMETRY=1 expo start --web --port 5000 --tunnel",
     "build:web": "expo export --platform web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@expo/ngrok": "^4.1.3",
     "@expo/vector-icons": "^15.0.2",
     "@lucide/lab": "^0.1.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
