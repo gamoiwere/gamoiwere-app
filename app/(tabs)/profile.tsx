@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, StatusBar } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { authService, User as AuthUser } from '@/services/auth';
-import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck, Package } from 'lucide-react-native';
+import { User, Mail, Phone, LogOut, ChevronRight, Settings, Heart, Bell, HelpCircle, MapPin, UserCircle, Wallet, CreditCard, ShieldCheck, Truck, Package, Edit3 } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Loader from '@/components/Loader';
 import AuthNotification from '@/components/AuthNotification';
+
+const { width, height } = Dimensions.get('window');
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -55,19 +57,14 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 12 }]}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.titleRow}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.headerTitle}>პროფილი</Text>
-              </View>
-            </View>
-          </View>
-        </LinearGradient>
+          colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+          style={styles.background}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.headerSection, { paddingTop: insets.top + 16 }]}>
+          <Text style={styles.headerTitle}>პროფილი</Text>
+        </View>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -80,30 +77,26 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 12 }]}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.titleRow}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.headerTitle}>პროფილი</Text>
-              </View>
-            </View>
-          </View>
-        </LinearGradient>
+          colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+          style={styles.background}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        
+        <View style={[styles.headerSection, { paddingTop: insets.top + 16 }]}>
+          <Text style={styles.headerTitle}>პროფილი</Text>
+        </View>
 
         <View style={styles.authContainer}>
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
               <LinearGradient
-                colors={['#6e39ea', '#8b5cf6']}
+                colors={['#8b5cf6', '#a855f7', '#c084fc']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.authIcon}
               >
-                <User size={48} color="#fff" strokeWidth={2} />
+                <User size={48} color="#fff" strokeWidth={1.8} />
               </LinearGradient>
             </View>
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
@@ -113,16 +106,16 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={styles.authButton}
               onPress={handleNavigateToAuth}
-              activeOpacity={0.9}
+              activeOpacity={0.85}
             >
               <LinearGradient
-                colors={['#6e39ea', '#8b5cf6']}
+                colors={['#8b5cf6', '#a855f7']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.authButtonGradient}
               >
                 <Text style={styles.authButtonText}>შესვლა</Text>
-                <ChevronRight size={20} color="#fff" strokeWidth={3} />
+                <ChevronRight size={20} color="#fff" strokeWidth={2.5} />
               </LinearGradient>
             </TouchableOpacity>
           </View>
@@ -134,213 +127,214 @@ export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <LinearGradient
+        colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+        style={styles.background}
+      />
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
+      <View style={styles.glowOrb3} />
+      
       <AuthNotification
         visible={showAuthNotification}
         message={authMessage}
         onHide={() => setShowAuthNotification(false)}
         onLogin={handleNavigateToAuth}
       />
-      <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
-      >
-        <View style={styles.headerContent}>
-          <View style={styles.titleRow}>
-            <View style={styles.titleContainer}>
-              <Text style={styles.headerTitle}>პროფილი</Text>
-            </View>
-          </View>
 
-          <View style={styles.profileCard}>
-            <View style={styles.avatarSection}>
-              <LinearGradient
-                colors={['rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.avatarContainer}
-              >
-                <User size={32} color="#fff" strokeWidth={2.5} />
-              </LinearGradient>
-              <View style={styles.userInfo}>
-                <Text style={styles.userName} numberOfLines={1}>
-                  {user?.full_name || user?.username || 'მომხმარებელი'}
-                </Text>
-                {user?.verification_status === 'verified' && (
-                  <View style={styles.verifiedBadge}>
-                    <ShieldCheck size={12} color="#10b981" strokeWidth={2.5} />
-                    <Text style={styles.verifiedText}>დადასტურებული</Text>
-                  </View>
-                )}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.headerSection}>
+          <Text style={styles.headerTitle}>პროფილი</Text>
+        </View>
+
+        <View style={styles.profileCard}>
+          <LinearGradient
+            colors={['rgba(139, 92, 246, 0.15)', 'rgba(168, 85, 247, 0.08)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.profileCardGradient}
+          >
+            <View style={styles.profileHeader}>
+              <View style={styles.avatarContainer}>
+                <LinearGradient
+                  colors={['#8b5cf6', '#a855f7', '#c084fc']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.avatarGradient}
+                >
+                  <User size={36} color="#fff" strokeWidth={1.8} />
+                </LinearGradient>
               </View>
+              <View style={styles.userInfo}>
+                <View style={styles.nameRow}>
+                  <Text style={styles.userName} numberOfLines={1}>
+                    {user?.full_name || user?.username || 'მომხმარებელი'}
+                  </Text>
+                  {user?.verification_status === 'verified' && (
+                    <View style={styles.verifiedBadge}>
+                      <ShieldCheck size={12} color="#10b981" strokeWidth={2.5} />
+                    </View>
+                  )}
+                </View>
+                <Text style={styles.userHandle}>@{user?.username || 'user'}</Text>
+              </View>
+              <TouchableOpacity 
+                style={styles.editButton}
+                onPress={() => router.push('/profile/edit')}
+                activeOpacity={0.7}
+              >
+                <Edit3 size={18} color="#a78bfa" strokeWidth={2} />
+              </TouchableOpacity>
             </View>
-            <View style={styles.contactSection}>
-              <View style={styles.contactRow}>
-                <Mail size={14} color="rgba(255, 255, 255, 0.85)" strokeWidth={2} />
+
+            <View style={styles.contactInfo}>
+              <View style={styles.contactItem}>
+                <Mail size={16} color="#9ca3af" strokeWidth={2} />
                 <Text style={styles.contactText} numberOfLines={1}>{user?.email}</Text>
               </View>
               {user?.phone && (
-                <View style={styles.contactRow}>
-                  <Phone size={14} color="rgba(255, 255, 255, 0.85)" strokeWidth={2} />
+                <View style={styles.contactItem}>
+                  <Phone size={16} color="#9ca3af" strokeWidth={2} />
                   <Text style={styles.contactText}>{user.phone}</Text>
                 </View>
               )}
             </View>
-          </View>
+          </LinearGradient>
         </View>
-      </LinearGradient>
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.content}>
-          <View style={styles.balanceSection}>
-            <View style={styles.balanceCard}>
-              <View style={styles.balanceHeader}>
-                <View style={styles.balanceIconBg}>
-                  <Wallet size={20} color="#7c3aed" strokeWidth={2.5} />
-                </View>
-                <View style={styles.balanceInfo}>
-                  <Text style={styles.balanceLabel}>ბალანსი</Text>
-                  <Text style={styles.balanceAmount}>
-                    {user?.balance !== undefined ? user.balance.toFixed(2) : '0.00'} ₾
-                  </Text>
-                </View>
+        <View style={styles.balanceSection}>
+          <View style={styles.balanceCard}>
+            <View style={styles.balanceLeft}>
+              <View style={styles.balanceIconContainer}>
+                <Wallet size={22} color="#8b5cf6" strokeWidth={2} />
               </View>
-              {user?.balance_code && (
-                <View style={styles.balanceCodeRow}>
-                  <CreditCard size={14} color="#9ca3af" strokeWidth={2} />
-                  <Text style={styles.balanceCodeLabel}>კოდი:</Text>
-                  <Text style={styles.balanceCode}>{user.balance_code}</Text>
-                </View>
-              )}
+              <View>
+                <Text style={styles.balanceLabel}>ბალანსი</Text>
+                <Text style={styles.balanceAmount}>
+                  {user?.balance !== undefined ? user.balance.toFixed(2) : '0.00'} ₾
+                </Text>
+              </View>
             </View>
-
-            {user?.pending_transportation_fees !== undefined && user.pending_transportation_fees > 0 && (
-              <View style={styles.feesCard}>
-                <View style={styles.feesHeader}>
-                  <View style={styles.feesIconBg}>
-                    <Truck size={18} color="#f59e0b" strokeWidth={2.5} />
-                  </View>
-                  <View style={styles.feesInfo}>
-                    <Text style={styles.feesLabel}>ტრანსპორტირება</Text>
-                    <Text style={styles.feesAmount}>{user.pending_transportation_fees.toFixed(2)} ₾</Text>
-                  </View>
-                </View>
+            {user?.balance_code && (
+              <View style={styles.balanceCodeContainer}>
+                <CreditCard size={14} color="#6b7280" strokeWidth={2} />
+                <Text style={styles.balanceCode}>{user.balance_code}</Text>
               </View>
             )}
           </View>
 
-          <View style={styles.menuSection}>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => router.push('/(tabs)/orders')}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#dbeafe' }]}>
-                  <Package size={20} color="#3b82f6" strokeWidth={2.5} />
+          {user?.pending_transportation_fees !== undefined && user.pending_transportation_fees > 0 && (
+            <View style={styles.feesCard}>
+              <View style={styles.feesLeft}>
+                <View style={styles.feesIconContainer}>
+                  <Truck size={20} color="#f59e0b" strokeWidth={2} />
                 </View>
-                <Text style={styles.menuItemText}>შეკვეთები</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => router.push('/profile/edit')}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#ede9fe' }]}>
-                  <UserCircle size={20} color="#7c3aed" strokeWidth={2.5} />
+                <View>
+                  <Text style={styles.feesLabel}>ტრანსპორტირება</Text>
+                  <Text style={styles.feesAmount}>{user.pending_transportation_fees.toFixed(2)} ₾</Text>
                 </View>
-                <Text style={styles.menuItemText}>პროფილის რედაქტირება</Text>
               </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => router.push('/profile/addresses')}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#fef3c7' }]}>
-                  <MapPin size={20} color="#f59e0b" strokeWidth={2.5} />
-                </View>
-                <Text style={styles.menuItemText}>მისამართები</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => router.push('/profile/favorites')}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#fce7f3' }]}>
-                  <Heart size={20} color="#ec4899" strokeWidth={2.5} />
-                </View>
-                <Text style={styles.menuItemText}>რჩეულები</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#fef3c7' }]}>
-                  <Bell size={20} color="#f59e0b" strokeWidth={2.5} />
-                </View>
-                <Text style={styles.menuItemText}>შეტყობინებები</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#d1fae5' }]}>
-                  <Settings size={20} color="#10b981" strokeWidth={2.5} />
-                </View>
-                <Text style={styles.menuItemText}>პარამეტრები</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.menuItem}
-              activeOpacity={0.7}
-            >
-              <View style={styles.menuItemLeft}>
-                <View style={[styles.menuIcon, { backgroundColor: '#dbeafe' }]}>
-                  <HelpCircle size={20} color="#3b82f6" strokeWidth={2.5} />
-                </View>
-                <Text style={styles.menuItemText}>დახმარება</Text>
-              </View>
-              <ChevronRight size={18} color="#9ca3af" strokeWidth={2.5} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.logoutSection}>
-            <TouchableOpacity
-              style={styles.logoutButton}
-              onPress={handleLogout}
-              activeOpacity={0.7}
-            >
-              <LogOut size={18} color="#dc2626" strokeWidth={2.5} />
-              <Text style={styles.logoutText}>გასვლა</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          )}
         </View>
+
+        <View style={styles.menuSection}>
+          <Text style={styles.menuSectionTitle}>მენიუ</Text>
+          
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push('/(tabs)/orders')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(59, 130, 246, 0.15)' }]}>
+                <Package size={20} color="#3b82f6" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>შეკვეთები</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push('/profile/addresses')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(245, 158, 11, 0.15)' }]}>
+                <MapPin size={20} color="#f59e0b" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>მისამართები</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={() => router.push('/profile/favorites')}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(236, 72, 153, 0.15)' }]}>
+                <Heart size={20} color="#ec4899" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>რჩეულები</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(139, 92, 246, 0.15)' }]}>
+                <Bell size={20} color="#8b5cf6" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>შეტყობინებები</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(16, 185, 129, 0.15)' }]}>
+                <Settings size={20} color="#10b981" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>პარამეტრები</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.7}
+          >
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(99, 102, 241, 0.15)' }]}>
+                <HelpCircle size={20} color="#6366f1" strokeWidth={2} />
+              </View>
+              <Text style={styles.menuItemText}>დახმარება</Text>
+            </View>
+            <ChevronRight size={18} color="#4b5563" strokeWidth={2} />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.7}
+        >
+          <LogOut size={20} color="#ef4444" strokeWidth={2} />
+          <Text style={styles.logoutText}>გასვლა</Text>
+        </TouchableOpacity>
 
         <View style={styles.bottomSpace} />
       </ScrollView>
@@ -351,114 +345,62 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#0f0f1a',
   },
-  header: {
-    paddingBottom: 16,
-    paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
+  background: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
-  headerContent: {
-    gap: 14,
+  glowOrb1: {
+    position: 'absolute',
+    top: -80,
+    right: -80,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 200,
+    left: -60,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(168, 85, 247, 0.1)',
   },
-  titleContainer: {
+  glowOrb3: {
+    position: 'absolute',
+    top: height * 0.5,
+    right: -40,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(192, 132, 252, 0.08)',
+  },
+  scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  headerSection: {
+    marginBottom: 24,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -1,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  profileCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderRadius: 16,
-    padding: 14,
-    gap: 12,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  avatarSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  avatarContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  userInfo: {
-    flex: 1,
-    gap: 6,
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#fff',
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#ffffff',
     letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
-  },
-  verifiedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: '#fff',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-    alignSelf: 'flex-start',
-  },
-  verifiedText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#10b981',
-    fontFamily: 'MarkGEO-Regular',
-  },
-  contactSection: {
-    gap: 6,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.15)',
-  },
-  contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  contactText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontFamily: 'MarkGEO-Regular',
-    flex: 1,
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#bbb',
-    fontFamily: 'MarkGEO-Regular',
   },
   authContainer: {
     flex: 1,
@@ -468,17 +410,14 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: '#fff',
-    borderRadius: 32,
-    padding: 40,
+    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    borderRadius: 24,
+    padding: 32,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(75, 85, 99, 0.4)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -489,228 +428,255 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
   },
   authTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ffffff',
     marginBottom: 12,
-    fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
-    color: '#6b7280',
+    color: '#9ca3af',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
-    fontFamily: 'MarkGEO-Regular',
+    marginBottom: 28,
   },
   authButton: {
     width: '100%',
-    borderRadius: 20,
+    borderRadius: 14,
     overflow: 'hidden',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
   },
   authButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 18,
+    paddingVertical: 16,
     gap: 8,
   },
   authButtonText: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
-    fontFamily: 'MarkGEO-Regular',
   },
-  scrollView: {
-    flex: 1,
+  profileCard: {
+    marginBottom: 20,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
-  content: {
-    padding: 16,
-  },
-  balanceSection: {
-    marginBottom: 16,
-  },
-  balanceCard: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+  profileCardGradient: {
+    padding: 20,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderRadius: 20,
   },
-  balanceHeader: {
+  profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 16,
   },
-  balanceIconBg: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#ede9fe',
+  avatarContainer: {
+    marginRight: 14,
+  },
+  avatarGradient: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  balanceInfo: {
+  userInfo: {
     flex: 1,
+  },
+  nameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  userName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#ffffff',
+    flex: 1,
+  },
+  verifiedBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userHandle: {
+    fontSize: 14,
+    color: '#9ca3af',
+    marginTop: 4,
+  },
+  editButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contactInfo: {
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(75, 85, 99, 0.3)',
+    gap: 10,
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  contactText: {
+    fontSize: 14,
+    color: '#d1d5db',
+    flex: 1,
+  },
+  balanceSection: {
+    marginBottom: 24,
+    gap: 12,
+  },
+  balanceCard: {
+    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    borderRadius: 16,
+    padding: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: 'rgba(75, 85, 99, 0.4)',
+  },
+  balanceLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  balanceIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   balanceLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6b7280',
-    marginBottom: 4,
-    fontFamily: 'MarkGEO-Regular',
+    color: '#9ca3af',
+    marginBottom: 2,
   },
   balanceAmount: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#111827',
-    letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#ffffff',
   },
-  balanceCodeRow: {
+  balanceCodeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
-  },
-  balanceCodeLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6b7280',
-    fontFamily: 'MarkGEO-Regular',
+    gap: 6,
+    backgroundColor: 'rgba(75, 85, 99, 0.3)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   balanceCode: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#7c3aed',
-    letterSpacing: 0.5,
-    fontFamily: 'MarkGEO-Regular',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#a78bfa',
   },
   feesCard: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    borderRadius: 16,
+    padding: 18,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(245, 158, 11, 0.3)',
   },
-  feesHeader: {
+  feesLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
   },
-  feesIconBg: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#fef3c7',
+  feesIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  feesInfo: {
-    flex: 1,
   },
   feesLabel: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6b7280',
-    marginBottom: 4,
-    fontFamily: 'MarkGEO-Regular',
+    color: '#9ca3af',
+    marginBottom: 2,
   },
   feesAmount: {
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '800',
     color: '#f59e0b',
-    letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
   },
   menuSection: {
-    marginBottom: 16,
+    marginBottom: 20,
+  },
+  menuSectionTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#6b7280',
+    marginBottom: 12,
+    marginLeft: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   menuItem: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(31, 41, 55, 0.6)',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 14,
-    borderRadius: 16,
+    borderRadius: 14,
     marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(75, 85, 99, 0.3)',
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 14,
     flex: 1,
   },
-  menuIcon: {
-    width: 40,
-    height: 40,
+  menuIconContainer: {
+    width: 42,
+    height: 42,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
   menuItemText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
-    fontFamily: 'MarkGEO-Regular',
-  },
-  logoutSection: {
-    marginTop: 8,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#ffffff',
   },
   logoutButton: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
-    borderRadius: 16,
-    gap: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    borderRadius: 14,
+    gap: 10,
     borderWidth: 1,
-    borderColor: '#fee2e2',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
   },
   logoutText: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: '#dc2626',
-    fontFamily: 'MarkGEO-Regular',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ef4444',
   },
   bottomSpace: {
     height: 100,
