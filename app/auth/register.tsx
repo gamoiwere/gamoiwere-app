@@ -2,7 +2,7 @@ import { useState, ReactNode } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock, UserPlus, Check } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, Apple, User, Mail, Phone, Lock, ShoppingBag, Check } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import SuccessNotification from '@/components/SuccessNotification';
 import Loader from '@/components/Loader';
@@ -75,6 +75,7 @@ export default function RegisterScreen() {
 
   const renderInput = (
     icon: ReactNode,
+    label: string,
     placeholder: string,
     value: string,
     onChangeText: (text: string) => void,
@@ -88,49 +89,48 @@ export default function RegisterScreen() {
       autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
     }
   ) => (
-    <View style={[
-      styles.inputContainer,
-      focusedInput === inputKey && styles.inputContainerFocused
-    ]}>
-      <View style={styles.inputIconContainer}>
+    <View style={styles.inputWrapper}>
+      <Text style={styles.inputLabel}>{label}</Text>
+      <View style={[
+        styles.inputContainer,
+        focusedInput === inputKey && styles.inputContainerFocused
+      ]}>
         {icon}
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          placeholderTextColor="#4b5563"
+          value={value}
+          onChangeText={onChangeText}
+          autoCapitalize={options?.autoCapitalize || 'none'}
+          keyboardType={options?.keyboardType || 'default'}
+          secureTextEntry={options?.secureTextEntry}
+          editable={!loading}
+          onFocus={() => setFocusedInput(inputKey)}
+          onBlur={() => setFocusedInput(null)}
+        />
+        {options?.showToggle && (
+          <TouchableOpacity onPress={options.onToggle} style={styles.eyeButton}>
+            {options.toggleValue ? (
+              <Eye size={20} color="#a78bfa" strokeWidth={2} />
+            ) : (
+              <EyeOff size={20} color="#6b7280" strokeWidth={2} />
+            )}
+          </TouchableOpacity>
+        )}
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#a1a1aa"
-        value={value}
-        onChangeText={onChangeText}
-        autoCapitalize={options?.autoCapitalize || 'none'}
-        keyboardType={options?.keyboardType || 'default'}
-        secureTextEntry={options?.secureTextEntry}
-        editable={!loading}
-        onFocus={() => setFocusedInput(inputKey)}
-        onBlur={() => setFocusedInput(null)}
-      />
-      {options?.showToggle && (
-        <TouchableOpacity onPress={options.onToggle} style={styles.eyeButton}>
-          {options.toggleValue ? (
-            <Eye size={20} color="#7c3aed" strokeWidth={2} />
-          ) : (
-            <EyeOff size={20} color="#a1a1aa" strokeWidth={2} />
-          )}
-        </TouchableOpacity>
-      )}
     </View>
   );
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#7c3aed', '#a855f7', '#c084fc']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradientBackground}
+        colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+        style={styles.background}
       />
       
-      <View style={styles.decorativeCircle1} />
-      <View style={styles.decorativeCircle2} />
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
 
       <SuccessNotification
         visible={showSuccess}
@@ -149,143 +149,153 @@ export default function RegisterScreen() {
         >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <ArrowLeft size={22} color="#7c3aed" strokeWidth={2.5} />
+              <ArrowLeft size={20} color="#a78bfa" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.welcomeSection}>
-            <View style={styles.iconContainer}>
+          <View style={styles.logoSection}>
+            <View style={styles.logoContainer}>
               <LinearGradient
-                colors={['#7c3aed', '#a855f7']}
-                style={styles.iconGradient}
+                colors={['#8b5cf6', '#a855f7', '#c084fc']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.logoGradient}
               >
-                <UserPlus size={32} color="#ffffff" strokeWidth={2} />
+                <ShoppingBag size={32} color="#ffffff" strokeWidth={1.8} />
               </LinearGradient>
             </View>
-            <Text style={styles.welcomeTitle}>შექმენი ანგარიში</Text>
-            <Text style={styles.welcomeSubtitle}>შეავსეთ ფორმა რეგისტრაციისთვის</Text>
+            <Text style={styles.brandName}>GAMOIWERE</Text>
           </View>
 
-          <View style={styles.card}>
-            {error ? (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>{error}</Text>
+          <View style={styles.headerSection}>
+            <Text style={styles.title}>შექმენი ანგარიში</Text>
+            <Text style={styles.subtitle}>შეავსეთ ფორმა რეგისტრაციისთვის</Text>
+          </View>
+
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
+
+          <View style={styles.form}>
+            {renderInput(
+              <User size={20} color={focusedInput === 'fullName' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'სახელი და გვარი',
+              'შეიყვანეთ სახელი და გვარი',
+              fullName,
+              setFullName,
+              'fullName',
+              { autoCapitalize: 'words' }
+            )}
+
+            {renderInput(
+              <User size={20} color={focusedInput === 'username' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'მომხმარებელი',
+              'შეიყვანეთ მომხმარებელი',
+              username,
+              setUsername,
+              'username'
+            )}
+
+            {renderInput(
+              <Mail size={20} color={focusedInput === 'email' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'ელ-ფოსტა',
+              'example@email.com',
+              email,
+              setEmail,
+              'email',
+              { keyboardType: 'email-address' }
+            )}
+
+            {renderInput(
+              <Phone size={20} color={focusedInput === 'phone' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'ტელეფონი',
+              '+995 555 123 456',
+              phone,
+              setPhone,
+              'phone',
+              { keyboardType: 'phone-pad' }
+            )}
+
+            {renderInput(
+              <Lock size={20} color={focusedInput === 'password' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'პაროლი',
+              'მინ. 6 სიმბოლო',
+              password,
+              setPassword,
+              'password',
+              {
+                secureTextEntry: !showPassword,
+                showToggle: true,
+                toggleValue: showPassword,
+                onToggle: () => setShowPassword(!showPassword)
+              }
+            )}
+
+            {renderInput(
+              <Lock size={20} color={focusedInput === 'confirmPassword' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              'გაიმეორეთ პაროლი',
+              'გაიმეორეთ პაროლი',
+              confirmPassword,
+              setConfirmPassword,
+              'confirmPassword',
+              {
+                secureTextEntry: !showConfirmPassword,
+                showToggle: true,
+                toggleValue: showConfirmPassword,
+                onToggle: () => setShowConfirmPassword(!showConfirmPassword)
+              }
+            )}
+
+            <TouchableOpacity
+              style={styles.termsRow}
+              onPress={() => setAgreeToTerms(!agreeToTerms)}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.checkbox, agreeToTerms && styles.checkboxChecked]}>
+                {agreeToTerms && <Check size={14} color="#ffffff" strokeWidth={3} />}
               </View>
-            ) : null}
+              <Text style={styles.termsText}>
+                ვეთანხმები{' '}
+                <Text style={styles.termsLink}>წესებსა და პირობებს</Text>
+              </Text>
+            </TouchableOpacity>
 
-            <View style={styles.form}>
-              {renderInput(
-                <User size={20} color={focusedInput === 'fullName' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                'სახელი და გვარი',
-                fullName,
-                setFullName,
-                'fullName',
-                { autoCapitalize: 'words' }
-              )}
-
-              {renderInput(
-                <User size={20} color={focusedInput === 'username' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                'მომხმარებლის სახელი',
-                username,
-                setUsername,
-                'username'
-              )}
-
-              {renderInput(
-                <Mail size={20} color={focusedInput === 'email' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                'ელ-ფოსტა',
-                email,
-                setEmail,
-                'email',
-                { keyboardType: 'email-address' }
-              )}
-
-              {renderInput(
-                <Phone size={20} color={focusedInput === 'phone' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                '+995 555 123 456',
-                phone,
-                setPhone,
-                'phone',
-                { keyboardType: 'phone-pad' }
-              )}
-
-              {renderInput(
-                <Lock size={20} color={focusedInput === 'password' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                'პაროლი (მინ. 6 სიმბოლო)',
-                password,
-                setPassword,
-                'password',
-                {
-                  secureTextEntry: !showPassword,
-                  showToggle: true,
-                  toggleValue: showPassword,
-                  onToggle: () => setShowPassword(!showPassword)
-                }
-              )}
-
-              {renderInput(
-                <Lock size={20} color={focusedInput === 'confirmPassword' ? '#7c3aed' : '#a1a1aa'} strokeWidth={2} />,
-                'გაიმეორეთ პაროლი',
-                confirmPassword,
-                setConfirmPassword,
-                'confirmPassword',
-                {
-                  secureTextEntry: !showConfirmPassword,
-                  showToggle: true,
-                  toggleValue: showConfirmPassword,
-                  onToggle: () => setShowConfirmPassword(!showConfirmPassword)
-                }
-              )}
-
-              <TouchableOpacity
-                style={styles.termsRow}
-                onPress={() => setAgreeToTerms(!agreeToTerms)}
-                activeOpacity={0.7}
+            <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleRegister}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={loading ? ['#374151', '#374151'] : ['#8b5cf6', '#a855f7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.buttonGradient}
               >
-                <View style={[styles.checkbox, agreeToTerms && styles.checkboxChecked]}>
-                  {agreeToTerms && <Check size={14} color="#ffffff" strokeWidth={3} />}
-                </View>
-                <Text style={styles.termsText}>
-                  ვეთანხმები{' '}
-                  <Text style={styles.termsLink}>წესებსა და პირობებს</Text>
-                </Text>
+                {loading ? (
+                  <Loader />
+                ) : (
+                  <Text style={styles.buttonText}>რეგისტრაცია</Text>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>ან</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <View style={styles.socialContainer}>
+              <TouchableOpacity style={styles.socialButton}>
+                <Apple size={24} color="#ffffff" strokeWidth={1.8} />
               </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.button, loading && styles.buttonDisabled]}
-                onPress={handleRegister}
-                disabled={loading}
-                activeOpacity={0.9}
-              >
-                <LinearGradient
-                  colors={loading ? ['#d4d4d8', '#d4d4d8'] : ['#7c3aed', '#a855f7']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.buttonGradient}
-                >
-                  {loading ? (
-                    <Loader />
-                  ) : (
-                    <Text style={styles.buttonText}>რეგისტრაცია</Text>
-                  )}
-                </LinearGradient>
+              <TouchableOpacity style={styles.socialButton}>
+                <Mail size={24} color="#ea4335" strokeWidth={1.8} />
               </TouchableOpacity>
-
-              <View style={styles.dividerContainer}>
-                <View style={styles.divider} />
-                <Text style={styles.dividerText}>ან</Text>
-                <View style={styles.divider} />
-              </View>
-
-              <View style={styles.socialContainer}>
-                <TouchableOpacity style={styles.socialButton}>
-                  <Apple size={22} color="#18181b" strokeWidth={2} />
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.socialButton}>
-                  <Mail size={22} color="#ea4335" strokeWidth={2} />
-                </TouchableOpacity>
-              </View>
             </View>
           </View>
 
@@ -304,34 +314,32 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f7ff',
+    backgroundColor: '#0f0f1a',
   },
-  gradientBackground: {
+  background: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: height * 0.35,
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    bottom: 0,
   },
-  decorativeCircle1: {
+  glowOrb1: {
     position: 'absolute',
-    top: -50,
-    right: -50,
+    top: -80,
+    right: -80,
+    width: 250,
+    height: 250,
+    borderRadius: 125,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+  },
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 150,
+    left: -60,
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  decorativeCircle2: {
-    position: 'absolute',
-    top: 80,
-    left: -60,
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(168, 85, 247, 0.1)',
   },
   keyboardView: {
     flex: 1,
@@ -345,114 +353,103 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
   },
   backButton: {
     width: 44,
     height: 44,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
   },
-  welcomeSection: {
+  logoSection: {
     alignItems: 'center',
     marginBottom: 24,
   },
-  iconContainer: {
-    marginBottom: 12,
+  logoContainer: {
+    marginBottom: 10,
   },
-  iconGradient: {
-    width: 64,
-    height: 64,
+  logoGradient: {
+    width: 68,
+    height: 68,
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
   },
-  welcomeTitle: {
-    fontSize: 28,
+  brandName: {
+    fontSize: 20,
     fontWeight: '800',
     color: '#ffffff',
-    marginBottom: 6,
-    letterSpacing: -0.5,
+    letterSpacing: 2.5,
   },
-  welcomeSubtitle: {
-    fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.85)',
-    fontWeight: '500',
+  headerSection: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 6,
     textAlign: 'center',
   },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 28,
-    padding: 24,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
-    elevation: 8,
+  subtitle: {
+    fontSize: 15,
+    color: '#9ca3af',
+    textAlign: 'center',
   },
   errorContainer: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
     borderWidth: 1,
-    borderColor: '#fecaca',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
     padding: 14,
-    borderRadius: 14,
+    borderRadius: 12,
     marginBottom: 16,
   },
   errorText: {
-    color: '#dc2626',
+    color: '#f87171',
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
   },
   form: {
-    gap: 14,
+    gap: 16,
+  },
+  inputWrapper: {
+    gap: 6,
+  },
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#d1d5db',
+    marginLeft: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f7ff',
-    borderRadius: 14,
+    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 2,
-    borderWidth: 2,
-    borderColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: 'rgba(75, 85, 99, 0.5)',
+    gap: 10,
   },
   inputContainerFocused: {
-    borderColor: '#7c3aed',
-    backgroundColor: '#ffffff',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  inputIconContainer: {
-    width: 36,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderColor: '#8b5cf6',
+    backgroundColor: 'rgba(139, 92, 246, 0.08)',
   },
   input: {
     flex: 1,
     fontSize: 15,
-    color: '#18181b',
+    color: '#ffffff',
     fontWeight: '500',
-    paddingVertical: 14,
+    paddingVertical: 12,
   },
   eyeButton: {
-    padding: 8,
+    padding: 4,
   },
   termsRow: {
     flexDirection: 'row',
@@ -463,43 +460,37 @@ const styles = StyleSheet.create({
   checkbox: {
     width: 24,
     height: 24,
-    borderRadius: 8,
+    borderRadius: 7,
     borderWidth: 2,
-    borderColor: '#d4d4d8',
+    borderColor: '#4b5563',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
   },
   checkboxChecked: {
-    backgroundColor: '#7c3aed',
-    borderColor: '#7c3aed',
+    backgroundColor: '#8b5cf6',
+    borderColor: '#8b5cf6',
   },
   termsText: {
     fontSize: 14,
-    color: '#71717a',
+    color: '#9ca3af',
     fontWeight: '500',
     flex: 1,
   },
   termsLink: {
-    color: '#7c3aed',
+    color: '#a78bfa',
     fontWeight: '700',
   },
   button: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 14,
     overflow: 'hidden',
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 6,
   },
   buttonDisabled: {
-    shadowOpacity: 0,
-    elevation: 0,
+    opacity: 0.7,
   },
   buttonGradient: {
-    paddingVertical: 18,
+    paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -517,11 +508,11 @@ const styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e5e5',
+    backgroundColor: 'rgba(75, 85, 99, 0.5)',
   },
   dividerText: {
     fontSize: 14,
-    color: '#a1a1aa',
+    color: '#6b7280',
     marginHorizontal: 16,
     fontWeight: '500',
   },
@@ -531,30 +522,30 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   socialButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: '#f8f7ff',
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    backgroundColor: 'rgba(31, 41, 55, 0.8)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: '#e5e5e5',
+    borderColor: 'rgba(75, 85, 99, 0.5)',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 28,
     paddingBottom: 20,
   },
   footerText: {
     fontSize: 15,
-    color: '#71717a',
+    color: '#9ca3af',
     fontWeight: '500',
   },
   footerLink: {
     fontSize: 15,
-    color: '#7c3aed',
+    color: '#a78bfa',
     fontWeight: '700',
   },
 });
