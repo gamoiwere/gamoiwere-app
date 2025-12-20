@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, Animated } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, Animated, StatusBar } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Zap, Star, Flame, Award, Package, Clock, MapPin, Shield, Truck } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Star, Package, Shield, Truck } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProductCard from '@/components/ProductCard';
 import Loader from '@/components/Loader';
 import { Product } from '@/types';
@@ -12,16 +13,12 @@ import { authService } from '@/services/auth';
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
   const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [popularProducts, setPopularProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState<string>('');
   const scrollY = new Animated.Value(0);
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0.9],
-    extrapolate: 'clamp',
-  });
 
   useEffect(() => {
     loadProducts();
@@ -51,9 +48,6 @@ export default function HomeScreen() {
 
       const popularItems = popularData?.OtapiItemInfoSubList?.Content || [];
       const bestItems = bestData?.OtapiItemInfoSubList?.Content || [];
-
-      console.log('Popular items:', popularItems.length);
-      console.log('Best items:', bestItems.length);
 
       const formatProduct = (item: any) => {
         const getRatingFromFeatured = () => {
@@ -115,39 +109,36 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#6e39ea', '#9333ea', '#6e39ea']}
+        colors={['#0f0f1a', '#16213e']}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
-      >
-        <View style={styles.headerContent}>
-          <View style={styles.headerTop}>
-            <View>
-              <Text style={styles.greeting}>გამარჯობა! 👋</Text>
-              <Text style={styles.brandName}>{userName || 'gamoiwere.ge'}</Text>
-            </View>
-            <TouchableOpacity style={styles.notificationBtn}>
-              <View style={styles.notificationDot} />
-              <Bell size={22} color="#fff" strokeWidth={2.5} />
-            </TouchableOpacity>
-          </View>
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
 
-          <TouchableOpacity style={styles.searchContainer} activeOpacity={0.9}>
-            {Platform.OS === 'ios' ? (
-              <BlurView intensity={20} tint="light" style={styles.searchBlur}>
-                <Search size={20} color="#6e39ea" strokeWidth={2.5} />
-                <Text style={styles.searchText}>ძებნა პროდუქტების...</Text>
-              </BlurView>
-            ) : (
-              <View style={styles.searchBlur}>
-                <Search size={20} color="#6e39ea" strokeWidth={2.5} />
-                <Text style={styles.searchText}>ძებნა პროდუქტების...</Text>
-              </View>
-            )}
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
+
+      <View style={[styles.headerContent, { paddingTop: insets.top + 12 }]}>
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.greeting}>გამარჯობა!</Text>
+            <Text style={styles.brandName}>{userName || 'gamoiwere.ge'}</Text>
+          </View>
+          <TouchableOpacity style={styles.notificationBtn}>
+            <View style={styles.notificationDot} />
+            <Bell size={22} color="#fff" strokeWidth={2.5} />
           </TouchableOpacity>
         </View>
-      </LinearGradient>
+
+        <TouchableOpacity style={styles.searchContainer} activeOpacity={0.9}>
+          <View style={styles.searchInner}>
+            <Search size={20} color="#8b5cf6" strokeWidth={2.5} />
+            <Text style={styles.searchText}>ძებნა პროდუქტების...</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
 
       <Animated.ScrollView
         style={styles.scrollView}
@@ -161,72 +152,70 @@ export default function HomeScreen() {
       >
         <View style={styles.heroSection}>
           <TouchableOpacity activeOpacity={0.95}>
-            <LinearGradient
-              colors={['#1e293b', '#334155']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.mainHeroCard}
-            >
-              <View style={styles.heroTopRow}>
-                <View>
-                  <View style={styles.premiumBadge}>
-                    <Sparkles size={12} color="#fbbf24" strokeWidth={2.5} />
-                    <Text style={styles.premiumText}>პრემიუმ</Text>
+            <View style={styles.mainHeroCard}>
+              <LinearGradient
+                colors={['rgba(139, 92, 246, 0.15)', 'rgba(139, 92, 246, 0.05)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.heroCardGradient}
+              >
+                <View style={styles.heroTopRow}>
+                  <View>
+                    <View style={styles.premiumBadge}>
+                      <Sparkles size={12} color="#a78bfa" strokeWidth={2.5} />
+                      <Text style={styles.premiumText}>პრემიუმ</Text>
+                    </View>
+                    <Text style={styles.heroNumber}>800M+</Text>
+                    <Text style={styles.heroLabel}>პროდუქტი მთელი მსოფლიოდან</Text>
                   </View>
-                  <Text style={styles.heroNumber}>800M+</Text>
-                  <Text style={styles.heroLabel}>პროდუქტი მთელი მსოფლიოდან</Text>
+                  <View style={styles.heroIconCircle}>
+                    <Package size={32} color="#a78bfa" strokeWidth={2} />
+                  </View>
                 </View>
-                <View style={styles.heroIconCircle}>
-                  <Package size={32} color="#fff" strokeWidth={2} />
-                </View>
-              </View>
 
-              <View style={styles.heroStatsRow}>
-                <View style={styles.statBox}>
-                  <Text style={styles.statNum}>50K+</Text>
-                  <Text style={styles.statText}>ბრენდი</Text>
+                <View style={styles.heroStatsRow}>
+                  <View style={styles.statBox}>
+                    <Text style={styles.statNum}>50K+</Text>
+                    <Text style={styles.statText}>ბრენდი</Text>
+                  </View>
+                  <View style={styles.statDivider} />
+                  <View style={styles.statBox}>
+                    <Text style={styles.statNum}>200K+</Text>
+                    <Text style={styles.statText}>მომხმარებელი</Text>
+                  </View>
+                  <View style={styles.statDivider} />
+                  <View style={styles.statBox}>
+                    <Text style={styles.statNum}>10-14</Text>
+                    <Text style={styles.statText}>დღე</Text>
+                  </View>
                 </View>
-                <View style={styles.statBox}>
-                  <Text style={styles.statNum}>200K+</Text>
-                  <Text style={styles.statText}>მომხმარებელი</Text>
-                </View>
-                <View style={styles.statBox}>
-                  <Text style={styles.statNum}>10-14</Text>
-                  <Text style={styles.statText}>დღე</Text>
-                </View>
-              </View>
-            </LinearGradient>
+              </LinearGradient>
+            </View>
           </TouchableOpacity>
 
           <View style={styles.featuresRow}>
             <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
-              <LinearGradient
-                colors={['#3b82f6', '#2563eb']}
-                style={styles.compactFeatureGradient}
-              >
+              <View style={styles.featureCard}>
                 <View style={styles.compactFeatureIcon}>
-                  <Truck size={20} color="#fff" strokeWidth={2.5} />
+                  <Truck size={18} color="#8b5cf6" strokeWidth={2.5} />
                 </View>
                 <View style={styles.compactFeatureText}>
                   <Text style={styles.compactFeatureTitle}>სწრაფი მიწოდება</Text>
                   <Text style={styles.compactFeatureDesc}>10-14 დღე</Text>
                 </View>
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
-              <LinearGradient
-                colors={['#10b981', '#059669']}
-                style={styles.compactFeatureGradient}
-              >
+              <View style={styles.featureCard}>
                 <View style={styles.compactFeatureIcon}>
-                  <Shield size={20} color="#fff" strokeWidth={2.5} />
+                  <Shield size={18} color="#8b5cf6" strokeWidth={2.5} />
                 </View>
                 <View style={styles.compactFeatureText}>
                   <Text style={styles.compactFeatureTitle}>100% გარანტია</Text>
                   <Text style={styles.compactFeatureDesc}>დაცული</Text>
                 </View>
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -234,12 +223,12 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
-              <Sparkles size={24} color="#6e39ea" strokeWidth={2.5} />
+              <Sparkles size={22} color="#a78bfa" strokeWidth={2.5} />
               <Text style={styles.sectionTitle}>რეკომენდირებული</Text>
             </View>
             <TouchableOpacity style={styles.seeAllBtn}>
               <Text style={styles.seeAllText}>ყველა</Text>
-              <TrendingUp size={16} color="#6e39ea" strokeWidth={2.5} />
+              <TrendingUp size={14} color="#8b5cf6" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
@@ -263,12 +252,12 @@ export default function HomeScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
-              <TrendingUp size={24} color="#6e39ea" strokeWidth={2.5} />
+              <TrendingUp size={22} color="#a78bfa" strokeWidth={2.5} />
               <Text style={styles.sectionTitle}>პოპულარული</Text>
             </View>
             <TouchableOpacity style={styles.seeAllBtn}>
               <Text style={styles.seeAllText}>ყველა</Text>
-              <Star size={16} color="#6e39ea" strokeWidth={2.5} />
+              <Star size={14} color="#8b5cf6" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
@@ -298,14 +287,29 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#0f0f1a',
   },
-  headerGradient: {
-    paddingTop: 50,
-    paddingBottom: 20,
+  glowOrb1: {
+    position: 'absolute',
+    top: -100,
+    right: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+  },
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 200,
+    left: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    backgroundColor: 'rgba(139, 92, 246, 0.08)',
   },
   headerContent: {
     paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   headerTop: {
     flexDirection: 'row',
@@ -315,12 +319,12 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.9)',
+    color: 'rgba(255,255,255,0.7)',
     marginBottom: 4,
     fontWeight: '500',
   },
   brandName: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: '800',
     color: '#fff',
     letterSpacing: -0.5,
@@ -329,10 +333,12 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   notificationDot: {
     position: 'absolute',
@@ -341,26 +347,28 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#fbbf24',
+    backgroundColor: '#a78bfa',
     borderWidth: 2,
-    borderColor: '#6e39ea',
+    borderColor: '#0f0f1a',
   },
   searchContainer: {
     borderRadius: 16,
     overflow: 'hidden',
   },
-  searchBlur: {
+  searchInner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 12,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   searchText: {
     fontSize: 15,
-    color: '#999',
+    color: 'rgba(255,255,255,0.5)',
     fontWeight: '500',
   },
   scrollView: {
@@ -371,17 +379,17 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 8,
     gap: 12,
   },
   mainHeroCard: {
     borderRadius: 20,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
+  },
+  heroCardGradient: {
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
   },
   heroTopRow: {
     flexDirection: 'row',
@@ -393,20 +401,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(251, 191, 36, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: 'rgba(167, 139, 250, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(251, 191, 36, 0.3)',
+    borderColor: 'rgba(167, 139, 250, 0.3)',
     marginBottom: 12,
     alignSelf: 'flex-start',
   },
   premiumText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#fbbf24',
+    color: '#a78bfa',
     letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   heroNumber: {
     fontSize: 42,
@@ -417,31 +426,34 @@ const styles = StyleSheet.create({
   heroLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: 'rgba(255, 255, 255, 0.6)',
     marginTop: 4,
   },
   heroIconCircle: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   heroStatsRow: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 14,
-    padding: 12,
-    gap: 12,
+    padding: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   statBox: {
     flex: 1,
     alignItems: 'center',
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   statNum: {
     fontSize: 18,
@@ -452,7 +464,7 @@ const styles = StyleSheet.create({
   statText: {
     fontSize: 10,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: 'rgba(255, 255, 255, 0.5)',
     marginTop: 2,
   },
   featuresRow: {
@@ -461,47 +473,42 @@ const styles = StyleSheet.create({
   },
   compactFeature: {
     flex: 1,
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    elevation: 4,
   },
-  compactFeatureGradient: {
+  featureCard: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 14,
     gap: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   compactFeatureIcon: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   compactFeatureText: {
     flex: 1,
   },
   compactFeatureTitle: {
-    fontSize: 14,
-    fontWeight: '800',
+    fontSize: 13,
+    fontWeight: '700',
     color: '#fff',
   },
   compactFeatureDesc: {
     fontSize: 11,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.5)',
     marginTop: 1,
   },
   section: {
     paddingHorizontal: 8,
-    marginTop: 20,
+    marginTop: 24,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -516,9 +523,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#fff',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -526,15 +533,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#ede9fe',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   seeAllText: {
     fontSize: 12,
-    fontWeight: '800',
-    color: '#7c3aed',
+    fontWeight: '700',
+    color: '#a78bfa',
     fontFamily: 'MarkGEO-Regular',
   },
   productsGrid: {
@@ -551,14 +560,9 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     alignItems: 'center',
   },
-  loadingText: {
-    fontSize: 15,
-    color: '#999',
-    fontWeight: '500',
-  },
   emptyText: {
     fontSize: 15,
-    color: '#999',
+    color: 'rgba(255, 255, 255, 0.5)',
     textAlign: 'center',
     width: '100%',
     paddingVertical: 40,

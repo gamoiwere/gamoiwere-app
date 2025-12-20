@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ImageBackground, StatusBar } from 'react-native';
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -49,17 +49,20 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" />
       <ImageBackground
         source={currentSlide.image}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
         <LinearGradient
-          colors={['rgba(0, 0, 0, 0.3)', 'rgba(0, 0, 0, 0.7)']}
+          colors={['rgba(15, 15, 26, 0.4)', 'rgba(15, 15, 26, 0.85)', 'rgba(15, 15, 26, 0.98)']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.overlay}
         >
+          <View style={styles.glowOrb} />
+
           <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
             <Text style={styles.skipText}>გამოტოვება</Text>
           </TouchableOpacity>
@@ -86,18 +89,14 @@ export default function OnboardingScreen() {
               <TouchableOpacity
                 style={styles.nextButton}
                 onPress={handleNext}
+                activeOpacity={0.9}
               >
-                <LinearGradient
-                  colors={['#7c3aed', '#6d28d9']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.nextButtonGradient}
-                >
-                  <Text style={styles.nextButtonText}>
-                    {currentIndex === onboardingData.length - 1 ? 'დაწყება' : 'შემდეგი'}
-                  </Text>
+                <Text style={styles.nextButtonText}>
+                  {currentIndex === onboardingData.length - 1 ? 'დაწყება' : 'შემდეგი'}
+                </Text>
+                <View style={styles.arrowContainer}>
                   <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
             </View>
           </View>
@@ -110,6 +109,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0f0f1a',
   },
   backgroundImage: {
     width: width,
@@ -119,14 +119,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  glowOrb: {
+    position: 'absolute',
+    bottom: 100,
+    left: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+  },
   skipButton: {
     position: 'absolute',
     top: 60,
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(139, 92, 246, 0.25)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   skipText: {
     color: '#fff',
@@ -143,63 +154,58 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    fontSize: 36,
+    fontSize: 34,
     fontWeight: '800',
     color: '#fff',
     marginBottom: 16,
     lineHeight: 42,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '500',
-    color: '#fff',
+    color: 'rgba(255, 255, 255, 0.7)',
     lineHeight: 26,
-    opacity: 0.95,
-    textShadowColor: 'rgba(0, 0, 0, 0.2)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
   },
   bottomContainer: {
-    gap: 24,
+    gap: 28,
   },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8,
+    gap: 10,
   },
   paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'rgba(139, 92, 246, 0.3)',
   },
   paginationDotActive: {
-    width: 32,
-    backgroundColor: '#fff',
+    width: 36,
+    backgroundColor: '#8b5cf6',
   },
   nextButton: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  nextButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    backgroundColor: '#8b5cf6',
+    borderRadius: 18,
     paddingVertical: 18,
-    paddingHorizontal: 32,
+    paddingHorizontal: 28,
+    gap: 12,
   },
   nextButtonText: {
     fontSize: 18,
     fontWeight: '700',
     color: '#fff',
+  },
+  arrowContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

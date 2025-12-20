@@ -1,28 +1,30 @@
 import { Tabs } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#8b5cf6',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarActiveTintColor: '#a78bfa',
+        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: '#fff',
-          borderTopWidth: 0,
+          backgroundColor: 'rgba(15, 15, 26, 0.95)',
+          borderTopWidth: 1,
+          borderTopColor: 'rgba(139, 92, 246, 0.2)',
           height: 75,
           paddingBottom: 12,
           paddingTop: 12,
           paddingHorizontal: 24,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          shadowColor: '#000',
+          shadowColor: '#8b5cf6',
           shadowOffset: { width: 0, height: -8 },
-          shadowOpacity: 0.1,
+          shadowOpacity: 0.15,
           shadowRadius: 20,
           elevation: 12,
         },
@@ -37,7 +39,7 @@ export default function TabLayout() {
             ]}>
               <Home
                 size={22}
-                color={focused ? '#fff' : '#9ca3af'}
+                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
                 strokeWidth={2}
               />
             </View>
@@ -54,7 +56,7 @@ export default function TabLayout() {
             ]}>
               <LayoutGrid
                 size={22}
-                color={focused ? '#fff' : '#9ca3af'}
+                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
                 strokeWidth={2}
               />
             </View>
@@ -71,7 +73,7 @@ export default function TabLayout() {
             ]}>
               <ShoppingCart
                 size={28}
-                color={focused ? '#fff' : '#8b5cf6'}
+                color="#fff"
                 strokeWidth={2.5}
               />
             </View>
@@ -94,7 +96,7 @@ export default function TabLayout() {
             ]}>
               <Heart
                 size={22}
-                color={focused ? '#fff' : '#9ca3af'}
+                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
                 strokeWidth={2}
               />
             </View>
@@ -111,7 +113,7 @@ export default function TabLayout() {
             ]}>
               <User
                 size={22}
-                color={focused ? '#fff' : '#9ca3af'}
+                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
                 strokeWidth={2}
               />
             </View>
@@ -131,22 +133,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainerActive: {
-    backgroundColor: '#8b5cf6',
+    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    borderWidth: 1,
+    borderColor: 'rgba(167, 139, 250, 0.4)',
     shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 4,
   },
   iconContainerActiveCenter: {
-    backgroundColor: '#a78bfa',
+    backgroundColor: '#8b5cf6',
     width: 64,
     height: 64,
     borderRadius: 32,
     marginTop: -8,
-    shadowColor: '#a78bfa',
+    borderWidth: 2,
+    borderColor: 'rgba(167, 139, 250, 0.5)',
+    shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 8,
   },

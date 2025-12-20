@@ -121,19 +121,25 @@ export default function CartScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          colors={['#0f0f1a', '#16213e']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 12 }]}
-        >
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <View style={styles.headerContent}>
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
+                <View style={styles.iconBadge}>
+                  <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+                </View>
                 <Text style={styles.headerTitle}>კალათა</Text>
               </View>
             </View>
           </View>
-        </LinearGradient>
+        </View>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -146,31 +152,32 @@ export default function CartScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          colors={['#0f0f1a', '#16213e']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 12 }]}
-        >
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <View style={styles.headerContent}>
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
+                <View style={styles.iconBadge}>
+                  <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+                </View>
                 <Text style={styles.headerTitle}>კალათა</Text>
               </View>
             </View>
           </View>
-        </LinearGradient>
+        </View>
 
         <View style={styles.authContainer}>
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
-              <LinearGradient
-                colors={['#7c3aed', '#8b5cf6']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.authIcon}
-              >
-                <ShoppingCart size={48} color="#fff" strokeWidth={2} />
-              </LinearGradient>
+              <View style={styles.authIcon}>
+                <ShoppingCart size={48} color="#a78bfa" strokeWidth={2} />
+              </View>
             </View>
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
             <Text style={styles.authDescription}>
@@ -182,15 +189,8 @@ export default function CartScreen() {
               onPress={handleNavigateToAuth}
               activeOpacity={0.9}
             >
-              <LinearGradient
-                colors={['#6e39ea', '#8b5cf6']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.authButtonGradient}
-              >
-                <Text style={styles.authButtonText}>შესვლა</Text>
-                <ChevronRight size={20} color="#fff" strokeWidth={3} />
-              </LinearGradient>
+              <Text style={styles.authButtonText}>შესვლა</Text>
+              <ChevronRight size={20} color="#fff" strokeWidth={3} />
             </TouchableOpacity>
           </View>
         </View>
@@ -202,21 +202,26 @@ export default function CartScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        colors={['#0f0f1a', '#16213e']}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
-      >
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
+
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <View style={styles.headerContent}>
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
+              <View style={styles.iconBadge}>
+                <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+              </View>
               <Text style={styles.headerTitle}>კალათა</Text>
             </View>
             <View style={styles.statsCompact}>
-              <View style={styles.statBoxCompact}>
-                <Text style={styles.statNumberCompact}>{totalItems}</Text>
-                <Text style={styles.statTextCompact}>ნივთი</Text>
-              </View>
+              <Text style={styles.statNumberCompact}>{totalItems}</Text>
+              <Text style={styles.statTextCompact}>ნივთი</Text>
             </View>
           </View>
 
@@ -229,20 +234,20 @@ export default function CartScreen() {
             </View>
           )}
         </View>
-      </LinearGradient>
+      </View>
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
         }
       >
         <View style={styles.content}>
           {items.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIconCircle}>
-                <ShoppingCart size={60} color="#bbb" strokeWidth={1.5} />
+                <ShoppingCart size={60} color="rgba(255, 255, 255, 0.3)" strokeWidth={1.5} />
               </View>
               <Text style={styles.emptyTitle}>კალათა ცარიელია</Text>
               <Text style={styles.emptyDescription}>
@@ -252,15 +257,8 @@ export default function CartScreen() {
                 style={styles.emptyButton}
                 onPress={() => router.push('/')}
               >
-                <LinearGradient
-                  colors={['#6e39ea', '#8b5cf6']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.emptyButtonGradient}
-                >
-                  <Package size={20} color="#fff" strokeWidth={2} />
-                  <Text style={styles.emptyButtonText}>პროდუქტების ნახვა</Text>
-                </LinearGradient>
+                <Package size={20} color="#fff" strokeWidth={2} />
+                <Text style={styles.emptyButtonText}>პროდუქტების ნახვა</Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -290,14 +288,14 @@ export default function CartScreen() {
                           style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                         >
-                          <Minus size={16} color="#666" strokeWidth={2.5} />
+                          <Minus size={16} color="#a78bfa" strokeWidth={2.5} />
                         </TouchableOpacity>
                         <Text style={styles.quantityText}>{item.quantity}</Text>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                         >
-                          <Plus size={16} color="#666" strokeWidth={2.5} />
+                          <Plus size={16} color="#a78bfa" strokeWidth={2.5} />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -306,7 +304,7 @@ export default function CartScreen() {
                     style={styles.deleteButton}
                     onPress={() => handleRemoveItem(item.id)}
                   >
-                    <Trash2 size={18} color="#dc2626" strokeWidth={2} />
+                    <Trash2 size={18} color="#ef4444" strokeWidth={2} />
                   </TouchableOpacity>
                 </View>
               ))}
@@ -316,7 +314,7 @@ export default function CartScreen() {
                   style={styles.clearButton}
                   onPress={handleClearCart}
                 >
-                  <Trash2 size={18} color="#dc2626" strokeWidth={2} />
+                  <Trash2 size={18} color="#ef4444" strokeWidth={2} />
                   <Text style={styles.clearButtonText}>კალათის გაწმენდა</Text>
                 </TouchableOpacity>
 
@@ -326,15 +324,8 @@ export default function CartScreen() {
                     Alert.alert('შეკვეთა', 'შეკვეთის გაფორმება მალე დაემატება');
                   }}
                 >
-                  <LinearGradient
-                    colors={['#6e39ea', '#8b5cf6']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.checkoutButtonGradient}
-                  >
-                    <ShoppingBag size={20} color="#fff" strokeWidth={2} />
-                    <Text style={styles.checkoutButtonText}>შეკვეთის გაფორმება</Text>
-                  </LinearGradient>
+                  <ShoppingBag size={20} color="#fff" strokeWidth={2} />
+                  <Text style={styles.checkoutButtonText}>შეკვეთის გაფორმება</Text>
                 </TouchableOpacity>
               </View>
             </>
@@ -350,16 +341,29 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#0f0f1a',
+  },
+  glowOrb1: {
+    position: 'absolute',
+    top: -100,
+    right: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+  },
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 200,
+    left: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    backgroundColor: 'rgba(139, 92, 246, 0.08)',
   },
   header: {
     paddingBottom: 16,
     paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
   },
   headerContent: {
     gap: 14,
@@ -370,48 +374,55 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: {
-    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
+    fontSize: 26,
+    fontWeight: '800',
     color: '#fff',
-    letterSpacing: -1,
+    letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
   statsCompact: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  statBoxCompact: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    borderColor: 'rgba(139, 92, 246, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
   },
   statTextCompact: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.8)',
-    letterSpacing: 0.5,
-    fontFamily: 'MarkGEOCAPS-Regular',
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.6)',
   },
   summaryCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   summaryRow: {
     flexDirection: 'row',
@@ -419,13 +430,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   summaryLabel: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
     fontFamily: 'MarkGEO-Regular',
   },
   summaryAmount: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
@@ -436,13 +447,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#bbb',
-    fontFamily: 'MarkGEO-Regular',
   },
   authContainer: {
     flex: 1,
@@ -452,17 +456,14 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: '#fff',
-    borderRadius: 32,
-    padding: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 28,
+    padding: 36,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -471,49 +472,40 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   authTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#fff',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.6)',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
+    marginBottom: 28,
     fontFamily: 'MarkGEO-Regular',
   },
   authButton: {
-    width: '100%',
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  authButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 18,
+    width: '100%',
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
+    paddingVertical: 16,
     gap: 8,
   },
   authButtonText: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
     fontFamily: 'MarkGEO-Regular',
   },
@@ -532,68 +524,58 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#1a1a1a',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#fff',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptyDescription: {
     fontSize: 15,
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.5)',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
+    marginBottom: 28,
     fontFamily: 'MarkGEO-Regular',
   },
   emptyButton: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  emptyButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
     paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingHorizontal: 28,
     gap: 8,
   },
   emptyButtonText: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
     fontFamily: 'MarkGEO-Regular',
   },
   cartItem: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 16,
     padding: 12,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(139, 92, 246, 0.15)',
   },
   itemImage: {
     width: 80,
     height: 80,
     borderRadius: 12,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   itemContent: {
     flex: 1,
@@ -602,8 +584,8 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontWeight: '600',
+    color: '#fff',
     marginBottom: 6,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -614,15 +596,15 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   variationTag: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
   },
   variationText: {
     fontSize: 11,
-    fontWeight: '600',
-    color: '#666',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontFamily: 'MarkGEO-Regular',
   },
   itemFooter: {
@@ -632,29 +614,31 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     fontSize: 16,
-    fontWeight: '900',
-    color: '#6e39ea',
+    fontWeight: '800',
+    color: '#a78bfa',
     fontFamily: 'MarkGEO-Regular',
   },
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 10,
     padding: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   quantityButton: {
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantityText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#1a1a1a',
+    color: '#fff',
     paddingHorizontal: 12,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -662,10 +646,12 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#fee2e2',
+    backgroundColor: 'rgba(239, 68, 68, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
   },
   actionsContainer: {
     marginTop: 16,
@@ -675,38 +661,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
     paddingVertical: 14,
     borderRadius: 14,
     gap: 8,
     borderWidth: 1,
-    borderColor: '#fee2e2',
+    borderColor: 'rgba(239, 68, 68, 0.25)',
   },
   clearButtonText: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#dc2626',
+    color: '#ef4444',
     fontFamily: 'MarkGEO-Regular',
   },
   checkoutButton: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  checkoutButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
     paddingVertical: 18,
     gap: 10,
   },
   checkoutButtonText: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
     fontFamily: 'MarkGEO-Regular',
   },

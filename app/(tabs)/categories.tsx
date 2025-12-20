@@ -112,25 +112,25 @@ export default function CategoriesScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          colors={['#0f0f1a', '#16213e']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 12 }]}
-        >
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
           <View style={styles.headerContent}>
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
-                <Text style={styles.headerTitle}>კატეგორიები</Text>
-              </View>
-              <View style={styles.statsCompact}>
-                <View style={styles.statBoxCompact}>
-                  <Text style={styles.statNumberCompact}>0</Text>
-                  <Text style={styles.statTextCompact}>სულ</Text>
+                <View style={styles.iconBadge}>
+                  <LayoutGrid size={20} color="#a78bfa" strokeWidth={2.5} />
                 </View>
+                <Text style={styles.headerTitle}>კატეგორიები</Text>
               </View>
             </View>
           </View>
-        </LinearGradient>
+        </View>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -142,38 +142,43 @@ export default function CategoriesScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        colors={['#0f0f1a', '#16213e']}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
-      >
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
+
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <View style={styles.headerContent}>
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
+              <View style={styles.iconBadge}>
+                <LayoutGrid size={20} color="#a78bfa" strokeWidth={2.5} />
+              </View>
               <Text style={styles.headerTitle}>კატეგორიები</Text>
             </View>
             <View style={styles.statsCompact}>
-              <View style={styles.statBoxCompact}>
-                <Text style={styles.statNumberCompact}>{getTotalCategories()}</Text>
-                <Text style={styles.statTextCompact}>სულ</Text>
-              </View>
+              <Text style={styles.statNumberCompact}>{getTotalCategories()}</Text>
+              <Text style={styles.statTextCompact}>სულ</Text>
             </View>
           </View>
         </View>
-      </LinearGradient>
+      </View>
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
         }
       >
         <View style={styles.content}>
           {categories.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIconCircle}>
-                <LayoutGrid size={64} color="#d1d5db" strokeWidth={1.5} />
+                <LayoutGrid size={64} color="rgba(255, 255, 255, 0.3)" strokeWidth={1.5} />
               </View>
               <Text style={styles.emptyTitle}>კატეგორიები არ მოიძებნა</Text>
               <Text style={styles.emptySubtitle}>
@@ -201,17 +206,12 @@ export default function CategoriesScreen() {
                   activeOpacity={0.7}
                 >
                   <View style={styles.categoryHeaderLeft}>
-                    <LinearGradient
-                      colors={['#6e39ea', '#8b5cf6']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.categoryIconBg}
-                    >
+                    <View style={styles.categoryIconBg}>
                       {(() => {
                         const IconComponent = getCategoryIcon(category.Name);
-                        return <IconComponent size={24} color="#fff" strokeWidth={2.5} />;
+                        return <IconComponent size={22} color="#a78bfa" strokeWidth={2.5} />;
                       })()}
-                    </LinearGradient>
+                    </View>
                     <View style={styles.categoryInfo}>
                       <Text style={styles.categoryLabel}>კატეგორია</Text>
                       <Text style={styles.categoryName}>{category.Name}</Text>
@@ -225,9 +225,9 @@ export default function CategoriesScreen() {
                     )}
                     <View style={styles.expandIconBg}>
                       {expandedCategories.has(category.Id) ? (
-                        <ChevronDown size={20} color="#7c3aed" strokeWidth={2.5} />
+                        <ChevronDown size={20} color="#a78bfa" strokeWidth={2.5} />
                       ) : (
-                        <ChevronRight size={20} color="#7c3aed" strokeWidth={2.5} />
+                        <ChevronRight size={20} color="#a78bfa" strokeWidth={2.5} />
                       )}
                     </View>
                   </View>
@@ -263,9 +263,9 @@ export default function CategoriesScreen() {
                                 </View>
                                 <View style={styles.subExpandIcon}>
                                   {expandedSubCategories.has(subCategory.Id) ? (
-                                    <ChevronDown size={16} color="#7c3aed" strokeWidth={2.5} />
+                                    <ChevronDown size={16} color="#a78bfa" strokeWidth={2.5} />
                                   ) : (
-                                    <ChevronRight size={16} color="#7c3aed" strokeWidth={2.5} />
+                                    <ChevronRight size={16} color="#a78bfa" strokeWidth={2.5} />
                                   )}
                                 </View>
                               </>
@@ -289,7 +289,7 @@ export default function CategoriesScreen() {
                                   <View style={styles.subSubCategoryDot} />
                                   <Text style={styles.subSubCategoryName}>{subSubCategory.Name}</Text>
                                 </View>
-                                <ChevronRight size={14} color="#9ca3af" strokeWidth={2.5} />
+                                <ChevronRight size={14} color="rgba(255, 255, 255, 0.4)" strokeWidth={2.5} />
                               </TouchableOpacity>
                             ))}
                           </View>
@@ -312,16 +312,29 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#0f0f1a',
+  },
+  glowOrb1: {
+    position: 'absolute',
+    top: -100,
+    right: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+  },
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 200,
+    left: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    backgroundColor: 'rgba(139, 92, 246, 0.08)',
   },
   header: {
     paddingBottom: 16,
     paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
   },
   headerContent: {
     gap: 14,
@@ -332,54 +345,54 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: {
-    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
+    fontSize: 26,
+    fontWeight: '800',
     color: '#fff',
-    letterSpacing: -1,
+    letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
   statsCompact: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  statBoxCompact: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    borderColor: 'rgba(139, 92, 246, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
   },
   statTextCompact: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.8)',
-    letterSpacing: 0.5,
-    fontFamily: 'MarkGEOCAPS-Regular',
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.6)',
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#bbb',
-    fontFamily: 'MarkGEO-Regular',
   },
   scrollView: {
     flex: 1,
@@ -396,36 +409,33 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#fff',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.5)',
     textAlign: 'center',
     lineHeight: 22,
     fontFamily: 'MarkGEO-Regular',
   },
   categoryCard: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 18,
-    padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    padding: 16,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   categoryHeader: {
     flexDirection: 'row',
@@ -439,34 +449,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   categoryIconBg: {
-    width: 52,
-    height: 52,
+    width: 48,
+    height: 48,
     borderRadius: 14,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   categoryInfo: {
     flex: 1,
   },
   categoryLabel: {
-    fontSize: 11,
-    color: '#9ca3af',
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.5)',
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 4,
-    fontFamily: 'MarkGEOCAPS-Regular',
   },
   categoryName: {
-    fontSize: 17,
-    fontWeight: '900',
-    color: '#111827',
-    letterSpacing: -0.5,
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+    letterSpacing: -0.3,
     fontFamily: 'MarkGEO-Regular',
   },
   categoryHeaderRight: {
@@ -475,23 +482,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   countBadge: {
-    backgroundColor: '#ede9fe',
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   countText: {
     fontSize: 13,
-    fontWeight: '900',
-    color: '#7c3aed',
+    fontWeight: '800',
+    color: '#a78bfa',
     letterSpacing: -0.2,
-    fontFamily: 'MarkGEO-Regular',
   },
   expandIconBg: {
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -499,7 +507,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
     gap: 8,
   },
   subCategoryWrapper: {
@@ -510,8 +518,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 12,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   subCategoryLeft: {
     flexDirection: 'row',
@@ -523,12 +533,12 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#7c3aed',
+    backgroundColor: '#8b5cf6',
   },
   subCategoryName: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: -0.1,
     flex: 1,
     fontFamily: 'MarkGEO-Regular',
@@ -539,17 +549,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   subCountBadge: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
   },
   subCountText: {
     fontSize: 11,
-    fontWeight: '800',
-    color: '#6b7280',
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.5)',
     letterSpacing: -0.2,
-    fontFamily: 'MarkGEO-Regular',
   },
   subExpandIcon: {
     width: 24,
@@ -567,10 +576,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(139, 92, 246, 0.05)',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(139, 92, 246, 0.1)',
   },
   subSubCategoryLeft: {
     flexDirection: 'row',
@@ -586,8 +595,8 @@ const styles = StyleSheet.create({
   },
   subSubCategoryName: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#6b7280',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.6)',
     flex: 1,
     fontFamily: 'MarkGEO-Regular',
   },

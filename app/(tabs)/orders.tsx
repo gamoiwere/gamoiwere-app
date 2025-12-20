@@ -27,20 +27,17 @@ export default function OrdersScreen() {
 
   const checkUserAndLoadOrders = async () => {
     try {
-      console.log('👤 Checking user...');
       const currentUser = await authService.getUser();
-      console.log('👤 User:', currentUser ? 'Found' : 'Not found');
       setUser(currentUser);
 
       if (currentUser) {
         const token = await authService.getToken();
-        console.log('🔑 Token:', token ? 'Found' : 'Not found');
         if (token) {
           await loadOrders('ALL');
         }
       }
     } catch (error) {
-      console.error('❌ Error in checkUserAndLoadOrders:', error);
+      console.error('Error in checkUserAndLoadOrders:', error);
     } finally {
       setLoading(false);
     }
@@ -50,8 +47,6 @@ export default function OrdersScreen() {
     try {
       const token = await authService.getToken();
       if (!token) throw new Error('არ ხართ ავტორიზებული');
-
-      console.log('📦 Loading orders with status:', status);
 
       let response;
       if (status && status !== 'ALL') {
@@ -75,38 +70,29 @@ export default function OrdersScreen() {
       }
 
       const responseText = await response.text();
-      console.log('📦 Raw Response:', responseText.substring(0, 200));
 
       let data;
       try {
         data = JSON.parse(responseText);
       } catch (parseError) {
-        console.error('❌ JSON Parse Error:', parseError);
         throw new Error('სერვერის პასუხი არასწორია');
       }
 
-      console.log('📦 Parsed Data:', data);
-
       if (!response.ok) {
-        console.error('❌ API Error:', data);
         throw new Error(data.message || 'შეკვეთების ჩატვირთვა ვერ მოხერხდა');
       }
 
-      // Check if response is an array (direct orders array) or object with orders property
       let orders = [];
       let total = 0;
 
       if (Array.isArray(data)) {
         orders = data;
         total = data.length;
-        console.log('📦 Direct array response:', { ordersCount: orders.length });
       } else {
         orders = data.orders || [];
         total = data.total || orders.length;
-        console.log('📦 Object response:', { success: data.success, total: data.total, ordersCount: orders.length });
       }
 
-      console.log('✅ Setting orders:', orders.length);
       setOrders(orders);
 
       if (status === 'ALL' || !status) {
@@ -135,12 +121,12 @@ export default function OrdersScreen() {
 
   const getStatusInfo = (status: string) => {
     const statusMap: { [key: string]: { icon: any; color: string; bgColor: string; text: string } } = {
-      PENDING: { icon: Clock, color: '#f59e0b', bgColor: '#fef3c7', text: 'მუშავდება' },
-      PROCESSING: { icon: Package, color: '#3b82f6', bgColor: '#dbeafe', text: 'მზადდება' },
-      PAID: { icon: CreditCard, color: '#10b981', bgColor: '#d1fae5', text: 'გადახდილია' },
-      SHIPPED: { icon: Truck, color: '#6e39ea', bgColor: '#ede9fe', text: 'გზაშია' },
-      DELIVERED: { icon: CheckCircle, color: '#10b981', bgColor: '#d1fae5', text: 'მიწოდებულია' },
-      CANCELLED: { icon: XCircle, color: '#ef4444', bgColor: '#fee2e2', text: 'გაუქმებულია' },
+      PENDING: { icon: Clock, color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.15)', text: 'მუშავდება' },
+      PROCESSING: { icon: Package, color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.15)', text: 'მზადდება' },
+      PAID: { icon: CreditCard, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'გადახდილია' },
+      SHIPPED: { icon: Truck, color: '#8b5cf6', bgColor: 'rgba(139, 92, 246, 0.15)', text: 'გზაშია' },
+      DELIVERED: { icon: CheckCircle, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'მიწოდებულია' },
+      CANCELLED: { icon: XCircle, color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.15)', text: 'გაუქმებულია' },
     };
     return statusMap[status] || statusMap.PENDING;
   };
@@ -175,7 +161,6 @@ export default function OrdersScreen() {
               counts[status] = data.total || 0;
             }
           } catch (error) {
-            console.error(`Error loading count for ${status}:`, error);
             counts[status] = 0;
           }
         })
@@ -197,16 +182,25 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          colors={['#0f0f1a', '#16213e']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 20 }]}
-        >
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerSubtitle}>თქვენი</Text>
-            <Text style={styles.headerTitle}>შეკვეთები</Text>
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+          <View style={styles.headerContent}>
+            <View style={styles.titleRow}>
+              <View style={styles.titleContainer}>
+                <View style={styles.iconBadge}>
+                  <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.headerTitle}>შეკვეთები</Text>
+              </View>
+            </View>
           </View>
-        </LinearGradient>
+        </View>
         <View style={styles.loadingContainer}>
           <Loader />
         </View>
@@ -219,28 +213,32 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+          colors={['#0f0f1a', '#16213e']}
           start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.header, { paddingTop: insets.top + 20 }]}
-        >
-          <View style={styles.titleContainer}>
-            <Text style={styles.headerSubtitle}>თქვენი</Text>
-            <Text style={styles.headerTitle}>შეკვეთები</Text>
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
+        <View style={styles.glowOrb1} />
+        <View style={styles.glowOrb2} />
+        <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
+          <View style={styles.headerContent}>
+            <View style={styles.titleRow}>
+              <View style={styles.titleContainer}>
+                <View style={styles.iconBadge}>
+                  <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+                </View>
+                <Text style={styles.headerTitle}>შეკვეთები</Text>
+              </View>
+            </View>
           </View>
-        </LinearGradient>
+        </View>
 
         <View style={styles.authContainer}>
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
-              <LinearGradient
-                colors={['#6e39ea', '#8b5cf6']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.authIcon}
-              >
-                <ShoppingBag size={48} color="#fff" strokeWidth={2} />
-              </LinearGradient>
+              <View style={styles.authIcon}>
+                <ShoppingBag size={48} color="#a78bfa" strokeWidth={2} />
+              </View>
             </View>
 
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
@@ -253,15 +251,8 @@ export default function OrdersScreen() {
               onPress={() => router.push('/auth/login')}
               activeOpacity={0.9}
             >
-              <LinearGradient
-                colors={['#6e39ea', '#8b5cf6']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.authButtonGradient}
-              >
-                <Text style={styles.authButtonText}>შესვლა</Text>
-                <ChevronRight size={20} color="#fff" strokeWidth={3} />
-              </LinearGradient>
+              <Text style={styles.authButtonText}>შესვლა</Text>
+              <ChevronRight size={20} color="#fff" strokeWidth={3} />
             </TouchableOpacity>
           </View>
         </View>
@@ -281,21 +272,26 @@ export default function OrdersScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#7c3aed', '#8b5cf6', '#a78bfa']}
+        colors={['#0f0f1a', '#16213e']}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.header, { paddingTop: insets.top + 12 }]}
-      >
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFillObject}
+      />
+      <View style={styles.glowOrb1} />
+      <View style={styles.glowOrb2} />
+
+      <View style={[styles.header, { paddingTop: insets.top + 12 }]}>
         <View style={styles.headerContent}>
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
+              <View style={styles.iconBadge}>
+                <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+              </View>
               <Text style={styles.headerTitle}>შეკვეთები</Text>
             </View>
             <View style={styles.statsCompact}>
-              <View style={styles.statBoxCompact}>
-                <Text style={styles.statNumberCompact}>{totalCount}</Text>
-                <Text style={styles.statTextCompact}>სულ</Text>
-              </View>
+              <Text style={styles.statNumberCompact}>{totalCount}</Text>
+              <Text style={styles.statTextCompact}>სულ</Text>
             </View>
           </View>
 
@@ -320,7 +316,7 @@ export default function OrdersScreen() {
                   <View style={[styles.filterIconBg, isActive && styles.filterIconBgActive]}>
                     <Icon
                       size={16}
-                      color={isActive ? '#6e39ea' : '#9ca3af'}
+                      color={isActive ? '#8b5cf6' : 'rgba(255, 255, 255, 0.5)'}
                       strokeWidth={2.5}
                     />
                   </View>
@@ -337,20 +333,20 @@ export default function OrdersScreen() {
             })}
           </ScrollView>
         </View>
-      </LinearGradient>
+      </View>
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6e39ea" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
         }
       >
         <View style={styles.content}>
           {orders.length === 0 ? (
             <View style={styles.emptyState}>
               <View style={styles.emptyIconCircle}>
-                <Package size={64} color="#d1d5db" strokeWidth={1.5} />
+                <Package size={64} color="rgba(255, 255, 255, 0.3)" strokeWidth={1.5} />
               </View>
               <Text style={styles.emptyTitle}>შეკვეთები არ მოიძებნა</Text>
               <Text style={styles.emptySubtitle}>
@@ -365,15 +361,8 @@ export default function OrdersScreen() {
                   onPress={() => router.push('/(tabs)')}
                   activeOpacity={0.9}
                 >
-                  <LinearGradient
-                    colors={['#6e39ea', '#8b5cf6']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={styles.shopNowGradient}
-                  >
-                    <ShoppingBag size={20} color="#fff" strokeWidth={2.5} />
-                    <Text style={styles.shopNowText}>დაიწყე შოპინგი</Text>
-                  </LinearGradient>
+                  <ShoppingBag size={20} color="#fff" strokeWidth={2.5} />
+                  <Text style={styles.shopNowText}>დაიწყე შოპინგი</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -409,7 +398,7 @@ export default function OrdersScreen() {
                               <Image source={{ uri: item.imageUrl }} style={styles.itemImage} />
                             ) : (
                               <View style={styles.itemImagePlaceholder}>
-                                <Package size={16} color="#9ca3af" strokeWidth={2} />
+                                <Package size={16} color="rgba(255, 255, 255, 0.4)" strokeWidth={2} />
                               </View>
                             )}
                           </View>
@@ -437,11 +426,11 @@ export default function OrdersScreen() {
                   <View style={styles.orderFooter}>
                     <View style={styles.orderDetails}>
                       <View style={styles.detailRow}>
-                        <MapPin size={16} color="#9ca3af" strokeWidth={2} />
+                        <MapPin size={16} color="rgba(255, 255, 255, 0.4)" strokeWidth={2} />
                         <Text style={styles.detailText}>{order.shippingCity}</Text>
                       </View>
                       <View style={styles.detailRow}>
-                        <Calendar size={16} color="#9ca3af" strokeWidth={2} />
+                        <Calendar size={16} color="rgba(255, 255, 255, 0.4)" strokeWidth={2} />
                         <Text style={styles.detailText}>{formatDate(order.createdAt)}</Text>
                       </View>
                     </View>
@@ -459,7 +448,7 @@ export default function OrdersScreen() {
                     activeOpacity={0.7}
                   >
                     <Text style={styles.viewMoreText}>დეტალები</Text>
-                    <ChevronRight size={16} color="#6e39ea" strokeWidth={2.5} />
+                    <ChevronRight size={16} color="#a78bfa" strokeWidth={2.5} />
                   </TouchableOpacity>
                 </View>
               );
@@ -476,16 +465,29 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#0f0f1a',
+  },
+  glowOrb1: {
+    position: 'absolute',
+    top: -100,
+    right: -100,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+  },
+  glowOrb2: {
+    position: 'absolute',
+    bottom: 200,
+    left: -150,
+    width: 350,
+    height: 350,
+    borderRadius: 175,
+    backgroundColor: 'rgba(139, 92, 246, 0.08)',
   },
   header: {
     paddingBottom: 16,
     paddingHorizontal: 20,
-    shadowColor: '#7c3aed',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 12,
   },
   headerContent: {
     gap: 14,
@@ -496,54 +498,54 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: {
-    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconBadge: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
+    fontSize: 26,
+    fontWeight: '800',
     color: '#fff',
-    letterSpacing: -1,
+    letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
   statsCompact: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-  },
-  statBoxCompact: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    borderColor: 'rgba(139, 92, 246, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
-    fontFamily: 'MarkGEO-Regular',
   },
   statTextCompact: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.8)',
-    letterSpacing: 0.5,
-    fontFamily: 'MarkGEOCAPS-Regular',
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.6)',
   },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingBottom: 100,
-    gap: 16,
-  },
-  loadingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#bbb',
-    fontFamily: 'MarkGEO-Regular',
   },
   authContainer: {
     flex: 1,
@@ -553,17 +555,14 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: '#fff',
-    borderRadius: 32,
-    padding: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 28,
+    padding: 36,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    elevation: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -572,49 +571,40 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   authTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#fff',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.6)',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
+    marginBottom: 28,
     fontFamily: 'MarkGEO-Regular',
   },
   authButton: {
-    width: '100%',
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  authButtonGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 18,
+    width: '100%',
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
+    paddingVertical: 16,
     gap: 8,
   },
   authButtonText: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
     fontFamily: 'MarkGEO-Regular',
   },
@@ -623,62 +613,59 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     paddingHorizontal: 20,
-    gap: 12,
+    gap: 10,
   },
   filterCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
     gap: 8,
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   filterCardActive: {
-    backgroundColor: '#fff',
-    borderColor: '#fff',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(139, 92, 246, 0.3)',
   },
   filterIconBg: {
     width: 30,
     height: 30,
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   filterIconBgActive: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
   },
   filterLabel: {
     fontSize: 13,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.85)',
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontFamily: 'MarkGEO-Regular',
   },
   filterLabelActive: {
-    color: '#1a1a1a',
+    color: '#fff',
   },
   filterBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
-    minWidth: 24,
-    alignItems: 'center',
   },
   filterBadgeActive: {
-    backgroundColor: '#7c3aed',
+    backgroundColor: 'rgba(139, 92, 246, 0.25)',
   },
   filterCount: {
     fontSize: 11,
-    fontWeight: '800',
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'MarkGEO-Regular',
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.5)',
   },
   filterCountActive: {
-    color: '#fff',
+    color: '#a78bfa',
   },
   scrollView: {
     flex: 1,
@@ -695,119 +682,105 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   emptyTitle: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#fff',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.5)',
     textAlign: 'center',
     lineHeight: 22,
-    marginBottom: 32,
     fontFamily: 'MarkGEO-Regular',
+    marginBottom: 24,
   },
   shopNowButton: {
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#6e39ea',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-  },
-  shopNowGradient: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 32,
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
     paddingVertical: 16,
-    gap: 10,
+    paddingHorizontal: 28,
+    gap: 8,
   },
   shopNowText: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     color: '#fff',
     fontFamily: 'MarkGEO-Regular',
   },
   orderCard: {
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 18,
-    padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    padding: 16,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: 'rgba(139, 92, 246, 0.15)',
   },
   orderHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    justifyContent: 'space-between',
+    marginBottom: 14,
   },
   orderLeft: {
-    flex: 1,
+    gap: 2,
   },
   orderLabel: {
     fontSize: 11,
-    color: '#9ca3af',
     fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.5)',
     textTransform: 'uppercase',
     letterSpacing: 1,
-    marginBottom: 4,
-    fontFamily: 'MarkGEOCAPS-Regular',
   },
   orderNumber: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#111827',
-    letterSpacing: -0.5,
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#fff',
+    letterSpacing: -0.3,
     fontFamily: 'MarkGEO-Regular',
   },
   statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 16,
     gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
   statusLabel: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     fontFamily: 'MarkGEO-Regular',
   },
   itemsContainer: {
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 14,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.06)',
   },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    marginBottom: 12,
-    padding: 12,
-    backgroundColor: '#f9fafb',
-    borderRadius: 16,
   },
   itemImageWrapper: {
-    width: 56,
-    height: 56,
-    borderRadius: 14,
+    width: 48,
+    height: 48,
+    borderRadius: 10,
     overflow: 'hidden',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   itemImage: {
     width: '100%',
@@ -816,7 +789,6 @@ const styles = StyleSheet.create({
   itemImagePlaceholder: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#e5e7eb',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -825,63 +797,59 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 6,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 4,
     fontFamily: 'MarkGEO-Regular',
   },
   itemBottom: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   itemQty: {
     fontSize: 12,
-    fontWeight: '600',
-    color: '#6b7280',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.5)',
     fontFamily: 'MarkGEO-Regular',
   },
   itemPrice: {
-    fontSize: 15,
-    fontWeight: '900',
-    color: '#7c3aed',
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#a78bfa',
     fontFamily: 'MarkGEO-Regular',
   },
   moreItems: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 8,
     alignSelf: 'flex-start',
   },
   moreItemsText: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#7c3aed',
+    fontWeight: '600',
+    color: '#a78bfa',
     fontFamily: 'MarkGEO-Regular',
   },
   orderFooter: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginBottom: 16,
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#f3f4f6',
+    marginBottom: 14,
   },
   orderDetails: {
-    flex: 1,
-    gap: 8,
+    gap: 6,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
   },
   detailText: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#6b7280',
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.6)',
     fontFamily: 'MarkGEO-Regular',
   },
   totalWrapper: {
@@ -889,17 +857,14 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 11,
-    color: '#9ca3af',
     fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 4,
-    fontFamily: 'MarkGEOCAPS-Regular',
+    color: 'rgba(255, 255, 255, 0.5)',
+    marginBottom: 2,
   },
   totalPrice: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#111827',
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#fff',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -909,13 +874,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     paddingVertical: 12,
-    backgroundColor: '#f9fafb',
-    borderRadius: 14,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
   },
   viewMoreText: {
     fontSize: 14,
-    fontWeight: '800',
-    color: '#7c3aed',
+    fontWeight: '700',
+    color: '#a78bfa',
     fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {
