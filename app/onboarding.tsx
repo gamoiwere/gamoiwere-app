@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ImageBackground, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image, StatusBar } from 'react-native';
 import { router } from 'expo-router';
 import { ArrowRight } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -50,58 +50,59 @@ export default function OnboardingScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <ImageBackground
+      
+      <Image
         source={currentSlide.image}
         style={styles.backgroundImage}
         resizeMode="cover"
+      />
+      
+      <LinearGradient
+        colors={['rgba(15, 15, 26, 0.3)', 'rgba(15, 15, 26, 0.7)', 'rgba(15, 15, 26, 0.95)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.overlay}
       >
-        <LinearGradient
-          colors={['rgba(15, 15, 26, 0.4)', 'rgba(15, 15, 26, 0.85)', 'rgba(15, 15, 26, 0.98)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={styles.overlay}
-        >
-          <View style={styles.glowOrb} />
+        <View style={styles.glowOrb} />
 
-          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipText}>გამოტოვება</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+          <Text style={styles.skipText}>გამოტოვება</Text>
+        </TouchableOpacity>
 
-          <View style={styles.contentContainer}>
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{currentSlide.title}</Text>
-              <Text style={styles.subtitle}>{currentSlide.subtitle}</Text>
-            </View>
-
-            <View style={styles.bottomContainer}>
-              <View style={styles.pagination}>
-                {onboardingData.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.paginationDot,
-                      index === currentIndex && styles.paginationDotActive,
-                    ]}
-                  />
-                ))}
-              </View>
-
-              <TouchableOpacity
-                style={styles.nextButton}
-                onPress={handleNext}
-                activeOpacity={0.9}
-              >
-                <Text style={styles.nextButtonText}>
-                  {currentIndex === onboardingData.length - 1 ? 'დაწყება' : 'შემდეგი'}
-                </Text>
-                <View style={styles.arrowContainer}>
-                  <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
-                </View>
-              </TouchableOpacity>
-            </View>
+        <View style={styles.contentContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>{currentSlide.title}</Text>
+            <Text style={styles.subtitle}>{currentSlide.subtitle}</Text>
           </View>
-        </LinearGradient>
-      </ImageBackground>
+
+          <View style={styles.bottomContainer}>
+            <View style={styles.pagination}>
+              {onboardingData.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.paginationDot,
+                    index === currentIndex && styles.paginationDotActive,
+                  ]}
+                />
+              ))}
+            </View>
+
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={handleNext}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.nextButtonText}>
+                {currentIndex === onboardingData.length - 1 ? 'დაწყება' : 'შემდეგი'}
+              </Text>
+              <View style={styles.arrowContainer}>
+                <ArrowRight size={20} color="#fff" strokeWidth={2.5} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </LinearGradient>
     </View>
   );
 }
@@ -112,11 +113,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f0f1a',
   },
   backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
     width: width,
     height: height,
   },
   overlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'space-between',
   },
   glowOrb: {
