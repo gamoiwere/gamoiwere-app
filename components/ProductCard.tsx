@@ -63,21 +63,18 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#0d0f12',
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   imageContainer: {
     width: '100%',
     height: 200,
     position: 'relative',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#111317',
   },
   image: {
     width: '100%',
@@ -90,14 +87,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
   outOfStockBadge: {
     position: 'absolute',
@@ -120,7 +112,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#18181b',
+    color: '#ffffff',
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -137,16 +129,16 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#18181b',
+    color: '#ffffff',
   },
   originalPrice: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#a1a1aa',
+    color: 'rgba(255, 255, 255, 0.5)',
     textDecorationLine: 'line-through',
   },
   discountBadge: {
-    backgroundColor: '#ef4444',
+    backgroundColor: '#7816d6',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,

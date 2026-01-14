@@ -121,7 +121,7 @@ export default function CartScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -133,7 +133,7 @@ export default function CartScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <ShoppingCart size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>კალათა</Text>
               </View>
@@ -152,7 +152,7 @@ export default function CartScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -164,7 +164,7 @@ export default function CartScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <ShoppingCart size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>კალათა</Text>
               </View>
@@ -176,7 +176,7 @@ export default function CartScreen() {
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
               <View style={styles.authIcon}>
-                <ShoppingCart size={48} color="#a78bfa" strokeWidth={2} />
+                <ShoppingCart size={48} color="#7816d6" strokeWidth={2} />
               </View>
             </View>
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
@@ -202,7 +202,7 @@ export default function CartScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#0f0f1a', '#16213e']}
+        colors={['#111317', '#111317']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -215,7 +215,7 @@ export default function CartScreen() {
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
               <View style={styles.iconBadge}>
-                <ShoppingCart size={20} color="#a78bfa" strokeWidth={2.5} />
+                <ShoppingCart size={20} color="#7816d6" strokeWidth={2.5} />
               </View>
               <Text style={styles.headerTitle}>კალათა</Text>
             </View>
@@ -240,7 +240,7 @@ export default function CartScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7816d6" />
         }
       >
         <View style={styles.content}>
@@ -288,14 +288,14 @@ export default function CartScreen() {
                           style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                         >
-                          <Minus size={16} color="#a78bfa" strokeWidth={2.5} />
+                          <Minus size={16} color="#7816d6" strokeWidth={2.5} />
                         </TouchableOpacity>
                         <Text style={styles.quantityText}>{item.quantity}</Text>
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                         >
-                          <Plus size={16} color="#a78bfa" strokeWidth={2.5} />
+                          <Plus size={16} color="#7816d6" strokeWidth={2.5} />
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -341,7 +341,7 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   glowOrb1: {
     position: 'absolute',
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 350,
     borderRadius: 175,
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   header: {
     paddingBottom: 16,
@@ -382,11 +382,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   headerTitle: {
     fontSize: 26,
@@ -399,12 +399,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.25)',
+    borderColor: 'rgba(120, 22, 214, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
@@ -418,11 +418,11 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.6)',
   },
   summaryCard: {
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   summaryRow: {
     flexDirection: 'row',
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -472,11 +472,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   authTitle: {
     fontSize: 26,
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     gap: 8,
@@ -524,12 +524,12 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   emptyTitle: {
     fontSize: 22,
@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 28,
@@ -569,7 +569,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   itemImage: {
     width: 80,
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   variationTag: {
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 16,
     fontWeight: '800',
-    color: '#a78bfa',
+    color: '#7816d6',
     fontFamily: 'MarkGEO-Regular',
   },
   quantityControls: {
@@ -625,13 +625,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 4,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   quantityButton: {
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 18,
     gap: 10,

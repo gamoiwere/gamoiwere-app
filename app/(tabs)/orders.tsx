@@ -124,7 +124,7 @@ export default function OrdersScreen() {
       PENDING: { icon: Clock, color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.15)', text: 'მუშავდება' },
       PROCESSING: { icon: Package, color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.15)', text: 'მზადდება' },
       PAID: { icon: CreditCard, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'გადახდილია' },
-      SHIPPED: { icon: Truck, color: '#8b5cf6', bgColor: 'rgba(139, 92, 246, 0.15)', text: 'გზაშია' },
+      SHIPPED: { icon: Truck, color: '#7816d6', bgColor: 'rgba(120, 22, 214, 0.15)', text: 'გზაშია' },
       DELIVERED: { icon: CheckCircle, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'მიწოდებულია' },
       CANCELLED: { icon: XCircle, color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.15)', text: 'გაუქმებულია' },
     };
@@ -182,7 +182,7 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -194,7 +194,7 @@ export default function OrdersScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <Package size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>შეკვეთები</Text>
               </View>
@@ -213,7 +213,7 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -225,7 +225,7 @@ export default function OrdersScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <Package size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>შეკვეთები</Text>
               </View>
@@ -237,7 +237,7 @@ export default function OrdersScreen() {
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
               <View style={styles.authIcon}>
-                <ShoppingBag size={48} color="#a78bfa" strokeWidth={2} />
+                <ShoppingBag size={48} color="#7816d6" strokeWidth={2} />
               </View>
             </View>
 
@@ -272,7 +272,7 @@ export default function OrdersScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#0f0f1a', '#16213e']}
+        colors={['#111317', '#111317']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -285,7 +285,7 @@ export default function OrdersScreen() {
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
               <View style={styles.iconBadge}>
-                <Package size={20} color="#a78bfa" strokeWidth={2.5} />
+                <Package size={20} color="#7816d6" strokeWidth={2.5} />
               </View>
               <Text style={styles.headerTitle}>შეკვეთები</Text>
             </View>
@@ -316,7 +316,7 @@ export default function OrdersScreen() {
                   <View style={[styles.filterIconBg, isActive && styles.filterIconBgActive]}>
                     <Icon
                       size={16}
-                      color={isActive ? '#8b5cf6' : 'rgba(255, 255, 255, 0.5)'}
+                      color={isActive ? '#7816d6' : 'rgba(255, 255, 255, 0.5)'}
                       strokeWidth={2.5}
                     />
                   </View>
@@ -339,7 +339,7 @@ export default function OrdersScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7816d6" />
         }
       >
         <View style={styles.content}>
@@ -448,7 +448,7 @@ export default function OrdersScreen() {
                     activeOpacity={0.7}
                   >
                     <Text style={styles.viewMoreText}>დეტალები</Text>
-                    <ChevronRight size={16} color="#a78bfa" strokeWidth={2.5} />
+                    <ChevronRight size={16} color="#7816d6" strokeWidth={2.5} />
                   </TouchableOpacity>
                 </View>
               );
@@ -465,7 +465,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   glowOrb1: {
     position: 'absolute',
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 350,
     borderRadius: 175,
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   header: {
     paddingBottom: 16,
@@ -506,11 +506,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   headerTitle: {
     fontSize: 26,
@@ -523,12 +523,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.25)',
+    borderColor: 'rgba(120, 22, 214, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
@@ -562,7 +562,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -571,11 +571,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   authTitle: {
     fontSize: 26,
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     gap: 8,
@@ -627,8 +627,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   filterCardActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   filterIconBg: {
     width: 30,
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterIconBgActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
   },
   filterLabel: {
     fontSize: 13,
@@ -657,7 +657,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   filterBadgeActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.25)',
+    backgroundColor: 'rgba(120, 22, 214, 0.25)',
   },
   filterCount: {
     fontSize: 11,
@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.5)',
   },
   filterCountActive: {
-    color: '#a78bfa',
+    color: '#7816d6',
   },
   scrollView: {
     flex: 1,
@@ -682,12 +682,12 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   emptyTitle: {
     fontSize: 22,
@@ -708,7 +708,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 28,
@@ -725,7 +725,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -816,20 +816,20 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#a78bfa',
+    color: '#7816d6',
     fontFamily: 'MarkGEO-Regular',
   },
   moreItems: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 8,
     alignSelf: 'flex-start',
   },
   moreItemsText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#a78bfa',
+    color: '#7816d6',
     fontFamily: 'MarkGEO-Regular',
   },
   orderFooter: {
@@ -874,15 +874,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     paddingVertical: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   viewMoreText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#a78bfa',
+    color: '#7816d6',
     fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {

@@ -58,12 +58,11 @@ export default function OnboardingScreen() {
       />
       
       <LinearGradient
-        colors={['rgba(15, 15, 26, 0.3)', 'rgba(15, 15, 26, 0.7)', 'rgba(15, 15, 26, 0.95)']}
+        colors={['rgba(17, 19, 23, 0.3)', 'rgba(17, 19, 23, 0.7)', 'rgba(17, 19, 23, 0.95)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.overlay}
       >
-        <View style={styles.glowOrb} />
 
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
           <Text style={styles.skipText}>გამოტოვება</Text>
@@ -110,7 +109,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   backgroundImage: {
     position: 'absolute',
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
   },
   skipButton: {
     position: 'absolute',
@@ -138,10 +137,10 @@ const styles = StyleSheet.create({
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: 'rgba(139, 92, 246, 0.25)',
+    backgroundColor: 'rgba(120, 22, 214, 0.25)',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   skipText: {
     color: '#fff',
@@ -183,17 +182,17 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    backgroundColor: 'rgba(120, 22, 214, 0.3)',
   },
   paginationDotActive: {
     width: 36,
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
   },
   nextButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 18,
     paddingVertical: 18,
     paddingHorizontal: 28,

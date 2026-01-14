@@ -151,21 +151,18 @@ export default function LoginScreen() {
 
   const getBiometricIcon = () => {
     if (biometricType.includes('Face')) {
-      return <Scan size={24} color="#a78bfa" strokeWidth={2} />;
+      return <Scan size={24} color="#7816d6" strokeWidth={2} />;
     }
-    return <Fingerprint size={24} color="#a78bfa" strokeWidth={2} />;
+    return <Fingerprint size={24} color="#7816d6" strokeWidth={2} />;
   };
 
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+        colors={['#111317', '#111317', '#111317']}
         style={styles.background}
       />
       
-      <View style={styles.glowOrb1} />
-      <View style={styles.glowOrb2} />
-      <View style={styles.glowOrb3} />
 
       <SuccessNotification
         visible={showSuccess}
@@ -184,7 +181,7 @@ export default function LoginScreen() {
         >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.replace('/onboarding')}>
-              <ArrowLeft size={20} color="#a78bfa" strokeWidth={2.5} />
+              <ArrowLeft size={20} color="#7816d6" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
@@ -202,9 +199,9 @@ export default function LoginScreen() {
               <View style={styles.biometricQuickLoginContent}>
                 <View style={styles.biometricIconWrapper}>
                   {biometricType.includes('Face') ? (
-                    <Scan size={32} color="#a78bfa" strokeWidth={2} />
+                    <Scan size={32} color="#7816d6" strokeWidth={2} />
                   ) : (
-                    <Fingerprint size={32} color="#a78bfa" strokeWidth={2} />
+                    <Fingerprint size={32} color="#7816d6" strokeWidth={2} />
                   )}
                 </View>
                 <View style={styles.biometricQuickLoginText}>
@@ -236,7 +233,7 @@ export default function LoginScreen() {
                 styles.inputContainer,
                 focusedInput === 'email' && styles.inputContainerFocused
               ]}>
-                <User size={20} color={focusedInput === 'email' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />
+                <User size={20} color={focusedInput === 'email' ? '#7816d6' : '#6b7280'} strokeWidth={2} />
                 <TextInput
                   style={styles.input}
                   placeholder="შეიყვანეთ მომხმარებელი"
@@ -258,7 +255,7 @@ export default function LoginScreen() {
                 styles.inputContainer,
                 focusedInput === 'password' && styles.inputContainerFocused
               ]}>
-                <Lock size={20} color={focusedInput === 'password' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />
+                <Lock size={20} color={focusedInput === 'password' ? '#7816d6' : '#6b7280'} strokeWidth={2} />
                 <TextInput
                   style={styles.input}
                   placeholder="შეიყვანეთ პაროლი"
@@ -275,7 +272,7 @@ export default function LoginScreen() {
                   style={styles.eyeButton}
                 >
                   {showPassword ? (
-                    <Eye size={20} color="#a78bfa" strokeWidth={2} />
+                    <Eye size={20} color="#7816d6" strokeWidth={2} />
                   ) : (
                     <EyeOff size={20} color="#6b7280" strokeWidth={2} />
                   )}
@@ -306,7 +303,7 @@ export default function LoginScreen() {
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={loading ? ['#374151', '#374151'] : ['#8b5cf6', '#a855f7']}
+                colors={loading ? ['#374151', '#374151'] : ['#7816d6', '#7816d6']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.buttonGradient}
@@ -358,7 +355,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   background: {
     position: 'absolute',
@@ -374,7 +371,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -411,9 +408,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -433,12 +430,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   biometricQuickLoginButton: {
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   biometricQuickLoginContent: {
     flexDirection: 'row',
@@ -449,11 +446,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 16,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   biometricQuickLoginText: {
     flex: 1,
@@ -506,8 +503,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   inputContainerFocused: {
-    borderColor: '#8b5cf6',
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    borderColor: '#7816d6',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   input: {
     flex: 1,
@@ -540,8 +537,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   checkboxChecked: {
-    backgroundColor: '#8b5cf6',
-    borderColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
+    borderColor: '#7816d6',
   },
   checkmark: {
     width: 10,
@@ -556,7 +553,7 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     fontSize: 14,
-    color: '#a78bfa',
+    color: '#7816d6',
     fontWeight: '600',
   },
   button: {
@@ -636,7 +633,7 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 15,
-    color: '#a78bfa',
+    color: '#7816d6',
     fontWeight: '700',
   },
   modalOverlay: {
@@ -647,14 +644,14 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: '#1a1a2e',
+    backgroundColor: '#111317',
     borderRadius: 24,
     padding: 28,
     width: '100%',
     maxWidth: 380,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -671,12 +668,12 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   modalTitle: {
     fontSize: 22,

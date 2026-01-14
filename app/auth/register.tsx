@@ -146,7 +146,7 @@ export default function RegisterScreen() {
         {options?.showToggle && (
           <TouchableOpacity onPress={options.onToggle} style={styles.eyeButton}>
             {options.toggleValue ? (
-              <Eye size={20} color="#a78bfa" strokeWidth={2} />
+              <Eye size={20} color="#7816d6" strokeWidth={2} />
             ) : (
               <EyeOff size={20} color="#6b7280" strokeWidth={2} />
             )}
@@ -159,7 +159,7 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+        colors={['#111317', '#111317', '#111317']}
         style={styles.background}
       />
       
@@ -183,7 +183,7 @@ export default function RegisterScreen() {
         >
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-              <ArrowLeft size={20} color="#a78bfa" strokeWidth={2.5} />
+              <ArrowLeft size={20} color="#7816d6" strokeWidth={2.5} />
             </TouchableOpacity>
           </View>
 
@@ -200,7 +200,7 @@ export default function RegisterScreen() {
 
           <View style={styles.form}>
             {renderInput(
-              <User size={20} color={focusedInput === 'fullName' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <User size={20} color={focusedInput === 'fullName' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'სახელი და გვარი',
               'შეიყვანეთ სახელი და გვარი',
               fullName,
@@ -210,7 +210,7 @@ export default function RegisterScreen() {
             )}
 
             {renderInput(
-              <User size={20} color={focusedInput === 'username' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <User size={20} color={focusedInput === 'username' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'მომხმარებელი',
               'შეიყვანეთ მომხმარებელი',
               username,
@@ -219,7 +219,7 @@ export default function RegisterScreen() {
             )}
 
             {renderInput(
-              <Mail size={20} color={focusedInput === 'email' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <Mail size={20} color={focusedInput === 'email' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'ელ-ფოსტა',
               'example@email.com',
               email,
@@ -229,7 +229,7 @@ export default function RegisterScreen() {
             )}
 
             {renderInput(
-              <Phone size={20} color={focusedInput === 'phone' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <Phone size={20} color={focusedInput === 'phone' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'ტელეფონი',
               '+995 555 123 456',
               phone,
@@ -239,7 +239,7 @@ export default function RegisterScreen() {
             )}
 
             {renderInput(
-              <Lock size={20} color={focusedInput === 'password' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <Lock size={20} color={focusedInput === 'password' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'პაროლი',
               'მინ. 6 სიმბოლო',
               password,
@@ -254,7 +254,7 @@ export default function RegisterScreen() {
             )}
 
             {renderInput(
-              <Lock size={20} color={focusedInput === 'confirmPassword' ? '#a78bfa' : '#6b7280'} strokeWidth={2} />,
+              <Lock size={20} color={focusedInput === 'confirmPassword' ? '#7816d6' : '#6b7280'} strokeWidth={2} />,
               'გაიმეორეთ პაროლი',
               'გაიმეორეთ პაროლი',
               confirmPassword,
@@ -289,7 +289,7 @@ export default function RegisterScreen() {
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={loading ? ['#374151', '#374151'] : ['#8b5cf6', '#a855f7']}
+                colors={loading ? ['#374151', '#374151'] : ['#7816d6', '#7816d6']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.buttonGradient}
@@ -341,7 +341,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   background: {
     position: 'absolute',
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -386,9 +386,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -445,8 +445,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   inputContainerFocused: {
-    borderColor: '#8b5cf6',
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    borderColor: '#7816d6',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   input: {
     flex: 1,
@@ -475,8 +475,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   checkboxChecked: {
-    backgroundColor: '#8b5cf6',
-    borderColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
+    borderColor: '#7816d6',
   },
   termsText: {
     fontSize: 14,
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   termsLink: {
-    color: '#a78bfa',
+    color: '#7816d6',
     fontWeight: '700',
   },
   button: {
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 15,
-    color: '#a78bfa',
+    color: '#7816d6',
     fontWeight: '700',
   },
 });

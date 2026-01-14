@@ -57,7 +57,7 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+          colors={['#111317', '#111317', '#111317']}
           style={styles.background}
         />
         <View style={styles.glowOrb1} />
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+          colors={['#111317', '#111317', '#111317']}
           style={styles.background}
         />
         <View style={styles.glowOrb1} />
@@ -91,7 +91,7 @@ export default function ProfileScreen() {
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
               <LinearGradient
-                colors={['#8b5cf6', '#a855f7', '#c084fc']}
+                colors={['#7816d6', '#7816d6', '#c084fc']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.authIcon}
@@ -109,7 +109,7 @@ export default function ProfileScreen() {
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={['#8b5cf6', '#a855f7']}
+                colors={['#7816d6', '#7816d6']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.authButtonGradient}
@@ -128,7 +128,7 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#0f0f1a', '#1a1a2e', '#16213e']}
+        colors={['#111317', '#111317', '#111317']}
         style={styles.background}
       />
       <View style={styles.glowOrb1} />
@@ -153,7 +153,7 @@ export default function ProfileScreen() {
 
         <View style={styles.profileCard}>
           <LinearGradient
-            colors={['rgba(139, 92, 246, 0.15)', 'rgba(168, 85, 247, 0.08)']}
+            colors={['rgba(120, 22, 214, 0.15)', 'rgba(168, 85, 247, 0.08)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.profileCardGradient}
@@ -161,7 +161,7 @@ export default function ProfileScreen() {
             <View style={styles.profileHeader}>
               <View style={styles.avatarContainer}>
                 <LinearGradient
-                  colors={['#8b5cf6', '#a855f7', '#c084fc']}
+                  colors={['#7816d6', '#7816d6', '#c084fc']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.avatarGradient}
@@ -187,7 +187,7 @@ export default function ProfileScreen() {
                 onPress={() => router.push('/profile/edit')}
                 activeOpacity={0.7}
               >
-                <Edit3 size={18} color="#a78bfa" strokeWidth={2} />
+                <Edit3 size={18} color="#7816d6" strokeWidth={2} />
               </TouchableOpacity>
             </View>
 
@@ -210,7 +210,7 @@ export default function ProfileScreen() {
           <View style={styles.balanceCard}>
             <View style={styles.balanceLeft}>
               <View style={styles.balanceIconContainer}>
-                <Wallet size={22} color="#8b5cf6" strokeWidth={2} />
+                <Wallet size={22} color="#7816d6" strokeWidth={2} />
               </View>
               <View>
                 <Text style={styles.balanceLabel}>ბალანსი</Text>
@@ -292,8 +292,8 @@ export default function ProfileScreen() {
             activeOpacity={0.7}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(139, 92, 246, 0.15)' }]}>
-                <Bell size={20} color="#8b5cf6" strokeWidth={2} />
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(120, 22, 214, 0.15)' }]}>
+                <Bell size={20} color="#7816d6" strokeWidth={2} />
               </View>
               <Text style={styles.menuItemText}>შეტყობინებები</Text>
             </View>
@@ -345,7 +345,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   background: {
     position: 'absolute',
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   profileCardGradient: {
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
     borderRadius: 20,
   },
   profileHeader: {
@@ -516,9 +516,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   balanceCode: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#a78bfa',
+    color: '#7816d6',
   },
   feesCard: {
     backgroundColor: 'rgba(245, 158, 11, 0.1)',

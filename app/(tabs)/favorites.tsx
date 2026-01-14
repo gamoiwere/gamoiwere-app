@@ -45,7 +45,7 @@ export default function FavoritesScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -57,7 +57,7 @@ export default function FavoritesScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <Heart size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <Heart size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>ფავორიტები</Text>
               </View>
@@ -76,7 +76,7 @@ export default function FavoritesScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -88,7 +88,7 @@ export default function FavoritesScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <Heart size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <Heart size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>ფავორიტები</Text>
               </View>
@@ -100,7 +100,7 @@ export default function FavoritesScreen() {
           <View style={styles.authCard}>
             <View style={styles.authIconWrapper}>
               <View style={styles.authIcon}>
-                <Heart size={48} color="#a78bfa" strokeWidth={2} />
+                <Heart size={48} color="#7816d6" strokeWidth={2} />
               </View>
             </View>
             <Text style={styles.authTitle}>შედით ანგარიშში</Text>
@@ -125,7 +125,7 @@ export default function FavoritesScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#0f0f1a', '#16213e']}
+        colors={['#111317', '#111317']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -138,7 +138,7 @@ export default function FavoritesScreen() {
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
               <View style={styles.iconBadge}>
-                <Heart size={20} color="#a78bfa" strokeWidth={2.5} />
+                <Heart size={20} color="#7816d6" strokeWidth={2.5} />
               </View>
               <Text style={styles.headerTitle}>ფავორიტები</Text>
             </View>
@@ -154,7 +154,7 @@ export default function FavoritesScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7816d6" />
         }
       >
         <View style={styles.content}>
@@ -185,7 +185,7 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   glowOrb1: {
     position: 'absolute',
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 350,
     borderRadius: 175,
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   header: {
     paddingBottom: 16,
@@ -226,11 +226,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   headerTitle: {
     fontSize: 26,
@@ -243,12 +243,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.25)',
+    borderColor: 'rgba(120, 22, 214, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 400,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -291,11 +291,11 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   authTitle: {
     fontSize: 26,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     gap: 8,
@@ -343,12 +343,12 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   emptyTitle: {
     fontSize: 22,
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
     borderRadius: 16,
     paddingVertical: 16,
     paddingHorizontal: 28,

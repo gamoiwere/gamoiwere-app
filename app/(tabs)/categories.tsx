@@ -112,7 +112,7 @@ export default function CategoriesScreen() {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <LinearGradient
-          colors={['#0f0f1a', '#16213e']}
+          colors={['#111317', '#111317']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -124,7 +124,7 @@ export default function CategoriesScreen() {
             <View style={styles.titleRow}>
               <View style={styles.titleContainer}>
                 <View style={styles.iconBadge}>
-                  <LayoutGrid size={20} color="#a78bfa" strokeWidth={2.5} />
+                  <LayoutGrid size={20} color="#7816d6" strokeWidth={2.5} />
                 </View>
                 <Text style={styles.headerTitle}>კატეგორიები</Text>
               </View>
@@ -142,7 +142,7 @@ export default function CategoriesScreen() {
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       <LinearGradient
-        colors={['#0f0f1a', '#16213e']}
+        colors={['#111317', '#111317']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -155,7 +155,7 @@ export default function CategoriesScreen() {
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
               <View style={styles.iconBadge}>
-                <LayoutGrid size={20} color="#a78bfa" strokeWidth={2.5} />
+                <LayoutGrid size={20} color="#7816d6" strokeWidth={2.5} />
               </View>
               <Text style={styles.headerTitle}>კატეგორიები</Text>
             </View>
@@ -171,7 +171,7 @@ export default function CategoriesScreen() {
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#8b5cf6" />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#7816d6" />
         }
       >
         <View style={styles.content}>
@@ -209,7 +209,7 @@ export default function CategoriesScreen() {
                     <View style={styles.categoryIconBg}>
                       {(() => {
                         const IconComponent = getCategoryIcon(category.Name);
-                        return <IconComponent size={22} color="#a78bfa" strokeWidth={2.5} />;
+                        return <IconComponent size={22} color="#7816d6" strokeWidth={2.5} />;
                       })()}
                     </View>
                     <View style={styles.categoryInfo}>
@@ -225,9 +225,9 @@ export default function CategoriesScreen() {
                     )}
                     <View style={styles.expandIconBg}>
                       {expandedCategories.has(category.Id) ? (
-                        <ChevronDown size={20} color="#a78bfa" strokeWidth={2.5} />
+                        <ChevronDown size={20} color="#7816d6" strokeWidth={2.5} />
                       ) : (
-                        <ChevronRight size={20} color="#a78bfa" strokeWidth={2.5} />
+                        <ChevronRight size={20} color="#7816d6" strokeWidth={2.5} />
                       )}
                     </View>
                   </View>
@@ -263,9 +263,9 @@ export default function CategoriesScreen() {
                                 </View>
                                 <View style={styles.subExpandIcon}>
                                   {expandedSubCategories.has(subCategory.Id) ? (
-                                    <ChevronDown size={16} color="#a78bfa" strokeWidth={2.5} />
+                                    <ChevronDown size={16} color="#7816d6" strokeWidth={2.5} />
                                   ) : (
-                                    <ChevronRight size={16} color="#a78bfa" strokeWidth={2.5} />
+                                    <ChevronRight size={16} color="#7816d6" strokeWidth={2.5} />
                                   )}
                                 </View>
                               </>
@@ -312,7 +312,7 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#111317',
   },
   glowOrb1: {
     position: 'absolute',
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     width: 350,
     height: 350,
     borderRadius: 175,
-    backgroundColor: 'rgba(139, 92, 246, 0.08)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   header: {
     paddingBottom: 16,
@@ -353,11 +353,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   headerTitle: {
     fontSize: 26,
@@ -370,12 +370,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.25)',
+    borderColor: 'rgba(120, 22, 214, 0.25)',
   },
   statNumberCompact: {
     fontSize: 18,
@@ -409,12 +409,12 @@ const styles = StyleSheet.create({
     width: 140,
     height: 140,
     borderRadius: 70,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   emptyTitle: {
     fontSize: 22,
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.2)',
   },
   categoryHeader: {
     flexDirection: 'row',
@@ -452,11 +452,11 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   categoryInfo: {
     flex: 1,
@@ -482,24 +482,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   countBadge: {
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.2)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   countText: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#a78bfa',
+    color: '#7816d6',
     letterSpacing: -0.2,
   },
   expandIconBg: {
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#7816d6',
   },
   subCategoryName: {
     fontSize: 14,
@@ -576,10 +576,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 10,
     paddingHorizontal: 12,
-    backgroundColor: 'rgba(139, 92, 246, 0.05)',
+    backgroundColor: 'rgba(120, 22, 214, 0.05)',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.1)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   subSubCategoryLeft: {
     flexDirection: 'row',
@@ -591,7 +591,7 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: '#a78bfa',
+    backgroundColor: '#7816d6',
   },
   subSubCategoryName: {
     fontSize: 13,
