@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Star, Package, Shield, Truck, X } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Star, Package, X, Plane } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProductCard from '@/components/ProductCard';
 import Loader from '@/components/Loader';
@@ -194,67 +194,66 @@ export default function HomeScreen() {
       >
         <View style={styles.heroSection}>
           <TouchableOpacity activeOpacity={0.95}>
-            <View style={styles.mainHeroCard}>
-              <View style={styles.heroCardGradient}>
-                <View style={styles.heroTopRow}>
-                  <View>
-                    <View style={styles.premiumBadge}>
-                      <Sparkles size={12} color="#fff" strokeWidth={2.5} />
-                      <Text style={styles.premiumText}>პრემიუმ</Text>
+            <LinearGradient
+              colors={['#7816d6', '#9333ea', '#a855f7']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.deliveryHeroCard}
+            >
+              <View style={styles.heroDecoCircle1} />
+              <View style={styles.heroDecoCircle2} />
+              
+              <View style={styles.deliveryContent}>
+                <View style={styles.deliveryLeft}>
+                  <View style={styles.deliveryBadge}>
+                    <Plane size={14} color="#7816d6" strokeWidth={2.5} />
+                    <Text style={styles.deliveryBadgeText}>ავიამიწოდება</Text>
+                  </View>
+                  
+                  <Text style={styles.deliveryTitle}>მიწოდება საქართველოში</Text>
+                  
+                  <View style={styles.deliveryDaysRow}>
+                    <Text style={styles.deliveryDaysNumber}>10-14</Text>
+                    <View style={styles.deliveryDaysLabel}>
+                      <Text style={styles.deliveryDaysText}>სამუშაო</Text>
+                      <Text style={styles.deliveryDaysText}>დღე</Text>
                     </View>
-                    <Text style={styles.heroNumber}>800M+</Text>
-                    <Text style={styles.heroLabel}>პროდუქტი მთელი მსოფლიოდან</Text>
                   </View>
-                  <View style={styles.heroIconCircle}>
-                    <Package size={32} color="#fff" strokeWidth={2} />
-                  </View>
+                  
+                  <Text style={styles.deliverySubtext}>800M+ პროდუქტი მთელი მსოფლიოდან</Text>
                 </View>
-
-                <View style={styles.heroStatsRow}>
-                  <View style={styles.statBox}>
-                    <Text style={styles.statNum}>50K+</Text>
-                    <Text style={styles.statText}>ბრენდი</Text>
-                  </View>
-                  <View style={styles.statDivider} />
-                  <View style={styles.statBox}>
-                    <Text style={styles.statNum}>200K+</Text>
-                    <Text style={styles.statText}>მომხმარებელი</Text>
-                  </View>
-                  <View style={styles.statDivider} />
-                  <View style={styles.statBox}>
-                    <Text style={styles.statNum}>10-14</Text>
-                    <Text style={styles.statText}>დღე</Text>
+                
+                <View style={styles.deliveryRight}>
+                  <View style={styles.planeContainer}>
+                    <View style={styles.planeCircle}>
+                      <Plane size={36} color="#fff" strokeWidth={2} style={{ transform: [{ rotate: '-45deg' }] }} />
+                    </View>
+                    <View style={styles.planePath} />
+                    <View style={styles.planeDot1} />
+                    <View style={styles.planeDot2} />
+                    <View style={styles.planeDot3} />
                   </View>
                 </View>
               </View>
-            </View>
+              
+              <View style={styles.deliveryStatsRow}>
+                <View style={styles.deliveryStat}>
+                  <Text style={styles.deliveryStatNum}>50K+</Text>
+                  <Text style={styles.deliveryStatLabel}>ბრენდი</Text>
+                </View>
+                <View style={styles.deliveryStatDivider} />
+                <View style={styles.deliveryStat}>
+                  <Text style={styles.deliveryStatNum}>200K+</Text>
+                  <Text style={styles.deliveryStatLabel}>მომხმარებელი</Text>
+                </View>
+                <View style={styles.deliveryStatDivider} />
+                <View style={styles.deliveryStat}>
+                  <Text style={styles.deliveryStatNum}>24/7</Text>
+                  <Text style={styles.deliveryStatLabel}>მხარდაჭერა</Text>
+                </View>
+              </View>
+            </LinearGradient>
           </TouchableOpacity>
-
-          <View style={styles.featuresRow}>
-            <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
-              <View style={styles.featureCard}>
-                <View style={styles.compactFeatureIcon}>
-                  <Truck size={18} color="#7816d6" strokeWidth={2.5} />
-                </View>
-                <View style={styles.compactFeatureText}>
-                  <Text style={styles.compactFeatureTitle}>სწრაფი მიწოდება</Text>
-                  <Text style={styles.compactFeatureDesc}>10-14 დღე</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.compactFeature} activeOpacity={0.85}>
-              <View style={styles.featureCard}>
-                <View style={styles.compactFeatureIcon}>
-                  <Shield size={18} color="#7816d6" strokeWidth={2.5} />
-                </View>
-                <View style={styles.compactFeatureText}>
-                  <Text style={styles.compactFeatureTitle}>100% გარანტია</Text>
-                  <Text style={styles.compactFeatureDesc}>დაცული</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </View>
         </View>
 
         <View style={styles.section}>
@@ -458,125 +457,166 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     gap: 12,
   },
-  mainHeroCard: {
-    borderRadius: 20,
+  deliveryHeroCard: {
+    borderRadius: 24,
+    padding: 24,
     overflow: 'hidden',
-    backgroundColor: '#7816d6',
+    position: 'relative',
   },
-  heroCardGradient: {
-    padding: 20,
+  heroDecoCircle1: {
+    position: 'absolute',
+    top: -40,
+    right: -40,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
-  heroTopRow: {
+  heroDecoCircle2: {
+    position: 'absolute',
+    bottom: -30,
+    left: -30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  deliveryContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  premiumBadge: {
+  deliveryLeft: {
+    flex: 1,
+  },
+  deliveryBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
-    marginBottom: 12,
+    gap: 6,
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
     alignSelf: 'flex-start',
+    marginBottom: 14,
   },
-  premiumText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#fff',
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
+  deliveryBadgeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#7816d6',
   },
-  heroNumber: {
-    fontSize: 42,
+  deliveryTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.9)',
+    marginBottom: 12,
+  },
+  deliveryDaysRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 12,
+  },
+  deliveryDaysNumber: {
+    fontSize: 52,
     fontWeight: '900',
     color: '#fff',
-    letterSpacing: -2,
+    letterSpacing: -3,
+    lineHeight: 56,
   },
-  heroLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: 4,
+  deliveryDaysLabel: {},
+  deliveryDaysText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.9)',
+    lineHeight: 20,
   },
-  heroIconCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  deliverySubtext: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  deliveryRight: {
+    marginLeft: 16,
+  },
+  planeContainer: {
+    position: 'relative',
+    width: 80,
+    height: 100,
+  },
+  planeCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  heroStatsRow: {
+  planePath: {
+    position: 'absolute',
+    bottom: 0,
+    left: 10,
+    width: 50,
+    height: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 1,
+    transform: [{ rotate: '45deg' }],
+  },
+  planeDot1: {
+    position: 'absolute',
+    bottom: 8,
+    left: 6,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  planeDot2: {
+    position: 'absolute',
+    bottom: 16,
+    left: 0,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  planeDot3: {
+    position: 'absolute',
+    bottom: 22,
+    left: -6,
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  deliveryStatsRow: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 16,
+    padding: 16,
   },
-  statBox: {
+  deliveryStat: {
     flex: 1,
     alignItems: 'center',
   },
-  statDivider: {
+  deliveryStatDivider: {
     width: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
   },
-  statNum: {
+  deliveryStatNum: {
     fontSize: 18,
     fontWeight: '900',
     color: '#fff',
     letterSpacing: -0.5,
   },
-  statText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.5)',
-    marginTop: 2,
-  },
-  featuresRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  compactFeature: {
-    flex: 1,
-  },
-  featureCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 14,
-    gap: 10,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  compactFeatureIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  compactFeatureText: {
-    flex: 1,
-  },
-  compactFeatureTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#1f2937',
-  },
-  compactFeatureDesc: {
+  deliveryStatLabel: {
     fontSize: 11,
-    fontWeight: '500',
-    color: '#6b7280',
-    marginTop: 1,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginTop: 3,
   },
   section: {
     paddingHorizontal: 8,

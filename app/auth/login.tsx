@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: '#1f2937',
+    color: '#ffffff',
     fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -612,10 +612,10 @@ const styles = StyleSheet.create({
   },
   appleIcon: {
     fontSize: 20,
-    color: '#1f2937',
+    color: '#ffffff',
   },
   appleButtonText: {
-    color: '#1f2937',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   modalEnableButtonText: {
-    color: '#1f2937',
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '700',
   },
