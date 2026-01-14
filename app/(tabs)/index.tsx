@@ -1,15 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, Animated, StatusBar, Modal } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Platform, Animated, StatusBar } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Star, Package, X, Plane } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Star, Package, Plane } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProductCard from '@/components/ProductCard';
 import Loader from '@/components/Loader';
 import { Product } from '@/types';
 import { authService } from '@/services/auth';
-import { biometricService } from '@/services/biometric';
 
 const { width } = Dimensions.get('window');
 
@@ -20,60 +19,11 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState<string>('');
   const scrollY = new Animated.Value(0);
-  
-  const [showBiometricModal, setShowBiometricModal] = useState(false);
-  const [biometricType, setBiometricType] = useState<string>('');
-  const [biometricLoading, setBiometricLoading] = useState(false);
-  const hasCheckedBiometric = useRef(false);
 
   useEffect(() => {
     loadProducts();
     loadUserProfile();
-    checkBiometricSetup();
   }, []);
-  
-  const checkBiometricSetup = async () => {
-    if (hasCheckedBiometric.current) return;
-    hasCheckedBiometric.current = true;
-    
-    try {
-      const isSupported = await biometricService.isBiometricSupported();
-      if (!isSupported) return;
-      
-      const isAlreadyEnabled = await biometricService.isBiometricEnabled();
-      if (isAlreadyEnabled) return;
-      
-      const type = await biometricService.getBiometricType();
-      setBiometricType(type);
-      
-      setTimeout(() => {
-        setShowBiometricModal(true);
-      }, 1000);
-    } catch (error) {
-      console.log('Error checking biometric setup:', error);
-    }
-  };
-  
-  const handleEnableBiometric = async () => {
-    setBiometricLoading(true);
-    try {
-      const result = await biometricService.authenticate(`დაადასტურეთ ${biometricType} გამოყენება`);
-      if (result.success) {
-        const profile = await authService.getProfile();
-        const username = profile?.email || profile?.phone || 'user';
-        await biometricService.enableBiometric(username);
-        setShowBiometricModal(false);
-      }
-    } catch (error) {
-      console.log('Biometric enable error:', error);
-    } finally {
-      setBiometricLoading(false);
-    }
-  };
-  
-  const handleSkipBiometric = () => {
-    setShowBiometricModal(false);
-  };
 
   const loadUserProfile = async () => {
     try {
@@ -316,51 +266,6 @@ export default function HomeScreen() {
 
         <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
-      
-      <Modal
-        visible={showBiometricModal}
-        transparent
-        animationType="fade"
-        onRequestClose={handleSkipBiometric}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.biometricModal}>
-            <TouchableOpacity style={styles.modalCloseBtn} onPress={handleSkipBiometric}>
-              <X size={20} color="#6b7280" />
-            </TouchableOpacity>
-            
-            <View style={styles.biometricIconContainer}>
-              <Text style={styles.biometricEmoji}>
-                {biometricType === 'Face ID' ? '👤' : '👆'}
-              </Text>
-            </View>
-            
-            <Text style={styles.biometricTitle}>
-              {biometricType} ჩართვა
-            </Text>
-            <Text style={styles.biometricSubtitle}>
-              გსურთ {biometricType}-ის გამოყენება სწრაფი შესვლისთვის?
-            </Text>
-            
-            <TouchableOpacity
-              style={[styles.biometricEnableBtn, biometricLoading && styles.disabledBtn]}
-              onPress={handleEnableBiometric}
-              disabled={biometricLoading}
-            >
-              <Text style={styles.biometricEnableBtnText}>
-                {biometricLoading ? 'მოწმდება...' : `ჩართვა ${biometricType}`}
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.biometricSkipBtn}
-              onPress={handleSkipBiometric}
-            >
-              <Text style={styles.biometricSkipBtnText}>არა, მოგვიანებით</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -680,86 +585,5 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 120,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  biometricModal: {
-    backgroundColor: '#ffffff',
-    borderRadius: 24,
-    padding: 32,
-    width: '100%',
-    maxWidth: 340,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    elevation: 8,
-  },
-  modalCloseBtn: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  biometricIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(120, 22, 214, 0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  biometricEmoji: {
-    fontSize: 40,
-  },
-  biometricTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#1f2937',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  biometricSubtitle: {
-    fontSize: 14,
-    color: '#6b7280',
-    textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 20,
-  },
-  biometricEnableBtn: {
-    width: '100%',
-    backgroundColor: '#7816d6',
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  biometricEnableBtnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  biometricSkipBtn: {
-    paddingVertical: 12,
-  },
-  biometricSkipBtnText: {
-    color: '#9ca3af',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  disabledBtn: {
-    opacity: 0.6,
   },
 });
