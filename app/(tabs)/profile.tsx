@@ -637,7 +637,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   menuItem: {
-    backgroundColor: 'rgba(31, 41, 55, 0.6)',
+    backgroundColor: '#ffffff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -645,7 +645,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: 'rgba(75, 85, 99, 0.3)',
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   menuItemLeft: {
     flexDirection: 'row',

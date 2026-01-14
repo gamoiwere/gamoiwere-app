@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="light-content" />
       
       <Image
         source={currentSlide.image}
@@ -58,7 +58,7 @@ export default function OnboardingScreen() {
       />
       
       <LinearGradient
-        colors={['rgba(248, 249, 250, 0.3)', 'rgba(248, 249, 250, 0.7)', 'rgba(248, 249, 250, 0.95)']}
+        colors={['transparent', 'rgba(0, 0, 0, 0.3)', 'rgba(0, 0, 0, 0.85)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.overlay}
@@ -137,11 +137,11 @@ const styles = StyleSheet.create({
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 16,
   },
   skipText: {
-    color: '#7816d6',
+    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: '800',
-    color: '#1f2937',
+    color: '#ffffff',
     marginBottom: 16,
     lineHeight: 42,
     letterSpacing: -0.5,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#6b7280',
+    color: 'rgba(255, 255, 255, 0.8)',
     lineHeight: 26,
   },
   bottomContainer: {
@@ -180,11 +180,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: 'rgba(120, 22, 214, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   paginationDotActive: {
     width: 36,
-    backgroundColor: '#7816d6',
+    backgroundColor: '#ffffff',
   },
   nextButton: {
     flexDirection: 'row',

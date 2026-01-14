@@ -7,9 +7,44 @@ const BIOMETRIC_ENABLED_KEY = 'biometric_enabled';
 const STORED_USERNAME_KEY = 'stored_username';
 const STORED_AUTH_TOKEN_KEY = 'biometric_auth_token';
 
+const secureStoreAvailable = Platform.OS !== 'web';
+
+const secureGet = async (key: string): Promise<string | null> => {
+  if (!secureStoreAvailable) {
+    return null;
+  }
+  try {
+    return await SecureStore.getItemAsync(key);
+  } catch (error) {
+    console.log('SecureStore get error:', error);
+    return null;
+  }
+};
+
+const secureSet = async (key: string, value: string): Promise<void> => {
+  if (!secureStoreAvailable) {
+    throw new Error('Secure storage not available on this platform');
+  }
+  await SecureStore.setItemAsync(key, value);
+};
+
+const secureDelete = async (key: string): Promise<void> => {
+  if (!secureStoreAvailable) {
+    return;
+  }
+  try {
+    await SecureStore.deleteItemAsync(key);
+  } catch (error) {
+    console.log('SecureStore delete error:', error);
+  }
+};
+
 export const biometricService = {
   async isBiometricSupported(): Promise<boolean> {
     try {
+      if (Platform.OS === 'web') {
+        return false;
+      }
       const compatible = await LocalAuthentication.hasHardwareAsync();
       return compatible;
     } catch (error) {
@@ -82,7 +117,7 @@ export const biometricService = {
 
   async isBiometricEnabled(): Promise<boolean> {
     try {
-      const enabled = await SecureStore.getItemAsync(BIOMETRIC_ENABLED_KEY);
+      const enabled = await secureGet(BIOMETRIC_ENABLED_KEY);
       return enabled === 'true';
     } catch (error) {
       console.log('Error checking biometric enabled status:', error);
@@ -97,9 +132,9 @@ export const biometricService = {
         throw new Error('No auth token found');
       }
       
-      await SecureStore.setItemAsync(BIOMETRIC_ENABLED_KEY, 'true');
-      await SecureStore.setItemAsync(STORED_USERNAME_KEY, username);
-      await SecureStore.setItemAsync(STORED_AUTH_TOKEN_KEY, authToken);
+      await secureSet(BIOMETRIC_ENABLED_KEY, 'true');
+      await secureSet(STORED_USERNAME_KEY, username);
+      await secureSet(STORED_AUTH_TOKEN_KEY, authToken);
       console.log('Biometric enabled for user:', username);
     } catch (error) {
       console.log('Error enabling biometric:', error);
@@ -109,9 +144,9 @@ export const biometricService = {
 
   async disableBiometric(): Promise<void> {
     try {
-      await SecureStore.deleteItemAsync(BIOMETRIC_ENABLED_KEY);
-      await SecureStore.deleteItemAsync(STORED_USERNAME_KEY);
-      await SecureStore.deleteItemAsync(STORED_AUTH_TOKEN_KEY);
+      await secureDelete(BIOMETRIC_ENABLED_KEY);
+      await secureDelete(STORED_USERNAME_KEY);
+      await secureDelete(STORED_AUTH_TOKEN_KEY);
       console.log('Biometric disabled');
     } catch (error) {
       console.log('Error disabling biometric:', error);
@@ -120,7 +155,7 @@ export const biometricService = {
 
   async getStoredUsername(): Promise<string | null> {
     try {
-      return await SecureStore.getItemAsync(STORED_USERNAME_KEY);
+      return await secureGet(STORED_USERNAME_KEY);
     } catch (error) {
       console.log('Error getting stored username:', error);
       return null;
@@ -139,7 +174,7 @@ export const biometricService = {
 
   async hasStoredAuthToken(): Promise<boolean> {
     try {
-      const token = await SecureStore.getItemAsync(STORED_AUTH_TOKEN_KEY);
+      const token = await secureGet(STORED_AUTH_TOKEN_KEY);
       return !!token;
     } catch (error) {
       console.log('Error checking stored auth token:', error);
@@ -149,7 +184,7 @@ export const biometricService = {
 
   async restoreAuthSession(): Promise<boolean> {
     try {
-      const storedToken = await SecureStore.getItemAsync(STORED_AUTH_TOKEN_KEY);
+      const storedToken = await secureGet(STORED_AUTH_TOKEN_KEY);
       if (!storedToken) {
         console.log('No stored auth token found');
         return false;
@@ -200,7 +235,7 @@ export const biometricService = {
     try {
       const currentToken = await AsyncStorage.getItem('authToken');
       if (currentToken) {
-        await SecureStore.setItemAsync(STORED_AUTH_TOKEN_KEY, currentToken);
+        await secureSet(STORED_AUTH_TOKEN_KEY, currentToken);
         console.log('Updated stored biometric token');
       }
     } catch (error) {
