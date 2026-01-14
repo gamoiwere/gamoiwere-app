@@ -207,6 +207,10 @@ export const authService = {
     try {
       await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('user');
+      
+      const { biometricService } = await import('./biometric');
+      await biometricService.disableBiometric();
+      console.log('Logged out and cleared biometric data');
     } catch (error) {
       console.error('Logout error:', error);
     }

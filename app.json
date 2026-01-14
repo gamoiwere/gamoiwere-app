@@ -18,7 +18,10 @@
       "bundleIdentifier": "com.gamoiwere.app",
       "icon": "./assets/images/appicon.png",
       "buildNumber": "11",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "გთხოვთ დაუშვათ Face ID ავტორიზაციისთვის"
+      }
     },
     "android": {
       "package": "com.gamoiwere.app",
@@ -37,7 +40,13 @@
       "expo-router",
       "expo-font",
       "expo-web-browser",
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "გთხოვთ დაუშვათ Face ID ავტორიზაციისთვის"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

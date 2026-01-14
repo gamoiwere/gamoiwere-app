@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions, Modal, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
-import { ArrowLeft, EyeOff, Eye, User, Lock } from 'lucide-react-native';
+import { biometricService } from '@/services/biometric';
+import { ArrowLeft, EyeOff, Eye, User, Lock, Scan, X, Check, Fingerprint } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import SuccessNotification from '@/components/SuccessNotification';
@@ -20,14 +21,77 @@ export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [appleAuthAvailable, setAppleAuthAvailable] = useState(false);
+  
+  const [showBiometricModal, setShowBiometricModal] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricType, setBiometricType] = useState('Face ID');
+  const [canQuickLogin, setCanQuickLogin] = useState(false);
+  const [storedUsername, setStoredUsername] = useState<string | null>(null);
+  const [pendingUsername, setPendingUsername] = useState('');
 
   useEffect(() => {
-    const checkAppleAuth = async () => {
-      const isAvailable = await AppleAuthentication.isAvailableAsync();
-      setAppleAuthAvailable(isAvailable);
-    };
     checkAppleAuth();
+    checkBiometricAvailability();
   }, []);
+
+  const checkAppleAuth = async () => {
+    const isAvailable = await AppleAuthentication.isAvailableAsync();
+    setAppleAuthAvailable(isAvailable);
+  };
+
+  const checkBiometricAvailability = async () => {
+    try {
+      const isSupported = await biometricService.isBiometricSupported();
+      const isEnrolled = await biometricService.isBiometricEnrolled();
+      const type = await biometricService.getBiometricType();
+      
+      setBiometricAvailable(isSupported && isEnrolled);
+      setBiometricType(type);
+
+      const canUse = await biometricService.canUseBiometric();
+      const username = await biometricService.getStoredUsername();
+      
+      setCanQuickLogin(canUse);
+      setStoredUsername(username);
+      
+      console.log('Biometric check:', { isSupported, isEnrolled, type, canUse, username });
+    } catch (error) {
+      console.log('Error checking biometric:', error);
+    }
+  };
+
+  const handleBiometricQuickLogin = async () => {
+    if (!storedUsername) {
+      setError('ბიომეტრიული ავტორიზაცია მიუწვდომელია');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    const result = await biometricService.authenticate(`გამოიყენეთ ${biometricType} შესასვლელად`);
+    
+    if (result.success) {
+      const sessionRestored = await biometricService.restoreAuthSession();
+      
+      if (sessionRestored) {
+        setLoading(false);
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.replace('/(tabs)');
+        }, 1200);
+      } else {
+        setLoading(false);
+        setError('სესია ვადაგასულია. გთხოვთ შეხვიდეთ პაროლით');
+        setCanQuickLogin(false);
+      }
+    } else {
+      setLoading(false);
+      if (result.error && result.error !== 'ავტორიზაცია გაუქმებულია') {
+        setError(result.error);
+      }
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -40,6 +104,19 @@ export default function LoginScreen() {
 
     try {
       await authService.login(email.trim(), password);
+      setPendingUsername(email.trim());
+      
+      if (biometricAvailable) {
+        const isAlreadyEnabled = await biometricService.isBiometricEnabled();
+        if (!isAlreadyEnabled) {
+          setLoading(false);
+          setShowBiometricModal(true);
+          return;
+        } else {
+          await biometricService.updateStoredToken();
+        }
+      }
+      
       setShowSuccess(true);
       setLoading(false);
       setTimeout(() => {
@@ -49,6 +126,33 @@ export default function LoginScreen() {
       setError(err.message || 'შესვლა ვერ მოხერხდა');
       setLoading(false);
     }
+  };
+
+  const handleEnableBiometric = async () => {
+    try {
+      const result = await biometricService.authenticate(`დაადასტურეთ ${biometricType} გამოყენება`);
+      
+      if (result.success) {
+        await biometricService.enableBiometric(pendingUsername);
+        setShowBiometricModal(false);
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.replace('/(tabs)');
+        }, 1200);
+      } else {
+        Alert.alert('შეცდომა', result.error || 'ვერ მოხერხდა ბიომეტრიის დაყენება');
+      }
+    } catch (error: any) {
+      Alert.alert('შეცდომა', error.message || 'ვერ მოხერხდა ბიომეტრიის დაყენება');
+    }
+  };
+
+  const handleSkipBiometric = () => {
+    setShowBiometricModal(false);
+    setShowSuccess(true);
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 1200);
   };
 
   const handleAppleSignIn = async () => {
@@ -61,6 +165,16 @@ export default function LoginScreen() {
       });
       
       console.log('Apple Sign In Success:', credential);
+      
+      if (biometricAvailable) {
+        const isAlreadyEnabled = await biometricService.isBiometricEnabled();
+        if (!isAlreadyEnabled) {
+          setPendingUsername(credential.email || 'apple_user');
+          setShowBiometricModal(true);
+          return;
+        }
+      }
+      
       setShowSuccess(true);
       setTimeout(() => {
         router.replace('/(tabs)');
@@ -73,6 +187,13 @@ export default function LoginScreen() {
         console.error('Apple Sign In Error:', e);
       }
     }
+  };
+
+  const getBiometricIcon = () => {
+    if (biometricType.includes('Face')) {
+      return <Scan size={24} color="#a78bfa" strokeWidth={2} />;
+    }
+    return <Fingerprint size={24} color="#a78bfa" strokeWidth={2} />;
   };
 
   return (
@@ -91,6 +212,59 @@ export default function LoginScreen() {
         message="წარმატებით შეხვედით სისტემაში!"
         onHide={() => setShowSuccess(false)}
       />
+
+      <Modal
+        visible={showBiometricModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleSkipBiometric}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={handleSkipBiometric}>
+              <X size={20} color="rgba(255, 255, 255, 0.5)" strokeWidth={2} />
+            </TouchableOpacity>
+            
+            <View style={styles.modalIconContainer}>
+              {biometricType.includes('Face') ? (
+                <Scan size={56} color="#a78bfa" strokeWidth={1.5} />
+              ) : (
+                <Fingerprint size={56} color="#a78bfa" strokeWidth={1.5} />
+              )}
+            </View>
+            
+            <Text style={styles.modalTitle}>{biometricType}-ის გააქტიურება</Text>
+            <Text style={styles.modalDescription}>
+              გსურთ {biometricType} გამოიყენოთ სწრაფი შესვლისთვის?
+              შემდეგ ჯერზე შეძლებთ სწრაფ ავტორიზაციას.
+            </Text>
+            
+            <TouchableOpacity
+              style={styles.modalEnableButton}
+              onPress={handleEnableBiometric}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={['#8b5cf6', '#a855f7']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.modalButtonGradient}
+              >
+                <Check size={20} color="#fff" strokeWidth={2.5} />
+                <Text style={styles.modalEnableButtonText}>დიახ, გააქტიურება</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.modalSkipButton}
+              onPress={handleSkipBiometric}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.modalSkipButtonText}>არა, გამოტოვება</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -111,6 +285,36 @@ export default function LoginScreen() {
             <Text style={styles.title}>კეთილი იყოს თქვენი მობრძანება</Text>
             <Text style={styles.subtitle}>შედით თქვენს ანგარიშზე</Text>
           </View>
+
+          {canQuickLogin && storedUsername && (
+            <TouchableOpacity
+              style={styles.biometricQuickLoginButton}
+              onPress={handleBiometricQuickLogin}
+              activeOpacity={0.85}
+            >
+              <View style={styles.biometricQuickLoginContent}>
+                <View style={styles.biometricIconWrapper}>
+                  {biometricType.includes('Face') ? (
+                    <Scan size={32} color="#a78bfa" strokeWidth={2} />
+                  ) : (
+                    <Fingerprint size={32} color="#a78bfa" strokeWidth={2} />
+                  )}
+                </View>
+                <View style={styles.biometricQuickLoginText}>
+                  <Text style={styles.biometricQuickLoginTitle}>{biometricType}-ით შესვლა</Text>
+                  <Text style={styles.biometricQuickLoginSubtitle}>{storedUsername}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {canQuickLogin && (
+            <View style={styles.dividerContainer}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>ან</Text>
+              <View style={styles.divider} />
+            </View>
+          )}
 
           {error ? (
             <View style={styles.errorContainer}>
@@ -307,7 +511,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerSection: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
@@ -320,6 +524,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#9ca3af',
     textAlign: 'center',
+  },
+  biometricQuickLoginButton: {
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  biometricQuickLoginContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  biometricIconWrapper: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  biometricQuickLoginText: {
+    flex: 1,
+  },
+  biometricQuickLoginTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  biometricQuickLoginSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.6)',
   },
   errorContainer: {
     backgroundColor: 'rgba(239, 68, 68, 0.15)',
@@ -491,5 +731,84 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#a78bfa',
     fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    backgroundColor: '#1a1a2e',
+    borderRadius: 24,
+    padding: 28,
+    width: '100%',
+    maxWidth: 380,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.2)',
+  },
+  modalCloseButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalIconContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#fff',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalDescription: {
+    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.6)',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 28,
+  },
+  modalEnableButton: {
+    width: '100%',
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  modalButtonGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    gap: 10,
+  },
+  modalEnableButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  modalSkipButton: {
+    paddingVertical: 12,
+  },
+  modalSkipButtonText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
