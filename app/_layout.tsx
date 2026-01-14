@@ -42,11 +42,12 @@ export default function RootLayout() {
     const inAuthGroup = segments[0] === 'auth';
     const inOnboarding = segments[0] === 'onboarding';
     const inSplash = segments[0] === 'splash';
+    const inBiometricSetup = segments[0] === 'auth' && segments[1] === 'biometric-setup';
 
     if (!hasInitialized.current && segments.length === 0) {
       hasInitialized.current = true;
       router.replace('/splash');
-    } else if (isAuthenticated && (inAuthGroup || inOnboarding || inSplash)) {
+    } else if (isAuthenticated && (inAuthGroup || inOnboarding || inSplash) && !inBiometricSetup) {
       router.replace('/(tabs)');
     } else if (!isAuthenticated && !inAuthGroup && !inOnboarding && !inSplash && segments.length > 0) {
       router.replace('/splash');
@@ -70,6 +71,7 @@ export default function RootLayout() {
         <Stack.Screen name="auth/login" options={{ headerShown: false }} />
         <Stack.Screen name="auth/register" options={{ headerShown: false }} />
         <Stack.Screen name="auth/verify-otp" options={{ headerShown: false }} />
+        <Stack.Screen name="auth/biometric-setup" options={{ headerShown: false }} />
         <Stack.Screen name="product/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="profile/addresses" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
