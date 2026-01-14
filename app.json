@@ -2,7 +2,7 @@
   "expo": {
     "name": "GAMOIWERE",
     "slug": "bolt-expo-nativewind",
-    "version": "2.1.6",
+    "version": "2.1.4",
     "orientation": "portrait",
     "icon": "./assets/images/appicon.png",
     "scheme": "myapp",
@@ -17,7 +17,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.gamoiwere.app",
       "icon": "./assets/images/appicon.png",
-      "buildNumber": "11",
+      "buildNumber": "12",
       "usesAppleSignIn": true,
       "infoPlist": {
         "NSFaceIDUsageDescription": "გთხოვთ დაუშვათ Face ID ავტორიზაციისთვის"
@@ -25,7 +25,7 @@
     },
     "android": {
       "package": "com.gamoiwere.app",
-      "versionCode": 216,
+      "versionCode": 214,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appicon.png",
         "backgroundColor": "#7C3AED"
