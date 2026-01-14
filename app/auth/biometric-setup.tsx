@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Scan, Fingerprint, ShieldCheck, ChevronRight } from 'lucide-react-native';
+import { Scan, Fingerprint, ShieldCheck, ChevronRight, CheckCircle } from 'lucide-react-native';
 import { biometricService } from '@/services/biometric';
 import Loader from '@/components/Loader';
 
@@ -15,6 +15,9 @@ export default function BiometricSetupScreen() {
   const [biometricType, setBiometricType] = useState('Face ID');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  const successScale = useRef(new Animated.Value(0)).current;
+  const successOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     checkBiometricType();
@@ -23,6 +26,29 @@ export default function BiometricSetupScreen() {
   const checkBiometricType = async () => {
     const type = await biometricService.getBiometricType();
     setBiometricType(type);
+  };
+
+  const showSuccessAnimation = () => {
+    setSuccess(true);
+    setLoading(false);
+    
+    Animated.parallel([
+      Animated.spring(successScale, {
+        toValue: 1,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: true,
+      }),
+      Animated.timing(successOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+    
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 2000);
   };
 
   const handleEnableBiometric = async () => {
@@ -34,7 +60,7 @@ export default function BiometricSetupScreen() {
       
       if (authResult.success) {
         await biometricService.enableBiometric(username);
-        router.replace('/(tabs)');
+        showSuccessAnimation();
       } else {
         setLoading(false);
         if (authResult.error && authResult.error !== 'ავტორიზაცია გაუქმებულია') {
@@ -53,6 +79,43 @@ export default function BiometricSetupScreen() {
   };
 
   const isFaceID = biometricType.includes('Face');
+
+  if (success) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.decorCircle1} />
+        <View style={styles.decorCircle2} />
+        
+        <View style={styles.successContent}>
+          <Animated.View 
+            style={[
+              styles.successIconContainer,
+              {
+                opacity: successOpacity,
+                transform: [{ scale: successScale }],
+              }
+            ]}
+          >
+            <LinearGradient
+              colors={['#10b981', '#059669']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.successIconGradient}
+            >
+              <CheckCircle size={64} color="#fff" strokeWidth={2} />
+            </LinearGradient>
+          </Animated.View>
+          
+          <Animated.Text style={[styles.successTitle, { opacity: successOpacity }]}>
+            წარმატებით გააქტიურდა!
+          </Animated.Text>
+          <Animated.Text style={[styles.successSubtitle, { opacity: successOpacity }]}>
+            {biometricType} ჩართულია. ახლა შეგიძლიათ სწრაფად შეხვიდეთ თქვენს ანგარიშზე.
+          </Animated.Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -266,5 +329,39 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     fontSize: 16,
     fontWeight: '600',
+  },
+  successContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  successIconContainer: {
+    marginBottom: 32,
+  },
+  successIconGradient: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#10b981',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  successTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#1f2937',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  successSubtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    lineHeight: 24,
   },
 });
