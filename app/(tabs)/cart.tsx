@@ -119,9 +119,9 @@ export default function CartScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -150,9 +150,9 @@ export default function CartScreen() {
   if (!isAuthenticated) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -200,9 +200,9 @@ export default function CartScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <LinearGradient
-        colors={['#111317', '#111317']}
+        colors={['#f8f9fa', '#f8f9fa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -341,7 +341,7 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   glowOrb1: {
     position: 'absolute',
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -382,16 +382,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   headerTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -409,20 +409,20 @@ const styles = StyleSheet.create({
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
   },
   statTextCompact: {
     fontSize: 12,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
   },
   summaryCard: {
     backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 14,
     padding: 14,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   summaryRow: {
     flexDirection: 'row',
@@ -432,13 +432,13 @@ const styles = StyleSheet.create({
   summaryLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
   summaryAmount: {
     fontSize: 22,
     fontWeight: '900',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -456,14 +456,17 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 28,
     padding: 36,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -472,22 +475,22 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   authTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 28,
@@ -506,7 +509,7 @@ const styles = StyleSheet.create({
   authButtonText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     fontFamily: 'MarkGEO-Regular',
   },
   scrollView: {
@@ -529,18 +532,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   emptyTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptyDescription: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 28,
@@ -559,23 +562,26 @@ const styles = StyleSheet.create({
   emptyButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     fontFamily: 'MarkGEO-Regular',
   },
   cartItem: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 12,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.15)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   itemImage: {
     width: 80,
     height: 80,
     borderRadius: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#f5f5f5',
   },
   itemContent: {
     flex: 1,
@@ -585,7 +591,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 6,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -596,7 +602,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   variationTag: {
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
@@ -604,7 +610,7 @@ const styles = StyleSheet.create({
   variationText: {
     fontSize: 11,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
   itemFooter: {
@@ -621,24 +627,24 @@ const styles = StyleSheet.create({
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     padding: 4,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   quantityButton: {
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantityText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     paddingHorizontal: 12,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -686,7 +692,7 @@ const styles = StyleSheet.create({
   checkoutButtonText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#fff',
+    color: '#ffffff',
     fontFamily: 'MarkGEO-Regular',
   },
   bottomSpace: {

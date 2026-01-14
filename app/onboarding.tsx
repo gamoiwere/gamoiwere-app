@@ -49,7 +49,7 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       
       <Image
         source={currentSlide.image}
@@ -58,7 +58,7 @@ export default function OnboardingScreen() {
       />
       
       <LinearGradient
-        colors={['rgba(17, 19, 23, 0.3)', 'rgba(17, 19, 23, 0.7)', 'rgba(17, 19, 23, 0.95)']}
+        colors={['rgba(248, 249, 250, 0.3)', 'rgba(248, 249, 250, 0.7)', 'rgba(248, 249, 250, 0.95)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.overlay}
@@ -109,7 +109,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   backgroundImage: {
     position: 'absolute',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
   },
   skipButton: {
     position: 'absolute',
@@ -137,13 +137,11 @@ const styles = StyleSheet.create({
     right: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: 'rgba(120, 22, 214, 0.25)',
+    backgroundColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   skipText: {
-    color: '#fff',
+    color: '#7816d6',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 16,
     lineHeight: 42,
     letterSpacing: -0.5,
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: '#6b7280',
     lineHeight: 26,
   },
   bottomContainer: {

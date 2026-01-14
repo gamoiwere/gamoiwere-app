@@ -159,7 +159,7 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['#111317', '#111317', '#111317']}
+        colors={['#f8f9fa', '#f8f9fa', '#f8f9fa']}
         style={styles.background}
       />
       
@@ -355,7 +355,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   background: {
     position: 'absolute',
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -408,9 +408,9 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#1f2937',
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   biometricQuickLoginContent: {
     flexDirection: 'row',
@@ -446,11 +446,11 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 16,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   biometricQuickLoginText: {
     flex: 1,
@@ -458,12 +458,12 @@ const styles = StyleSheet.create({
   biometricQuickLoginTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 4,
   },
   biometricQuickLoginSubtitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
   },
   errorContainer: {
     backgroundColor: 'rgba(239, 68, 68, 0.15)',
@@ -488,18 +488,18 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#d1d5db',
+    color: '#374151',
     marginLeft: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    backgroundColor: '#ffffff',
     borderRadius: 14,
     paddingHorizontal: 16,
     paddingVertical: 4,
     borderWidth: 1.5,
-    borderColor: 'rgba(75, 85, 99, 0.5)',
+    borderColor: '#e5e7eb',
     gap: 12,
   },
   inputContainerFocused: {
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#ffffff',
+    color: '#1f2937',
     fontWeight: '500',
     paddingVertical: 14,
   },
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#4b5563',
+    borderColor: '#d1d5db',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    color: '#ffffff',
+    color: '#1f2937',
     fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
   divider: {
     flex: 1,
     height: 1,
-    backgroundColor: 'rgba(75, 85, 99, 0.5)',
+    backgroundColor: '#e5e7eb',
   },
   dividerText: {
     fontSize: 14,
@@ -612,10 +612,10 @@ const styles = StyleSheet.create({
   },
   appleIcon: {
     fontSize: 20,
-    color: '#ffffff',
+    color: '#1f2937',
   },
   appleButtonText: {
-    color: '#ffffff',
+    color: '#1f2937',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -644,14 +644,14 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   modalContent: {
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
     borderRadius: 24,
     padding: 28,
     width: '100%',
     maxWidth: 380,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   modalCloseButton: {
     position: 'absolute',
@@ -660,7 +660,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -668,23 +668,23 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   modalTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     textAlign: 'center',
   },
   modalDescription: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 28,
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   modalEnableButtonText: {
-    color: '#fff',
+    color: '#1f2937',
     fontSize: 16,
     fontWeight: '700',
   },
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   modalSkipButtonText: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     fontSize: 15,
     fontWeight: '600',
   },

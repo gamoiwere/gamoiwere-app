@@ -110,9 +110,9 @@ export default function CategoriesScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -140,9 +140,9 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <LinearGradient
-        colors={['#111317', '#111317']}
+        colors={['#f8f9fa', '#f8f9fa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -312,7 +312,7 @@ export default function CategoriesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   glowOrb1: {
     position: 'absolute',
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -353,16 +353,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   headerTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -380,13 +380,13 @@ const styles = StyleSheet.create({
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
   },
   statTextCompact: {
     fontSize: 12,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
   },
   loadingContainer: {
     flex: 1,
@@ -414,28 +414,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   emptyTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textAlign: 'center',
     lineHeight: 22,
     fontFamily: 'MarkGEO-Regular',
   },
   categoryCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   categoryHeader: {
     flexDirection: 'row',
@@ -452,18 +452,18 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   categoryInfo: {
     flex: 1,
   },
   categoryLabel: {
     fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.3,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -482,12 +482,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   countBadge: {
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   countText: {
     fontSize: 13,
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   subCountBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
@@ -557,7 +557,7 @@ const styles = StyleSheet.create({
   subCountText: {
     fontSize: 11,
     fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     letterSpacing: -0.2,
   },
   subExpandIcon: {
@@ -596,7 +596,7 @@ const styles = StyleSheet.create({
   subSubCategoryName: {
     fontSize: 13,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     flex: 1,
     fontFamily: 'MarkGEO-Regular',
   },

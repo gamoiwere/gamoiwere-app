@@ -124,7 +124,7 @@ export default function OrdersScreen() {
       PENDING: { icon: Clock, color: '#f59e0b', bgColor: 'rgba(245, 158, 11, 0.15)', text: 'მუშავდება' },
       PROCESSING: { icon: Package, color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.15)', text: 'მზადდება' },
       PAID: { icon: CreditCard, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'გადახდილია' },
-      SHIPPED: { icon: Truck, color: '#7816d6', bgColor: 'rgba(120, 22, 214, 0.15)', text: 'გზაშია' },
+      SHIPPED: { icon: Truck, color: '#7816d6', bgColor: 'rgba(120, 22, 214, 0.08)', text: 'გზაშია' },
       DELIVERED: { icon: CheckCircle, color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.15)', text: 'მიწოდებულია' },
       CANCELLED: { icon: XCircle, color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.15)', text: 'გაუქმებულია' },
     };
@@ -180,9 +180,9 @@ export default function OrdersScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -211,9 +211,9 @@ export default function OrdersScreen() {
   if (!user) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa']}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFillObject}
@@ -270,9 +270,9 @@ export default function OrdersScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <LinearGradient
-        colors={['#111317', '#111317']}
+        colors={['#f8f9fa', '#f8f9fa']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFillObject}
@@ -465,7 +465,7 @@ export default function OrdersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   glowOrb1: {
     position: 'absolute',
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     borderRadius: 150,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -506,16 +506,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   headerTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -533,13 +533,13 @@ const styles = StyleSheet.create({
   statNumberCompact: {
     fontSize: 18,
     fontWeight: '900',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
   },
   statTextCompact: {
     fontSize: 12,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
   },
   loadingContainer: {
     flex: 1,
@@ -555,14 +555,14 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 28,
     padding: 36,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -571,22 +571,22 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   authTitle: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   authDescription: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 28,
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   authButtonText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     fontFamily: 'MarkGEO-Regular',
   },
   filterScroll: {
@@ -618,7 +618,7 @@ const styles = StyleSheet.create({
   filterCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 14,
     paddingVertical: 8,
     paddingHorizontal: 12,
@@ -627,31 +627,31 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   filterCardActive: {
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
   },
   filterIconBg: {
     width: 30,
     height: 30,
     borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   filterIconBgActive: {
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
   },
   filterLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
   filterLabelActive: {
-    color: '#fff',
+    color: '#1f2937',
   },
   filterBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 8,
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
   filterCount: {
     fontSize: 11,
     fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
   },
   filterCountActive: {
     color: '#7816d6',
@@ -687,18 +687,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   emptyTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 12,
     fontFamily: 'MarkGEO-Regular',
   },
   emptySubtitle: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textAlign: 'center',
     lineHeight: 22,
     fontFamily: 'MarkGEO-Regular',
@@ -717,15 +717,15 @@ const styles = StyleSheet.create({
   shopNowText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     fontFamily: 'MarkGEO-Regular',
   },
   orderCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#ffffff',
     borderRadius: 18,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.15)',
+    borderColor: 'rgba(120, 22, 214, 0.08)',
   },
   orderHeader: {
     flexDirection: 'row',
@@ -739,14 +739,14 @@ const styles = StyleSheet.create({
   orderLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   orderNumber: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.3,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -780,7 +780,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#ffffff',
   },
   itemImage: {
     width: '100%',
@@ -798,7 +798,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 4,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -810,7 +810,7 @@ const styles = StyleSheet.create({
   itemQty: {
     fontSize: 12,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     fontFamily: 'MarkGEO-Regular',
   },
   itemPrice: {
@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 13,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     fontFamily: 'MarkGEO-Regular',
   },
   totalWrapper: {
@@ -858,13 +858,13 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     marginBottom: 2,
   },
   totalPrice: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -877,7 +877,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(120, 22, 214, 0.1)',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    borderColor: 'rgba(120, 22, 214, 0.1)',
   },
   viewMoreText: {
     fontSize: 14,

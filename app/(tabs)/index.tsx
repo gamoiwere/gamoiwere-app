@@ -159,7 +159,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <View style={StyleSheet.absoluteFillObject} />
 
       <View style={[styles.headerContent, { paddingTop: insets.top + 12 }]}>
@@ -170,7 +170,7 @@ export default function HomeScreen() {
           </View>
           <TouchableOpacity style={styles.notificationBtn}>
             <View style={styles.notificationDot} />
-            <Bell size={22} color="#fff" strokeWidth={2.5} />
+            <Bell size={22} color="#6b7280" strokeWidth={2.5} />
           </TouchableOpacity>
         </View>
 
@@ -199,14 +199,14 @@ export default function HomeScreen() {
                 <View style={styles.heroTopRow}>
                   <View>
                     <View style={styles.premiumBadge}>
-                      <Sparkles size={12} color="#7816d6" strokeWidth={2.5} />
+                      <Sparkles size={12} color="#fff" strokeWidth={2.5} />
                       <Text style={styles.premiumText}>პრემიუმ</Text>
                     </View>
                     <Text style={styles.heroNumber}>800M+</Text>
                     <Text style={styles.heroLabel}>პროდუქტი მთელი მსოფლიოდან</Text>
                   </View>
                   <View style={styles.heroIconCircle}>
-                    <Package size={32} color="#7816d6" strokeWidth={2} />
+                    <Package size={32} color="#fff" strokeWidth={2} />
                   </View>
                 </View>
 
@@ -327,7 +327,7 @@ export default function HomeScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.biometricModal}>
             <TouchableOpacity style={styles.modalCloseBtn} onPress={handleSkipBiometric}>
-              <X size={20} color="rgba(255,255,255,0.6)" />
+              <X size={20} color="#6b7280" />
             </TouchableOpacity>
             
             <View style={styles.biometricIconContainer}>
@@ -369,7 +369,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
+  },
+  glowOrb1: {
+    display: 'none',
+  },
+  glowOrb2: {
+    display: 'none',
   },
   headerContent: {
     paddingHorizontal: 20,
@@ -383,26 +389,29 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.7)',
+    color: '#6b7280',
     marginBottom: 4,
     fontWeight: '500',
   },
   brandName: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
   },
   notificationBtn: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
   },
   notificationDot: {
     position: 'absolute',
@@ -413,7 +422,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: '#7816d6',
     borderWidth: 2,
-    borderColor: '#111317',
+    borderColor: '#ffffff',
   },
   searchContainer: {
     borderRadius: 16,
@@ -422,17 +431,20 @@ const styles = StyleSheet.create({
   searchInner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 12,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   searchText: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.5)',
+    color: '#9ca3af',
     fontWeight: '500',
   },
   scrollView: {
@@ -449,9 +461,7 @@ const styles = StyleSheet.create({
   mainHeroCard: {
     borderRadius: 20,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#7816d6',
   },
   heroCardGradient: {
     padding: 20,
@@ -466,19 +476,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
     marginBottom: 12,
     alignSelf: 'flex-start',
   },
   premiumText: {
     fontSize: 10,
     fontWeight: '800',
-    color: '#7816d6',
+    color: '#fff',
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
@@ -491,26 +499,22 @@ const styles = StyleSheet.create({
   heroLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255, 255, 255, 0.8)',
     marginTop: 4,
   },
   heroIconCircle: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   heroStatsRow: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderRadius: 14,
     padding: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   statBox: {
     flex: 1,
@@ -518,7 +522,7 @@ const styles = StyleSheet.create({
   },
   statDivider: {
     width: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   statNum: {
     fontSize: 18,
@@ -544,16 +548,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 14,
     gap: 10,
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.2)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   compactFeatureIcon: {
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -563,12 +570,12 @@ const styles = StyleSheet.create({
   compactFeatureTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
   },
   compactFeatureDesc: {
     fontSize: 11,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#6b7280',
     marginTop: 1,
   },
   section: {
@@ -590,7 +597,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#fff',
+    color: '#1f2937',
     letterSpacing: -0.5,
     fontFamily: 'MarkGEO-Regular',
   },
@@ -598,12 +605,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
   },
   seeAllText: {
     fontSize: 12,
@@ -627,7 +632,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 15,
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textAlign: 'center',
     width: '100%',
     paddingVertical: 40,
@@ -644,14 +649,17 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   biometricModal: {
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#ffffff',
     borderRadius: 24,
     padding: 32,
     width: '100%',
     maxWidth: 340,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 24,
+    elevation: 8,
   },
   modalCloseBtn: {
     position: 'absolute',
@@ -660,7 +668,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -668,7 +676,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: 'rgba(120, 22, 214, 0.2)',
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -679,13 +687,13 @@ const styles = StyleSheet.create({
   biometricTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#fff',
+    color: '#1f2937',
     marginBottom: 8,
     textAlign: 'center',
   },
   biometricSubtitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: '#6b7280',
     textAlign: 'center',
     marginBottom: 24,
     lineHeight: 20,
@@ -707,7 +715,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   biometricSkipBtnText: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     fontSize: 14,
     fontWeight: '600',
   },

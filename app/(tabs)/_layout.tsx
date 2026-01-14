@@ -1,7 +1,6 @@
 import { Tabs } from 'expo-router';
 import { View, StyleSheet } from 'react-native';
 import { Home, ShoppingCart, Heart, User, LayoutGrid } from 'lucide-react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function TabLayout() {
   return (
@@ -9,23 +8,22 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#7816d6',
-        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.4)',
+        tabBarInactiveTintColor: '#9ca3af',
         tabBarShowLabel: false,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: '#0d0f12',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(120, 22, 214, 0.2)',
+          backgroundColor: '#ffffff',
+          borderTopWidth: 0,
           height: 75,
           paddingBottom: 12,
           paddingTop: 12,
           paddingHorizontal: 24,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
-          shadowColor: '#7816d6',
-          shadowOffset: { width: 0, height: -8 },
-          shadowOpacity: 0.15,
-          shadowRadius: 20,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.08,
+          shadowRadius: 16,
           elevation: 12,
         },
       }}>
@@ -39,7 +37,7 @@ export default function TabLayout() {
             ]}>
               <Home
                 size={22}
-                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
+                color={focused ? '#7816d6' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -56,7 +54,7 @@ export default function TabLayout() {
             ]}>
               <LayoutGrid
                 size={22}
-                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
+                color={focused ? '#7816d6' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -69,7 +67,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <View style={[
               styles.iconContainer,
-              focused && styles.iconContainerActiveCenter
+              styles.iconContainerActiveCenter
             ]}>
               <ShoppingCart
                 size={28}
@@ -96,7 +94,7 @@ export default function TabLayout() {
             ]}>
               <Heart
                 size={22}
-                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
+                color={focused ? '#7816d6' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -113,7 +111,7 @@ export default function TabLayout() {
             ]}>
               <User
                 size={22}
-                color={focused ? '#fff' : 'rgba(255, 255, 255, 0.4)'}
+                color={focused ? '#7816d6' : '#9ca3af'}
                 strokeWidth={2}
               />
             </View>
@@ -133,14 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainerActive: {
-    backgroundColor: 'rgba(120, 22, 214, 0.3)',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.4)',
-    shadowColor: '#7816d6',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 4,
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
   },
   iconContainerActiveCenter: {
     backgroundColor: '#7816d6',
@@ -148,11 +139,9 @@ const styles = StyleSheet.create({
     height: 64,
     borderRadius: 32,
     marginTop: -8,
-    borderWidth: 2,
-    borderColor: 'rgba(120, 22, 214, 0.5)',
     shadowColor: '#7816d6',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.35,
     shadowRadius: 12,
     elevation: 8,
   },

@@ -27,7 +27,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
 
         <TouchableOpacity style={styles.favoriteBtn} activeOpacity={0.8}>
-          <Heart size={18} color="#18181b" strokeWidth={2} />
+          <Heart size={18} color="#6b7280" strokeWidth={2} />
         </TouchableOpacity>
 
         {!product.in_stock && (
@@ -63,18 +63,21 @@ export default function ProductCard({ product }: ProductCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#0d0f12',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   imageContainer: {
     width: '100%',
     height: 200,
     position: 'relative',
-    backgroundColor: '#111317',
+    backgroundColor: '#f5f5f5',
   },
   image: {
     width: '100%',
@@ -87,15 +90,20 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   outOfStockBadge: {
     position: 'absolute',
     top: 12,
     left: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#1f2937',
     lineHeight: 20,
     marginBottom: 8,
   },
@@ -129,12 +137,12 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#1f2937',
   },
   originalPrice: {
     fontSize: 13,
     fontWeight: '500',
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#9ca3af',
     textDecorationLine: 'line-through',
   },
   discountBadge: {

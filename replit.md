@@ -12,11 +12,13 @@ GAMOIWERE is a React Native e-commerce mobile app built with Expo, targeting web
 - **Secure Storage**: expo-secure-store for biometric credentials
 - **State**: React hooks
 
-## Design Theme
-- Dark navy/purple gradient backgrounds (#0f0f1a → #16213e)
-- Purple accents (#8b5cf6, #a78bfa)
-- Glass-morphism effects with semi-transparent cards
-- Purple glow orbs for ambient lighting
+## Design Theme - Light Mode
+- Light gray background (#f8f9fa)
+- White cards with subtle shadows (#ffffff)
+- Dark text for readability (#1f2937 primary, #6b7280 secondary)
+- Purple accent color (#7816d6)
+- Clean, modern e-commerce design with soft shadows
+- No dark colors - fully light theme
 
 ## Project Structure
 ```

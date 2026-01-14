@@ -55,9 +55,9 @@ export default function ProfileScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa', '#f8f9fa']}
           style={styles.background}
         />
         <View style={styles.glowOrb1} />
@@ -75,9 +75,9 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <LinearGradient
-          colors={['#111317', '#111317', '#111317']}
+          colors={['#f8f9fa', '#f8f9fa', '#f8f9fa']}
           style={styles.background}
         />
         <View style={styles.glowOrb1} />
@@ -126,9 +126,9 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <LinearGradient
-        colors={['#111317', '#111317', '#111317']}
+        colors={['#f8f9fa', '#f8f9fa', '#f8f9fa']}
         style={styles.background}
       />
       <View style={styles.glowOrb1} />
@@ -153,7 +153,7 @@ export default function ProfileScreen() {
 
         <View style={styles.profileCard}>
           <LinearGradient
-            colors={['rgba(120, 22, 214, 0.15)', 'rgba(168, 85, 247, 0.08)']}
+            colors={['rgba(120, 22, 214, 0.08)', 'rgba(168, 85, 247, 0.08)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.profileCardGradient}
@@ -292,7 +292,7 @@ export default function ProfileScreen() {
             activeOpacity={0.7}
           >
             <View style={styles.menuItemLeft}>
-              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(120, 22, 214, 0.15)' }]}>
+              <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(120, 22, 214, 0.08)' }]}>
                 <Bell size={20} color="#7816d6" strokeWidth={2} />
               </View>
               <Text style={styles.menuItemText}>შეტყობინებები</Text>
@@ -345,7 +345,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111317',
+    backgroundColor: '#f8f9fa',
   },
   background: {
     position: 'absolute',
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
   },
   glowOrb2: {
     position: 'absolute',
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#1f2937',
     letterSpacing: -0.5,
   },
   loadingContainer: {
@@ -410,14 +410,17 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   authCard: {
-    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    backgroundColor: '#ffffff',
     borderRadius: 24,
     padding: 32,
     alignItems: 'center',
     width: '100%',
     maxWidth: 400,
-    borderWidth: 1,
-    borderColor: 'rgba(75, 85, 99, 0.4)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 4,
   },
   authIconWrapper: {
     marginBottom: 24,
@@ -432,7 +435,7 @@ const styles = StyleSheet.create({
   authTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#1f2937',
     marginBottom: 12,
   },
   authDescription: {
@@ -457,7 +460,7 @@ const styles = StyleSheet.create({
   authButtonText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#fff',
+    color: '#ffffff',
   },
   profileCard: {
     marginBottom: 20,
@@ -467,7 +470,7 @@ const styles = StyleSheet.create({
   profileCardGradient: {
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
     borderRadius: 20,
   },
   profileHeader: {
@@ -496,7 +499,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#1f2937',
     flex: 1,
   },
   verifiedBadge: {
@@ -516,16 +519,16 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     borderWidth: 1,
-    borderColor: 'rgba(120, 22, 214, 0.3)',
+    borderColor: 'rgba(120, 22, 214, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   contactInfo: {
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(75, 85, 99, 0.3)',
+    borderTopColor: '#e5e7eb',
     gap: 10,
   },
   contactItem: {
@@ -535,7 +538,7 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 14,
-    color: '#d1d5db',
+    color: '#6b7280',
     flex: 1,
   },
   balanceSection: {
@@ -543,14 +546,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   balanceCard: {
-    backgroundColor: 'rgba(31, 41, 55, 0.8)',
+    backgroundColor: '#ffffff',
     borderRadius: 16,
     padding: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: 'rgba(75, 85, 99, 0.4)',
+    borderColor: '#e5e7eb',
   },
   balanceLeft: {
     flexDirection: 'row',
@@ -561,7 +564,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: 'rgba(120, 22, 214, 0.15)',
+    backgroundColor: 'rgba(120, 22, 214, 0.08)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -574,13 +577,13 @@ const styles = StyleSheet.create({
   balanceAmount: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#1f2937',
   },
   balanceCodeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(75, 85, 99, 0.3)',
+    backgroundColor: '#e5e7eb',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
@@ -660,7 +663,7 @@ const styles = StyleSheet.create({
   menuItemText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#ffffff',
+    color: '#1f2937',
   },
   logoutButton: {
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
