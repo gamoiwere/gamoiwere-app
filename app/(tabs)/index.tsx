@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Search, Bell, TrendingUp, Sparkles, Star, Package, Plane } from 'lucide-react-native';
+import { Search, Bell, TrendingUp, Sparkles, Star, Package, Plane, Camera } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProductCard from '@/components/ProductCard';
 import Loader from '@/components/Loader';
@@ -128,6 +128,9 @@ export default function HomeScreen() {
           <View style={styles.searchInner}>
             <Search size={20} color="#7816d6" strokeWidth={2.5} />
             <Text style={styles.searchText}>ძებნა პროდუქტების...</Text>
+            <TouchableOpacity style={styles.imageSearchBtn} activeOpacity={0.7}>
+              <Camera size={20} color="#7816d6" strokeWidth={2} />
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </View>
@@ -347,9 +350,18 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   searchText: {
+    flex: 1,
     fontSize: 15,
     color: '#9ca3af',
     fontWeight: '500',
+  },
+  imageSearchBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(120, 22, 214, 0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollView: {
     flex: 1,
