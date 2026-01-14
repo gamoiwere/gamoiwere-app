@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Dimensions, Modal } from 'react-native';
 import { router } from 'expo-router';
 import { authService } from '@/services/auth';
 import { biometricService } from '@/services/biometric';
-import { ArrowLeft, EyeOff, Eye, User, Lock, Scan, Fingerprint } from 'lucide-react-native';
+import { ArrowLeft, EyeOff, Eye, User, Lock, Scan, Fingerprint, X } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import SuccessNotification from '@/components/SuccessNotification';
@@ -27,6 +27,8 @@ export default function LoginScreen() {
   const [canQuickLogin, setCanQuickLogin] = useState(false);
   const [storedUsername, setStoredUsername] = useState<string | null>(null);
   const [pendingUsername, setPendingUsername] = useState('');
+  const [showBiometricModal, setShowBiometricModal] = useState(false);
+  const [biometricEnabling, setBiometricEnabling] = useState(false);
 
   useEffect(() => {
     checkAppleAuth();
@@ -104,23 +106,63 @@ export default function LoginScreen() {
     try {
       await authService.login(email.trim(), password);
       setPendingUsername(email.trim());
+      setLoading(false);
       
       if (biometricAvailable) {
         const isAlreadyEnabled = await biometricService.isBiometricEnabled();
         if (isAlreadyEnabled) {
           await biometricService.updateStoredToken();
+          setShowSuccess(true);
+          setTimeout(() => {
+            router.replace('/(tabs)');
+          }, 1200);
+        } else {
+          setShowBiometricModal(true);
         }
+      } else {
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.replace('/(tabs)');
+        }, 1200);
       }
-      
-      setShowSuccess(true);
-      setLoading(false);
-      setTimeout(() => {
-        router.replace('/(tabs)');
-      }, 1200);
     } catch (err: any) {
       setError(err.message || 'შესვლა ვერ მოხერხდა');
       setLoading(false);
     }
+  };
+
+  const handleEnableBiometric = async () => {
+    setBiometricEnabling(true);
+    
+    try {
+      const authResult = await biometricService.authenticate(`გამოიყენეთ ${biometricType} გასააქტიურებლად`);
+      
+      if (authResult.success) {
+        await biometricService.enableBiometric(pendingUsername);
+        setShowBiometricModal(false);
+        setBiometricEnabling(false);
+        setShowSuccess(true);
+        setTimeout(() => {
+          router.replace('/(tabs)');
+        }, 1200);
+      } else {
+        setBiometricEnabling(false);
+        if (authResult.error && authResult.error !== 'ავტორიზაცია გაუქმებულია') {
+          setError(authResult.error);
+        }
+      }
+    } catch (err: any) {
+      setBiometricEnabling(false);
+      console.log('Error enabling biometric:', err);
+    }
+  };
+
+  const handleSkipBiometric = () => {
+    setShowBiometricModal(false);
+    setShowSuccess(true);
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 1200);
   };
 
 
@@ -348,6 +390,72 @@ export default function LoginScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <Modal
+        visible={showBiometricModal}
+        transparent
+        animationType="fade"
+        onRequestClose={handleSkipBiometric}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={handleSkipBiometric}
+            >
+              <X size={18} color="#6b7280" strokeWidth={2} />
+            </TouchableOpacity>
+            
+            <View style={styles.modalIconContainer}>
+              {biometricType.includes('Face') ? (
+                <Scan size={48} color="#7816d6" strokeWidth={1.5} />
+              ) : (
+                <Fingerprint size={48} color="#7816d6" strokeWidth={1.5} />
+              )}
+            </View>
+            
+            <Text style={styles.modalTitle}>{biometricType}-ის გააქტიურება</Text>
+            <Text style={styles.modalDescription}>
+              გსურთ {biometricType}-ის გამოყენება სწრაფი და უსაფრთხო შესვლისთვის? 
+              შემდეგ ჯერზე მარტივად შეხვალთ თქვენს ანგარიშზე.
+            </Text>
+            
+            <TouchableOpacity
+              style={styles.modalEnableButton}
+              onPress={handleEnableBiometric}
+              disabled={biometricEnabling}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={['#7816d6', '#9333ea']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.modalButtonGradient}
+              >
+                {biometricEnabling ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {biometricType.includes('Face') ? (
+                      <Scan size={20} color="#ffffff" strokeWidth={2} />
+                    ) : (
+                      <Fingerprint size={20} color="#ffffff" strokeWidth={2} />
+                    )}
+                    <Text style={styles.modalEnableButtonText}>გააქტიურება</Text>
+                  </>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.modalSkipButton}
+              onPress={handleSkipBiometric}
+            >
+              <Text style={styles.modalSkipButtonText}>გამოტოვება</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
